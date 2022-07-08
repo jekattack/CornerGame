@@ -1,26 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import Map from "./components/map/Map";
+import Menu from "./components/controls/Menu";
+import React from "react";
+import "./App.css";
 
-function App() {
+export default function App(){
 
-    const [greeting, setGreeting] = useState('')
-
-    useEffect(() => {
-        fetch('/api/greeting', {
-            method: 'GET',
-            headers: {
-                'Accept': 'text/plain'
-            }
-        })
-            .then(response => response.text())
-            .then(text => setGreeting(text))
-            .catch(err => setGreeting('Da ist etwas schief gelaufen'));
-    }, []);
-
-    return (
-        <div>
-            {greeting}
+    return(
+        <div id={"app-container"}>
+                <Map />
         </div>
-    );
+    )
 }
-
-export default App;
