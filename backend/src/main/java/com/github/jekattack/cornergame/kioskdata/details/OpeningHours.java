@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.kiosk.details;
+package com.github.jekattack.cornergame.kioskdata.details;
 
 public class OpeningHours {
     private OpeningHoursDay monday;

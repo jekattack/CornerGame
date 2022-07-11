@@ -1,4 +1,4 @@
-import Map from "./components/map/Map";
+import Map from "./components/maps/Map";
 import Menu from "./components/controls/Menu";
 import React from "react";
 import "./App.css";

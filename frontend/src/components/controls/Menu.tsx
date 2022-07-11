@@ -1,6 +1,6 @@
 import '../Components.css';
 import './Menu.css';
-import { ReactComponent as CGLogoWort } from '../../images/CGLogoWort.svg';
+import { ReactComponent as CGLogoWort } from '../../../public/images/CGLogoWort.svg';
 
 export default function Menu(){
 
