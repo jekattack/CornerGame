@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "kiosks")
@@ -18,6 +19,7 @@ public class Kiosk {
 
     @Id
     private String id;
+    @Indexed(unique = true)
     @JsonProperty("place_id")
     private String googlePlacesId;
     private String name;

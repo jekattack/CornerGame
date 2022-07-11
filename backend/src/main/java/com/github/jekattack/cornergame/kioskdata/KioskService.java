@@ -28,7 +28,7 @@ public class KioskService {
         System.out.println(singleResponseData.getBody());
         int counter = 0;
 
-        while(singleResponseData.getBody().getNextPageToken()!=null && counter < 3){
+        while(singleResponseData.getBody().getNextPageToken()!=null){
             try{
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {

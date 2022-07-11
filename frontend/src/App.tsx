@@ -7,7 +7,7 @@ export default function App(){
 
     return(
         <div id={"app-container"}>
-                <Map />
+            <Map />
         </div>
     )
 }

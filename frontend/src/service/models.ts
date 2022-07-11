@@ -1,13 +1,13 @@
 export interface Kiosk {
     id?: string;
 
-    googlePlacesId: string;
+    place_id: string;
     name: string;
-    kioskAddress: string;
-    kioskLocation: {
+    vicinity: string;
+    geometry: {
         location: {
-            lat: string;
-            lng: string;
+            lat: number;
+            lng: number;
         }
     };
     isManaged: boolean;
