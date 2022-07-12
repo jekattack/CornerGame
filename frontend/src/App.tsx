@@ -1,5 +1,6 @@
 import Map from "./components/maps/Map";
-import Menu from "./components/controls/Menu";
+//Component will be embedded in the next steps:
+//import Menu from "./components/controls/Menu";
 import React from "react";
 import "./App.css";
 
