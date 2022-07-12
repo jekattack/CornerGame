@@ -26,9 +26,7 @@ public class PlacesApiController {
     @GetMapping("/admin/loadAllKiosks/L375g37574r73d")
     @ResponseStatus(HttpStatus.OK)
     public List<KioskResponseData> loadAndStoreAllKiosks(){
-        List<KioskResponseData> responseData = placesApiService.getAllKiosksFromGoogle(googleMapsApiKey);
-        placesApiService.createManyKiosks(responseData);
-        return responseData;
+        return placesApiService.getAllKiosksFromGoogle(googleMapsApiKey);
     }
 
 }

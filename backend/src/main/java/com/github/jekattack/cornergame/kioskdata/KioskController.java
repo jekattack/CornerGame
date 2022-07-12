@@ -18,8 +18,6 @@ public class KioskController {
         this.googleMapsApiKey = googleMapsApiKey;
     };
 
-
-
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<Kiosk> getAllKiosks(){

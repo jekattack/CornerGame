@@ -24,4 +24,19 @@ public class KioskService {
     public List<Kiosk> getAllKiosks() {
         return kioskRepository.findAll();
     }
+    public Kiosk createKiosk(Kiosk testKiosk) {
+        return kioskRepository.save(testKiosk);
+    }
+
+    public void createManyKiosks(List<Kiosk> kioskList) {
+        kioskList.stream()
+            .forEach((kiosk) -> {
+                try {
+                    kioskRepository.save(kiosk);
+                } catch (DuplicateKeyException e){
+                    LOGGER.info("Kiosk already exists: " + kiosk.getName(), e);
+            }
+        });
+    }
+
 }
