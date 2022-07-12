@@ -2,14 +2,10 @@ import React, {useEffect, useState} from 'react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, center, options } from "./mapSettings";
 import {fetchAllKiosks} from "../../service/apiService";
-
-// Styles
-import '../Components.css';
 import {Kiosk} from "../../service/models";
+import '../Components.css';
 
 const Map: React.FC = () => {
-
-    //const [kiosks, setKiosks] = useState<Kiosk[]>([]);
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -22,7 +18,6 @@ const Map: React.FC = () => {
         mapRef.current = map;
         fetchAllKiosks()
             .then((response) => setMarkers(map, response));
-
     }
 
     const onUnmount = (): void => {
@@ -33,11 +28,8 @@ const Map: React.FC = () => {
 
         const image = {
             url: "/images/CGLogoBildBGIcon.png",
-            // This marker is 32 pixels wide by 32 pixels high.
-            //size: new google.maps.Size(32, 32),
-            // origin: new google.maps.Point(16, 16),
-            // anchor: new google.maps.Point(16, 16)
         };
+
         const shape = {
             coords: [60,60,60],
             type: "circle",
@@ -45,7 +37,6 @@ const Map: React.FC = () => {
 
         for (let i = 0; i < kiosks.length; i++) {
             const kiosk = kiosks[i];
-
             new google.maps.Marker({
                 position: { lat: kiosk.geometry.location.lat, lng: kiosk.geometry.location.lng },
                 map,

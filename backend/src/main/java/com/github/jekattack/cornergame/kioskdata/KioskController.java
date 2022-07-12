@@ -18,14 +18,7 @@ public class KioskController {
         this.googleMapsApiKey = googleMapsApiKey;
     };
 
-    @GetMapping("/admin/loadAllKiosks/L375g37574r73d")
-    @ResponseStatus(HttpStatus.OK)
-    public KioskResponseData[] loadAndStoreAllKiosks(){
-        KioskResponseData[] allKiosks = kioskService.getAllKiosksFromGoogle(googleMapsApiKey);
-        kioskService.createManyKiosks(allKiosks);
 
-        return allKiosks;
-    }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)

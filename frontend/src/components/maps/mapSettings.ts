@@ -1,7 +1,3 @@
-// Settings for the map goes inside this file
-
-import {Kiosk} from "../../service/models";
-
 export const containerStyle = {
     width: '100%',
     height: '100vh'
