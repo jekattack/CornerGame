@@ -4,9 +4,11 @@ import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import com.github.jekattack.cornergame.kioskdata.KioskResponseData;
 import com.github.jekattack.cornergame.kioskdata.KioskService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,23 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class PlacesApiService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlacesApiService.class);
     private final KioskService kioskService;
     private final RestTemplate restTemplate;
+    private final String googleMapsApiKey;
 
-    public List<KioskResponseData> getAllKiosksFromGoogle(String apiKey) {
+    public PlacesApiService(KioskService kioskService, RestTemplate restTemplate, @Value("${app.googleMaps.key}") String googleMapsApiKey){
+        this.kioskService = kioskService;
+        this.restTemplate = restTemplate;
+        this.googleMapsApiKey = googleMapsApiKey;
+    };
 
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=53.556570,9.985951&radius=9000&keyword=kiosk&key=" + apiKey;
+
+    public List<KioskResponseData> getAllKiosksFromGoogle() {
+
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=53.556570,9.985951&radius=9000&keyword=kiosk&key=" + googleMapsApiKey;
         List<KioskResponseData> responseData = new ArrayList<>();
 
         //Send first Request to GooglePlaces-Api
@@ -58,4 +67,5 @@ public class PlacesApiService {
                 .map(KioskResponseData::getResults)
                 .flatMap(Arrays::stream).toList();
     }
+
 }
