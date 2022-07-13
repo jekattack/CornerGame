@@ -51,3 +51,7 @@ export interface Kiosk {
     parcelshop: string;
 
 }
+
+export interface LoginResponse {
+    token: string;
+}
