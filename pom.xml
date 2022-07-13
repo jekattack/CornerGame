@@ -15,9 +15,9 @@
 	<packaging>pom</packaging>
 	
 	<properties>
-		<java.version>17</java.version>
+		<java.version>18</java.version>
 	</properties>
-	
+
 	<modules>
 		<module>backend</module>
 	</modules>
