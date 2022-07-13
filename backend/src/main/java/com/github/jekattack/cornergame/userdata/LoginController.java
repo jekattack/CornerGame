@@ -24,8 +24,9 @@ public class LoginController {
     @PostMapping()
     public ResponseEntity<LoginResponse> login(@RequestBody LoginData loginData) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername().toLowerCase(), loginData.getPassword()));
-            CGUser user = userService.findByUsername(loginData.getUsername().toLowerCase()).orElseThrow();
+            loginData.setUsername(loginData.getUsername().toLowerCase());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
+            CGUser user = userService.findByUsername(loginData.getUsername()).orElseThrow();
             String jwt = jwtService.createToken(new HashMap<>(), user.getId());
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (Exception e) {

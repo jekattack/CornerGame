@@ -27,7 +27,7 @@ public class CGUserService {
 
 
     public Optional<CGUser> findByUsername(String username) {
-        return cgUserRepository.findByUsername(username);
+        return cgUserRepository.findByUsername(username.toLowerCase());
     }
     public Optional<CGUser> findById(String id) {
         return cgUserRepository.findById(id);
