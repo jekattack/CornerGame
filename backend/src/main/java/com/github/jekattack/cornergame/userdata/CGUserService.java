@@ -19,7 +19,7 @@ public class CGUserService {
         if(userCreationData.getPassword()==null || userCreationData.getPassword().isBlank()) throw new IllegalArgumentException("Registration failed: No password set");
         if(!(userCreationData.getPassword().equals(userCreationData.getPasswordAgain()))) throw new IllegalArgumentException("Password validation failed: repeated password doesn't match");
 
-        CGUser cgUser = new CGUser(userCreationData.getUsername(), userCreationData.getEmail(), userCreationData.getPassword());
+        CGUser cgUser = new CGUser(userCreationData.getUsername().toLowerCase(), userCreationData.getEmail(), userCreationData.getPassword());
         cgUser.setPassword(passwordEncoder.encode(cgUser.getPassword()));
         cgUser.setRole("user");
         cgUserRepository.save(cgUser);
