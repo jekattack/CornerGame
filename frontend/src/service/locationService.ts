@@ -39,6 +39,7 @@ export default function useGeolocation(){
         });
     }
 
+
     useEffect(() => {
         if(!("geolocation" in navigator)) {
             onError({
