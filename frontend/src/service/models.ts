@@ -51,3 +51,21 @@ export interface Kiosk {
     parcelshop: string;
 
 }
+
+export interface LoginResponse {
+    token: string;
+}
+
+export interface CGGeolocation {
+    loaded: boolean;
+    coordinates: {
+        lat: number,
+        lng: number
+    };
+    error: CGGeolocationError;
+}
+
+export interface CGGeolocationError {
+    code: number;
+    message: string;
+}
