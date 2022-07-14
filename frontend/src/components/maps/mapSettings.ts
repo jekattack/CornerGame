@@ -1,3 +1,5 @@
+import useGeolocation from "../../service/locationService";
+
 export const containerStyle = {
     width: '100%',
     height: '100vh'
