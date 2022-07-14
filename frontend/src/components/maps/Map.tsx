@@ -67,7 +67,7 @@ const Map: React.FC = () => {
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 options={options as google.maps.MapOptions}
-                center={currentLocation.loaded && currentLocation.error.code==0 ? currentLocation.coordinates :center}
+                center={currentLocation.loaded && currentLocation.error.code===0 ? currentLocation.coordinates :center}
                 zoom={16}
                 onLoad={onLoad}
                 onUnmount={onUnmount}

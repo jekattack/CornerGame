@@ -23,7 +23,7 @@ public class CGUser {
 
     @Id
     private String id;
-    private String roles;
+    private String role;
     @Indexed(unique = true)
     private String username;
     @Indexed(unique = true)

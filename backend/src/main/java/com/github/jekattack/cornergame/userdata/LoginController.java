@@ -31,7 +31,7 @@ public class LoginController {
             CGUser user = userService.findByUsername(loginData.getUsername()).orElseThrow();
 
             Map<String, Object> claims = new HashMap<>();
-            claims.put("roles", user.getRoles());
+            claims.put("role", user.getRole());
             String jwt = jwtService.createToken(claims, user.getId());
 
             return ResponseEntity.ok(new LoginResponse(jwt));
@@ -45,7 +45,7 @@ public class LoginController {
         CGUser user = userService.findByUsername(principal.getName()).orElseThrow();
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", user.getRoles());
+        claims.put("role", user.getRole());
 
         String token = jwtService.createToken(claims, user.getId());
         return ResponseEntity.ok(new LoginResponse(token));

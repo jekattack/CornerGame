@@ -21,7 +21,7 @@ public class CGUserService {
 
         CGUser cgUser = new CGUser(userCreationData.getUsername().toLowerCase(), userCreationData.getEmail(), userCreationData.getPassword());
         cgUser.setPassword(passwordEncoder.encode(cgUser.getPassword()));
-        cgUser.setRoles("user");
+        cgUser.setRole("user");
         cgUserRepository.save(cgUser);
     }
 

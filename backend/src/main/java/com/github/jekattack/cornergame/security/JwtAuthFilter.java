@@ -53,9 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private void setSecurityContext(Claims claims) {
         List<SimpleGrantedAuthority> grantedAuthorities =
-                ((List<String>) claims.get("roles"))
-                .stream()
-                .map(au -> new SimpleGrantedAuthority(au)).toList();
+                List.of(new SimpleGrantedAuthority("ROLE_" + claims.get("role")));
 
         CGUser user = cgUserService.findById(claims.getSubject()).orElseThrow();
 
