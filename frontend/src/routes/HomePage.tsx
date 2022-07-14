@@ -1,4 +1,3 @@
-import {useNavigate} from "react-router-dom";
 import Map from "../components/maps/Map";
 import React from "react";
 import useGeolocation from "../service/locationService";
