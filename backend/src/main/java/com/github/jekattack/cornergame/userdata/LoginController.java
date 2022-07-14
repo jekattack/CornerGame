@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -25,9 +26,14 @@ public class LoginController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginData loginData) {
         try {
             loginData.setUsername(loginData.getUsername().toLowerCase());
+
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
             CGUser user = userService.findByUsername(loginData.getUsername()).orElseThrow();
-            String jwt = jwtService.createToken(new HashMap<>(), user.getId());
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("role", user.getRole());
+            String jwt = jwtService.createToken(claims, user.getId());
+
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -37,7 +43,11 @@ public class LoginController {
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refreshToken(Principal principal) {
         CGUser user = userService.findByUsername(principal.getName()).orElseThrow();
-        String token = jwtService.createToken(new HashMap<>(), user.getId());
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole());
+
+        String token = jwtService.createToken(claims, user.getId());
         return ResponseEntity.ok(new LoginResponse(token));
     }
 }
