@@ -30,7 +30,7 @@ class CGUserServiceTest {
         CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
 
         CGUser expectedUser = CGUser.builder()
-                .roles("user")
+                .role("user")
                 .username("testusername")
                 .email("testmail@test.de")
                 .password("hashedPassword")
@@ -84,7 +84,7 @@ class CGUserServiceTest {
     void shouldSearchForUserByUsername() {
         //Given
         CGUser expectedUser = CGUser.builder()
-                .roles("user")
+                .role("user")
                 .username("testusername")
                 .email("testmail@test.de")
                 .password("hashedPassword")
