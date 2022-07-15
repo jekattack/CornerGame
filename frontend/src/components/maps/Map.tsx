@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { containerStyle, center, options } from "./mapSettings";
 import { fetchAllKiosks } from "../../service/apiService";
@@ -20,7 +20,7 @@ const Map: React.FC = () => {
 
     const onLoad = (map: google.maps.Map): void => {
         mapRef.current = map;
-        setPositionMarker(map, currentLocation.coordinates)
+        setContinuouslyCurrentPosition()
         fetchAllKiosks()
             .then((response) => setMarkers(map, response));
     }
@@ -28,6 +28,12 @@ const Map: React.FC = () => {
     const onUnmount = (): void => {
         mapRef.current = null;
     }
+
+    const setContinuouslyCurrentPosition = useCallback(() => {
+        if(mapRef.current != null && currentLocation.coordinates != null) {
+            setPositionMarker(mapRef.current, currentLocation.coordinates)
+        };
+    }, [currentLocation])
 
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
         new google.maps.Marker({
