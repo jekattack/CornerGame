@@ -21,36 +21,34 @@ export default function LoginPage(){
     return (
         <div id={"app-container"}>
             <Map />
-            <div className={"wrapper"}>
-                <div className={"content-wrapper"}>
-                    <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>
-                    <h1>Login</h1>
+            <div id={"content-wrapper"}>
+                <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>
+                <h1>Login</h1>
 
-                    <form onSubmit={createUser}>
-                        <div className={"form-wrapper"}>
-                            <div>
-                                <label htmlFor={"username"}>Username</label>
-                            </div>
-                            <div>
-                                <input id={"username"} type={"text"} value={username} onChange={(ev) => setUsername(ev.target.value)}/>
-                            </div>
-                            <div>
-                                <label htmlFor={"password"}>Password</label>
-                            </div>
-                            <div>
-                                <input id={"password"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)}/>
-                            </div>
-                            <div>
-                                <input type={"submit"} value={"Los geht's!"}/>
-                            </div>
+                <form onSubmit={createUser}>
+                    <div className={"form-wrapper"}>
+                        <div>
+                            <label htmlFor={"username"}>Username</label>
                         </div>
-                    </form>
-                    <div>
-                        <a href={"/login"}>Passwort vergessen?</a>
+                        <div>
+                            <input id={"username"} type={"text"} value={username} onChange={(ev) => setUsername(ev.target.value)}/>
+                        </div>
+                        <div>
+                            <label htmlFor={"password"}>Password</label>
+                        </div>
+                        <div>
+                            <input id={"password"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)}/>
+                        </div>
+                        <div>
+                            <input type={"submit"} value={"Los geht's!"}/>
+                        </div>
                     </div>
-                    <div>
-                        <a href={"/register"}>Noch nicht registriert? Klicke hier!</a>
-                    </div>
+                </form>
+                <div>
+                    <a href={"/login"}>Passwort vergessen?</a>
+                </div>
+                <div>
+                    <a href={"/register"}>Noch nicht registriert? Klicke hier!</a>
                 </div>
             </div>
         </div>

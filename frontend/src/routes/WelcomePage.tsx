@@ -13,7 +13,7 @@ export default function WelcomePage(){
         <div id={"app-container"}>
             <Map />
             <div className={"wrapper"}>
-                <div className={"content-wrapper"}>
+                <div id={"content-wrapper"}>
                     <img src="/images/CGLogoWort.svg" className={"logo"} alt={"Logo"}/>
                     <div>
                         Kiosk-, Späti- und Trinkhallenkultur vom feinsten.

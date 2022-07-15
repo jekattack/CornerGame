@@ -25,7 +25,7 @@ export default function RegisterPage(){
         <div id={"app-container"}>
             <Map />
             <div className={"wrapper"}>
-                <div className={"content-wrapper"}>
+                <div id={"content-wrapper"}>
                     <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>
                     <h1>Registrierung</h1>
 

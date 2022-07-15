@@ -12,6 +12,5 @@ export const center = {
 // Disable default UI
 export const options = {
     mapId: "fe949f204787b654",
-    disableDefaultUI: true,
-    zoomControl: true
+    disableDefaultUI: true
 };
