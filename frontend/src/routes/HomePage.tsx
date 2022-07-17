@@ -11,7 +11,7 @@ export default function HomePage(){
             <Map />
             <div className={"wrapper"}>
                 <div className={"content-wrapper"}>
-                    <img src="/images/CGLogoWort.svg" className={"logo"} alt={"Logo"}/>
+                    <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>
                     <div>
                         Das Spiel kann beginnen!
                     </div>

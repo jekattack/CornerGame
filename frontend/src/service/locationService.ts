@@ -39,6 +39,7 @@ export default function useGeolocation(){
         });
     }
 
+
     useEffect(() => {
         if(!("geolocation" in navigator)) {
             onError({
@@ -47,7 +48,7 @@ export default function useGeolocation(){
             });
         }
 
-        navigator.geolocation.getCurrentPosition(onSuccess, onError)
+        navigator.geolocation.watchPosition(onSuccess, onError)
     }, [])
 
     return location;
