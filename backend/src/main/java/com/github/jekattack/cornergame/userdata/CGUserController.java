@@ -1,11 +1,14 @@
 package com.github.jekattack.cornergame.userdata;
 
+import com.github.jekattack.cornergame.game.Visit;
+import com.github.jekattack.cornergame.game.VisitCreationData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -32,6 +35,7 @@ public class CGUserController {
     public String getUsername(Principal principal) {
         return principal.getName();
     }
+
 
 
 }

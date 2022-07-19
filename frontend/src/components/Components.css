@@ -1,8 +1,8 @@
-.content-wrapper{
+#content-wrapper{
     background-color: white;
     padding: 2em;
     margin: 2em;
-    text-align: center;
+    text-align: left;
     border-radius: 2em;
     overflow: auto;
     overscroll-behavior: contain;
@@ -10,16 +10,20 @@
     max-height: calc(100% - 8em) ;
     width: calc(100% - 8em);
 }
-.content-wrapper div{
+#content-wrapper div{
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
 
 .logo{
-    width: 50%;
-    max-height: 30vh;
+    max-height: 5vh;
+    max-height: 5vh;
+}
+
+.image-logo{
     max-height: 30vh;
 }
+
 .wrapper{
     width: 100%;
     height: 100vh;

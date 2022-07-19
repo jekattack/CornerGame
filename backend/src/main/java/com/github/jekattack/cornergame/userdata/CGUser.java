@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.userdata;
 
+import com.github.jekattack.cornergame.game.Visit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 
 @Document(collection = "users")
 @Data
@@ -35,8 +38,4 @@ public class CGUser {
     private String firstname;
     private String phone;
     private String stammkioskId;
-
-    private int score;
-
-
 }

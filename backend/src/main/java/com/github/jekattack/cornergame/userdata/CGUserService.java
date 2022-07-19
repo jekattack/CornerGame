@@ -1,13 +1,22 @@
 package com.github.jekattack.cornergame.userdata;
 
+import com.github.jekattack.cornergame.kioskdata.Kiosk;
+import com.github.jekattack.cornergame.kioskdata.KioskRepository;
+import com.github.jekattack.cornergame.game.Visit;
+import com.github.jekattack.cornergame.game.VisitCreationData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CGUserService {
 
     private final CGUserRepository cgUserRepository;
@@ -32,7 +41,6 @@ public class CGUserService {
     public Optional<CGUser> findById(String id) {
         return cgUserRepository.findById(id);
     }
-    public Optional<CGUser> findByEmail(String email) {
-        return cgUserRepository.findByEmail(email);
-    }
+
+
 }

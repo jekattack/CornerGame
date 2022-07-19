@@ -1,15 +1,13 @@
 package com.github.jekattack.cornergame.userdata;
 
-import com.github.jekattack.cornergame.userdata.CGUserRepository;
-import com.github.jekattack.cornergame.userdata.CGUserService;
+import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CGUserServiceTest {
 
@@ -18,6 +16,7 @@ class CGUserServiceTest {
 
         //Given
         CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
+        KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
         PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
         Mockito.when(passwordEncoder.encode("passwort123")).thenReturn("hashedPassword");
 
@@ -91,6 +90,7 @@ class CGUserServiceTest {
                 .build();
 
         CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
+        KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
         PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
 
 
