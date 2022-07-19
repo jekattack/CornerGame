@@ -26,14 +26,13 @@ class CGUserServiceTest {
                 "passwort123",
                 "passwort123");
 
-        CGUserService testCGUserService = new CGUserService(testCGUserRepository, testKioskRepository, passwordEncoder);
+        CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
 
         CGUser expectedUser = CGUser.builder()
                 .role("user")
                 .username("testusername")
                 .email("testmail@test.de")
                 .password("hashedPassword")
-                .visits(new ArrayList<>())
                 .build();
 
         //When
@@ -48,7 +47,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithBlankUsername() {
         // Given
         UserCreationData userCreationData = new UserCreationData(" ", "mail@testmail.de", "password", "password");
-        CGUserService userService = new CGUserService(null, null, null);
+        CGUserService userService = new CGUserService(null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -60,7 +59,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithBlankMail() {
         // Given
         UserCreationData userCreationData = new UserCreationData("testUSer", " ", "password", "password");
-        CGUserService userService = new CGUserService(null, null, null);
+        CGUserService userService = new CGUserService(null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -72,7 +71,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithUnmatchingPasswords() {
         // Given
         UserCreationData userCreationData = new UserCreationData("testUSer", "mail@testmail.com", "password", "apssword");
-        CGUserService userService = new CGUserService(null, null, null);
+        CGUserService userService = new CGUserService(null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -95,7 +94,7 @@ class CGUserServiceTest {
         PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
 
 
-        CGUserService testCGUserService = new CGUserService(testCGUserRepository, testKioskRepository, passwordEncoder);
+        CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
 
         String expectedSearchUsername = "testusername";
         Mockito.when(testCGUserRepository.findByUsername(expectedSearchUsername)).thenReturn(Optional.of(expectedUser));
