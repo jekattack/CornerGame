@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.userdata.cgUserDetails;
+package com.github.jekattack.cornergame.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

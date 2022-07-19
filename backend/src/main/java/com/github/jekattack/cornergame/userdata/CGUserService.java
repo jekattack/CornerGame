@@ -2,8 +2,8 @@ package com.github.jekattack.cornergame.userdata;
 
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
-import com.github.jekattack.cornergame.userdata.cgUserDetails.Visit;
-import com.github.jekattack.cornergame.userdata.cgUserDetails.VisitCreationData;
+import com.github.jekattack.cornergame.game.Visit;
+import com.github.jekattack.cornergame.game.VisitCreationData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +20,6 @@ import java.util.Optional;
 public class CGUserService {
 
     private final CGUserRepository cgUserRepository;
-    private final KioskRepository kioskRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void createUser(UserCreationData userCreationData) {
@@ -43,41 +42,5 @@ public class CGUserService {
         return cgUserRepository.findById(id);
     }
 
-    public void addVisit(VisitCreationData visitCreationData, String username) {
 
-        //User Coordinates
-        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
-        double userLocationLat = visitCreationData.getUserLocation().getUserLocationCoordinates().getLat();
-        double userLocationLng = visitCreationData.getUserLocation().getUserLocationCoordinates().getLng();
-
-        //Kiosk Coordinates
-        Kiosk kioskToVisit = kioskRepository.findByGooglePlacesId(visitCreationData.getGooglePlacesId()).orElseThrow();
-        double kioskToVisitLat = kioskToVisit.getKioskLocation().getLocation().getLat();
-        double kioskToVisitLng = kioskToVisit.getKioskLocation().getLocation().getLng();
-
-        //Check if User visited Kiosk within the last 24 hours
-        List<Visit> allVisitsAtKioskToVisit = user.getVisits().stream()
-                .filter(visits -> visits.getGooglePlacesId().equals(kioskToVisit.getGooglePlacesId())).toList();
-        if(!allVisitsAtKioskToVisit.isEmpty()){
-            List<Date> timestamps = allVisitsAtKioskToVisit.stream().map(Visit::getIssuedAt).toList();
-            Date timestampNow = Date.from(Instant.now());
-            for(Date timestamp : timestamps){
-                timestamp.setTime(timestamp.getTime() + (24*60*60*1000));
-                if(timestampNow.before(timestamp)){
-                    throw new IllegalStateException();
-                }
-            }
-        }
-
-        //Check if Users Location is valid for visit
-        if(kioskToVisitLat - 0.0001 < userLocationLat
-                && userLocationLat < kioskToVisitLat + 0.0001
-                && kioskToVisitLng - 0.0001 < userLocationLng
-                && userLocationLng < kioskToVisitLng + 0.0001){
-            Visit newVisit = new Visit(null, visitCreationData.getGooglePlacesId(), Date.from(Instant.now()));
-            user.addVisitToList(newVisit);
-            cgUserRepository.save(user);
-        }
-        throw new IllegalStateException();
-    }
 }

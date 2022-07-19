@@ -20,12 +20,12 @@ export function login(username: string, password: string){
 }
 
 export function fetchProgress(){
-    return axios.get("/api/user/progress", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+    return axios.get("/api/visits/progress", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<Visit[]>) => response.data)
 }
 
 export function visit(googlePlacesId: string, position: CGGeolocation){
-    return axios.post("/api/user/visit/add", {
+    return axios.post("/api/visits/add", {
         userLocation: {
             userLocationCoordinate: {
                 lat: position.coordinates.lat, lng: position.coordinates.lng

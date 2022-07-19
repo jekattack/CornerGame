@@ -1,9 +1,8 @@
-package com.github.jekattack.cornergame.userdata.cgUserDetails;
+package com.github.jekattack.cornergame.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,11 +16,9 @@ public class Visit {
 
     @Id
     private String id;
+    private String userId;
     private String googlePlacesId;
-    private Date issuedAt;
-    private enum visitType{
-        GEOLOCATION,
-        QRCODE
-    };
+    private Date timestamp;
+    private String questid;
 
 }

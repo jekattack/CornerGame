@@ -1,6 +1,6 @@
 package com.github.jekattack.cornergame.userdata;
 
-import com.github.jekattack.cornergame.userdata.cgUserDetails.Visit;
+import com.github.jekattack.cornergame.game.Visit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,6 @@ public class CGUser {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.visits = new ArrayList<>();
     }
 
     @Id
@@ -39,10 +38,4 @@ public class CGUser {
     private String firstname;
     private String phone;
     private String stammkioskId;
-
-    private ArrayList<Visit> visits;
-
-    public void addVisitToList(Visit visit){
-        this.visits.add(visit);
-    }
 }

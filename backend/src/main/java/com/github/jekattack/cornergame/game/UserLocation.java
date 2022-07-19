@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.userdata.cgUserDetails;
+package com.github.jekattack.cornergame.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
