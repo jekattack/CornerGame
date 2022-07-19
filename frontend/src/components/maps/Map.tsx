@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { containerStyle, center, options } from "./mapSettings";
-import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
+import {fetchAllKiosks, fetchProgress} from "../../service/apiService";
 import {Kiosk} from "../../service/models";
 import '../Components.css';
 import './Map.css';
@@ -27,7 +27,7 @@ const Map: React.FC = () => {
         mapRef.current = map;
         setContinuouslyCurrentPosition()
 
-        const visitedIdsSet: Set<String> = new Set;
+        const visitedIdsSet: Set<String> = new Set();
         fetchProgress()
             .then(response => response.map(response => response.googlePlacesId))
             .then(response => response.map(item => visitedIdsSet.add(item)))
