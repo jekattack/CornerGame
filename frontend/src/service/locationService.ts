@@ -48,8 +48,8 @@ export default function useGeolocation(){
             });
         }
 
-        navigator.geolocation.watchPosition(onSuccess, onError)
-    }, [])
+        navigator.geolocation.getCurrentPosition(onSuccess, onError)
 
+    }, [])
     return location;
 }

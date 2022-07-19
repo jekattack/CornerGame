@@ -14,7 +14,7 @@ export default function WelcomePage(){
             <Map />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>
-                    <img src="/images/CGLogoWort.svg" className={"logo"} alt={"Logo"}/>
+                    <img src="/images/CGLogoWort.svg" className={"image-logo"} alt={"Logo"}/>
                     <div>
                         Kiosk-, Späti- und Trinkhallenkultur vom feinsten.
                     </div>

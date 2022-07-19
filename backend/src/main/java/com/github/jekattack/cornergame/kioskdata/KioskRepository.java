@@ -8,4 +8,5 @@ public interface KioskRepository extends MongoRepository<Kiosk, String> {
 
     Optional<Kiosk> findByName(String name);
 
+    Optional<Kiosk> findByGooglePlacesId(String googlePlaceId);
 }

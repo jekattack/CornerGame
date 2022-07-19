@@ -1,15 +1,13 @@
 package com.github.jekattack.cornergame.userdata;
 
-import com.github.jekattack.cornergame.userdata.CGUserRepository;
-import com.github.jekattack.cornergame.userdata.CGUserService;
+import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CGUserServiceTest {
 
@@ -18,6 +16,7 @@ class CGUserServiceTest {
 
         //Given
         CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
+        KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
         PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
         Mockito.when(passwordEncoder.encode("passwort123")).thenReturn("hashedPassword");
 
@@ -27,13 +26,14 @@ class CGUserServiceTest {
                 "passwort123",
                 "passwort123");
 
-        CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
+        CGUserService testCGUserService = new CGUserService(testCGUserRepository, testKioskRepository, passwordEncoder);
 
         CGUser expectedUser = CGUser.builder()
                 .role("user")
                 .username("testusername")
                 .email("testmail@test.de")
                 .password("hashedPassword")
+                .visits(new ArrayList<>())
                 .build();
 
         //When
@@ -48,7 +48,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithBlankUsername() {
         // Given
         UserCreationData userCreationData = new UserCreationData(" ", "mail@testmail.de", "password", "password");
-        CGUserService userService = new CGUserService(null, null);
+        CGUserService userService = new CGUserService(null, null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -60,7 +60,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithBlankMail() {
         // Given
         UserCreationData userCreationData = new UserCreationData("testUSer", " ", "password", "password");
-        CGUserService userService = new CGUserService(null, null);
+        CGUserService userService = new CGUserService(null, null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -72,7 +72,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithUnmatchingPasswords() {
         // Given
         UserCreationData userCreationData = new UserCreationData("testUSer", "mail@testmail.com", "password", "apssword");
-        CGUserService userService = new CGUserService(null, null);
+        CGUserService userService = new CGUserService(null, null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -91,10 +91,11 @@ class CGUserServiceTest {
                 .build();
 
         CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
+        KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
         PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
 
 
-        CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
+        CGUserService testCGUserService = new CGUserService(testCGUserRepository, testKioskRepository, passwordEncoder);
 
         String expectedSearchUsername = "testusername";
         Mockito.when(testCGUserRepository.findByUsername(expectedSearchUsername)).thenReturn(Optional.of(expectedUser));

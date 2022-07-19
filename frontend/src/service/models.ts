@@ -69,3 +69,10 @@ export interface CGGeolocationError {
     code: number;
     message: string;
 }
+
+export interface Visit {
+    id: string,
+    googlePlacesId: string,
+    issuedAt: Date,
+    visitType: string
+}
