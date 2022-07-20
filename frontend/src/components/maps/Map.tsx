@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { containerStyle, center, options } from "./mapSettings";
-import {fetchAllKiosks, fetchProgress} from "../../service/apiService";
-import {Kiosk} from "../../service/models";
+import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
+import { Kiosk } from "../../service/models";
 import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
@@ -15,17 +15,18 @@ const Map: React.FC = () => {
     })
 
     const mapRef = React.useRef<google.maps.Map|null>(null);
-
     const onUnmount = (): void => {
         mapRef.current = null;
     }
+    const location = useGeolocation();
 
-    const currentLocation = useGeolocation();
+    //Test
+    useEffect(() => {console.log(location)}, [location])
 
     //When Map is loaded
     const onLoad = (map: google.maps.Map): void => {
         mapRef.current = map;
-        setContinuouslyCurrentPosition()
+        setContinuouslyCurrentPosition();
 
         const visitedIdsSet: Set<String> = new Set();
         fetchProgress()
@@ -38,12 +39,12 @@ const Map: React.FC = () => {
 
     //Setting Marker for current position
     const setContinuouslyCurrentPosition = useCallback(() => {
-        if(mapRef.current != null && currentLocation.coordinates != null) {
-            setPositionMarker(mapRef.current, currentLocation.coordinates)
+        if(mapRef.current != null && location.coordinates != null) {
+            setPositionMarker(mapRef.current, location.coordinates)
         }
         console.log("Current Marker!")
-        console.log(currentLocation.coordinates.lat)
-    }, [currentLocation])
+        console.log(location.coordinates.lat)
+    }, [location])
 
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
         new google.maps.Marker({
@@ -73,7 +74,6 @@ const Map: React.FC = () => {
             let marker: google.maps.Marker;
 
             //Differentiation if Kiosk is already visited
-
             if(progress.has(kiosk.place_id)){
                 marker = new google.maps.Marker({
                     position: { lat: kiosk.geometry.location.lat, lng: kiosk.geometry.location.lng },
@@ -95,14 +95,16 @@ const Map: React.FC = () => {
             //Content for InfoWindow
             const contentString =
                 '<div id="content">' +
-                '<div id="siteNotice">' +
+                '<div id="site-notice">' +
                 "</div>" +
-                '<h1 id="firstHeading" class="firstHeading">' + kiosk.name +
+                '<h1 id="first-heading" class="first-heading">' + kiosk.name +
                 '</h1>' +
-                '<div id="bodyContent">' +
+                '<div id="body-content">' +
                 '<button id="visit-button">' +
                 'Jetzt Kiosk besuchen!' +
                 '</button>' +
+                "</div>" +
+                '<div id="kiosk-identifier" style="display: none">' + kiosk.place_id +
                 "</div>" +
                 "</div>";
 
@@ -114,17 +116,24 @@ const Map: React.FC = () => {
                     anchor: marker,
                     map,
                     shouldFocus: false
-                })
+                });
+                google.maps.event.addListener(infoWindow, "domready", () => {
+                    document.getElementById("visit-button")!.onclick=addVisit;
+                });
             })
 
             //Adding marker to MarkerArray
-
             kioskMarkers.push(marker);
         }
     }
 
-    //When map didnt already load
+    //Action for Button in InfoWindow
+    function addVisit(){
+        const visitGooglePlacesId = document.getElementById('kiosk-identifier')!.innerHTML;
+        visit(visitGooglePlacesId, location).then(() => console.log("success!"));
+    }
 
+    //When map didnt already load
     if(!isLoaded) return <div>Map Loading ...</div>
 
     return (
@@ -132,7 +141,7 @@ const Map: React.FC = () => {
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 options={options as google.maps.MapOptions}
-                center={currentLocation.loaded && currentLocation.error.code===0 ? currentLocation.coordinates :center}
+                center={location.loaded && location.error.code===0 ? location.coordinates :center}
                 zoom={16}
                 onLoad={onLoad}
                 onUnmount={onUnmount}

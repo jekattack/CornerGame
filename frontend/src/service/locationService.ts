@@ -15,6 +15,7 @@ export default function useGeolocation(){
     });
 
     const onSuccess = (location: GeolocationPosition) => {
+        console.log(location)
         setLocation({
             loaded: true,
             coordinates: {
@@ -48,7 +49,7 @@ export default function useGeolocation(){
             });
         }
 
-        navigator.geolocation.getCurrentPosition(onSuccess, onError)
+        navigator.geolocation.watchPosition(onSuccess, onError)
 
     }, [])
     return location;

@@ -57,11 +57,11 @@ export interface LoginResponse {
 }
 
 export interface CGGeolocation {
-    loaded: boolean;
+    loaded: boolean,
     coordinates: {
         lat: number,
         lng: number
-    };
+    },
     error: CGGeolocationError;
 }
 

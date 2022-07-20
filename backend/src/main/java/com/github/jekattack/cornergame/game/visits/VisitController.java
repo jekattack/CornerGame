@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.game;
+package com.github.jekattack.cornergame.game.visits;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

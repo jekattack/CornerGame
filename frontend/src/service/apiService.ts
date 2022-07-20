@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {CGGeolocation, Kiosk, LoginResponse, Visit} from "./models";
+import useGeolocation from "./locationService";
 
 export function fetchAllKiosks() {
     return (
@@ -27,9 +28,9 @@ export function fetchProgress(){
 export function visit(googlePlacesId: string, position: CGGeolocation){
     return axios.post("/api/visits/add", {
         userLocation: {
-            userLocationCoordinate: {
-                lat: position.coordinates.lat, lng: position.coordinates.lng
+            userLocationCoordinates: {
+                lat: `${position.coordinates.lat}` , lng: `${position.coordinates.lng}`
             }},
-        googlePlacesId: googlePlacesId
+        place_id: googlePlacesId
     }, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
 }
