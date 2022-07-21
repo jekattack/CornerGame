@@ -14,4 +14,11 @@ public class CGUserGameDataService {
     public void createGameData(String userId) {
         cgUserGameDataRespository.save(new CGUserGameData(userId));
     }
+
+    public void scoreForNewVisit(String userId) {
+        CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId);
+        userGameData.setScore(userGameData.getScore() + 100);
+        cgUserGameDataRespository.save(userGameData);
+        log.info(userId + ": 100 Points added for new Visit");
+    }
 }

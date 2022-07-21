@@ -1,6 +1,5 @@
 package com.github.jekattack.cornergame.userdata;
 
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -4,4 +4,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface CGUserGameDataRespository extends MongoRepository<CGUserGameData, String> {
 
+    CGUserGameData findByUserId(String userId);
 }

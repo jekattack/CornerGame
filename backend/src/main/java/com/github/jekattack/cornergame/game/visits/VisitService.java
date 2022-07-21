@@ -1,5 +1,7 @@
 package com.github.jekattack.cornergame.game.visits;
 
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import com.github.jekattack.cornergame.userdata.CGUser;
@@ -21,6 +23,7 @@ public class VisitService {
     private final VisitRepository visitRepository;
     private final KioskRepository kioskRepository;
     private final CGUserRepository cgUserRepository;
+    private final CGUserGameDataService cgUserGameDataService;
     public void createVisit(VisitCreationData visitCreationData, String username) {
 
         //User Coordinates
@@ -54,6 +57,7 @@ public class VisitService {
                 && kioskToVisitLng + 0.0001 > userLocationLng){
             Visit newVisit = new Visit(null, user.getId(), kioskToVisit.getGooglePlacesId(), Date.from(Instant.now()), null);
             visitRepository.save(newVisit);
+            cgUserGameDataService.scoreForNewVisit(user.getId());
         } else {
             throw new IllegalStateException();
         }
