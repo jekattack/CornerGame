@@ -45,8 +45,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080",
   "devDependencies": {
     "@types/google.maps": "^3.49.2"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }

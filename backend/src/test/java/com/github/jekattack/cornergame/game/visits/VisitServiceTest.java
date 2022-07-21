@@ -1,5 +1,11 @@
-package com.github.jekattack.cornergame.game;
+package com.github.jekattack.cornergame.game.visits;
 
+import com.github.jekattack.cornergame.game.UserLocation;
+import com.github.jekattack.cornergame.game.UserLocationCoordinates;
+import com.github.jekattack.cornergame.game.visits.Visit;
+import com.github.jekattack.cornergame.game.visits.VisitCreationData;
+import com.github.jekattack.cornergame.game.visits.VisitRepository;
+import com.github.jekattack.cornergame.game.visits.VisitService;
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import com.github.jekattack.cornergame.kioskdata.details.KioskLocation;

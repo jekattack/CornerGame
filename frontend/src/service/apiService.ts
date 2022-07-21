@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {CGGeolocation, Kiosk, LoginResponse, Visit} from "./models";
+import {Kiosk, LoginResponse, Visit} from "./models";
 
 export function fetchAllKiosks() {
     return (
@@ -24,12 +24,12 @@ export function fetchProgress(){
         .then((response: AxiosResponse<Visit[]>) => response.data)
 }
 
-export function visit(googlePlacesId: string, position: CGGeolocation){
+export function visit(googlePlacesId: string, lat: number, lng: number){
     return axios.post("/api/visits/add", {
         userLocation: {
-            userLocationCoordinate: {
-                lat: position.coordinates.lat, lng: position.coordinates.lng
+            userLocationCoordinates: {
+                lat: `${lat}` , lng: `${lng}`
             }},
-        googlePlacesId: googlePlacesId
+        place_id: googlePlacesId
     }, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
 }
