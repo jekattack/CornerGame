@@ -2,6 +2,7 @@ package com.github.jekattack.cornergame.game.visits;
 
 import com.github.jekattack.cornergame.game.UserLocation;
 import com.github.jekattack.cornergame.game.UserLocationCoordinates;
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.visits.Visit;
 import com.github.jekattack.cornergame.game.visits.VisitCreationData;
 import com.github.jekattack.cornergame.game.visits.VisitRepository;
@@ -46,7 +47,9 @@ class VisitServiceTest {
         CGUser testUser = CGUser.builder().username("bo").id("testid").build();
         Mockito.when(testCGUserRepository.findByUsername("bo")).thenReturn(Optional.of(testUser));
 
-        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserRepository);
+        CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+
+        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserRepository, testCGUserGameDataService);
 
         Visit expectedVisit = Visit.builder().userId("testid").googlePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4").timestamp(Date.from(Instant.now())).build();
 
@@ -83,7 +86,9 @@ class VisitServiceTest {
         CGUser testUser = CGUser.builder().username("bo").id("testid").build();
         Mockito.when(testCGUserRepository.findByUsername("bo")).thenReturn(Optional.of(testUser));
 
-        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserRepository);
+        CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+
+        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserRepository, testCGUserGameDataService);
 
         //Then
         Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> testVisitService.createVisit(testVisitCreationData, testUsername));
