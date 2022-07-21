@@ -25,11 +25,11 @@ export function fetchProgress(){
         .then((response: AxiosResponse<Visit[]>) => response.data)
 }
 
-export function visit(googlePlacesId: string, position: CGGeolocation){
+export function visit(googlePlacesId: string, lat: number, lng: number){
     return axios.post("/api/visits/add", {
         userLocation: {
             userLocationCoordinates: {
-                lat: `${position.coordinates.lat}` , lng: `${position.coordinates.lng}`
+                lat: `${lat}` , lng: `${lng}`
             }},
         place_id: googlePlacesId
     }, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})

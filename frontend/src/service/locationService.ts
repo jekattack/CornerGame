@@ -15,7 +15,6 @@ export default function useGeolocation(){
     });
 
     const onSuccess = (location: GeolocationPosition) => {
-        console.log(location)
         setLocation({
             loaded: true,
             coordinates: {

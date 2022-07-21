@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {GoogleMap, InfoWindow, Marker, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, center, options } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
 import { Kiosk } from "../../service/models";
@@ -20,9 +20,6 @@ const Map: React.FC = () => {
     }
     const location = useGeolocation();
 
-    //Test
-    useEffect(() => {console.log(location)}, [location])
-
     //When Map is loaded
     const onLoad = (map: google.maps.Map): void => {
         mapRef.current = map;
@@ -42,8 +39,6 @@ const Map: React.FC = () => {
         if(mapRef.current != null && location.coordinates != null) {
             setPositionMarker(mapRef.current, location.coordinates)
         }
-        console.log("Current Marker!")
-        console.log(location.coordinates.lat)
     }, [location])
 
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
@@ -130,7 +125,9 @@ const Map: React.FC = () => {
     //Action for Button in InfoWindow
     function addVisit(){
         const visitGooglePlacesId = document.getElementById('kiosk-identifier')!.innerHTML;
-        visit(visitGooglePlacesId, location).then(() => console.log("success!"));
+        const locationLat: number = +document.getElementById('location-element-lat')!.innerHTML;
+        const locationLng: number = +document.getElementById('location-element-lng')!.innerHTML;
+        visit(visitGooglePlacesId, locationLat, locationLng).then(() => console.log("success!"));
     }
 
     //When map didnt already load
@@ -146,6 +143,8 @@ const Map: React.FC = () => {
                 onLoad={onLoad}
                 onUnmount={onUnmount}
             />
+            <div id={"location-element-lat"}>{location.coordinates.lat}</div>
+            <div id={"location-element-lng"}>{location.coordinates.lng}</div>
         </div>
     );
 };
