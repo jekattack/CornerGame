@@ -11,11 +11,9 @@ import java.util.List;
 public class KioskController {
 
     private final KioskService kioskService;
-    private final String googleMapsApiKey;
 
-    public KioskController(KioskService kioskService, @Value("${app.googleMaps.key}") String googleMapsApiKey){
+    public KioskController(KioskService kioskService){
         this.kioskService = kioskService;
-        this.googleMapsApiKey = googleMapsApiKey;
     };
 
     @GetMapping()

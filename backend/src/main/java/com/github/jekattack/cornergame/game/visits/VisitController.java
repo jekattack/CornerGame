@@ -17,6 +17,7 @@ public class VisitController {
     private final VisitService visitService;
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<HttpStatus> createVisit(@RequestBody VisitCreationData visitCreationData, Principal principal) {
         try {
             visitService.createVisit(visitCreationData, principal.getName());
@@ -27,6 +28,7 @@ public class VisitController {
     }
 
     @GetMapping("/progress")
+    @ResponseStatus(HttpStatus.OK)
     public List<Visit> getUsersVisits(Principal principal){
         return visitService.getUsersVisits(principal.getName());
     }

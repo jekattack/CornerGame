@@ -1,11 +1,13 @@
 package com.github.jekattack.cornergame.game.quests;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -15,8 +17,27 @@ public class QuestController {
 
     private final QuestService questService;
 
-    public ActiveQuestsDTO getActiveQuests(Principal principal){
-        questService.getActiveQuests(principal.getName());
-        return null;
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<Quest> getAllQuests(){
+        return questService.getAllQuests();
+    }
+
+    @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Quest addQuest(@RequestBody Quest newQuest){
+        return questService.addQuest(newQuest);
+    }
+
+    @GetMapping("/active")
+    @ResponseStatus(HttpStatus.OK)
+    public ArrayList<ActiveQuestDTO> getActiveQuests(Principal principal){
+        return questService.getActiveQuests(principal.getName());
+    }
+
+    @PostMapping("/start")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ArrayList<StartedQuest> startQuest(@RequestBody String questId, Principal principal){
+        return questService.startQuest(principal.getName(), questId);
     }
 }

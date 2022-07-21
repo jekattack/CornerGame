@@ -19,7 +19,7 @@ public class PlacesApiController {
 
     private final PlacesApiService placesApiService;
 
-    @GetMapping("/admin/loadAllKiosks/L375g37574r73d")
+    @GetMapping("/loadAllKiosks")
     @ResponseStatus(HttpStatus.OK)
     public List<KioskResponseData> loadAndStoreAllKiosks(){
         return placesApiService.getAllKiosksFromGoogle();
