@@ -20,6 +20,12 @@ public class CGUserGameDataService {
         cgUserGameDataRespository.save(new CGUserGameData(userId));
     }
 
+    public CGUserGameDataDTO getScore(String username) {
+        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
+        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(user.getId()).orElseThrow();
+        return new CGUserGameDataDTO(user.getUsername(), gameData.getScore());
+    }
+
     public void scoreForNewVisit(String userId) {
         CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
         userGameData.setScore(userGameData.getScore() + 100);
@@ -37,11 +43,5 @@ public class CGUserGameDataService {
             top10GameDataExport.add(gameDataDTO);
         }
         return top10GameDataExport;
-    }
-
-    public CGUserGameDataDTO getScore(String username) {
-        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
-        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(user.getId()).orElseThrow();
-        return new CGUserGameDataDTO(user.getUsername(), gameData.getScore());
     }
 }
