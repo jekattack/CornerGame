@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.game;
+package com.github.jekattack.cornergame.game.visits;
 
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;

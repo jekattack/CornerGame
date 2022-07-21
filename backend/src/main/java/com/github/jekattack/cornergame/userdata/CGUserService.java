@@ -1,17 +1,11 @@
 package com.github.jekattack.cornergame.userdata;
 
-import com.github.jekattack.cornergame.kioskdata.Kiosk;
-import com.github.jekattack.cornergame.kioskdata.KioskRepository;
-import com.github.jekattack.cornergame.game.Visit;
-import com.github.jekattack.cornergame.game.VisitCreationData;
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +14,7 @@ import java.util.Optional;
 public class CGUserService {
 
     private final CGUserRepository cgUserRepository;
+    private final CGUserGameDataService cgUserGameDataService;
     private final PasswordEncoder passwordEncoder;
 
     public void createUser(UserCreationData userCreationData) {
@@ -31,7 +26,8 @@ public class CGUserService {
         CGUser cgUser = new CGUser(userCreationData.getUsername().toLowerCase(), userCreationData.getEmail(), userCreationData.getPassword());
         cgUser.setPassword(passwordEncoder.encode(cgUser.getPassword()));
         cgUser.setRole("user");
-        cgUserRepository.save(cgUser);
+        CGUser newUser = cgUserRepository.save(cgUser);
+        cgUserGameDataService.createGameData(newUser.getId());
     }
 
 

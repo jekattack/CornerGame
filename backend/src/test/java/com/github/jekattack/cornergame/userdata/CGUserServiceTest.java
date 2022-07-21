@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.userdata;
 
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,21 +13,14 @@ import java.util.Optional;
 class CGUserServiceTest {
 
     @Test
-    void shouldCreateNewUserWithUsernameInLowerCase(){
+    void shouldCreateNewUserWithUsernameInLowerCaseAndCreateGameData(){
 
         //Given
-        CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
-        KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
-        PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        Mockito.when(passwordEncoder.encode("passwort123")).thenReturn("hashedPassword");
-
         UserCreationData testUserCreationData = new UserCreationData(
                 "testUsername",
                 "testmail@test.de",
                 "passwort123",
                 "passwort123");
-
-        CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
 
         CGUser expectedUser = CGUser.builder()
                 .role("user")
@@ -35,11 +29,30 @@ class CGUserServiceTest {
                 .password("hashedPassword")
                 .build();
 
+        CGUser expectedUserWithId = CGUser.builder()
+                .id("testid")
+                .role("user")
+                .username("testusername")
+                .email("testmail@test.de")
+                .password("hashedPassword")
+                .build();
+
+        CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
+        Mockito.when(testCGUserRepository.save(expectedUser)).thenReturn(expectedUserWithId);
+        CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
+        Mockito.when(passwordEncoder.encode("passwort123")).thenReturn("hashedPassword");
+
+
+        CGUserService testCGUserService = new CGUserService(testCGUserRepository, testCGUserGameDataService, passwordEncoder);
+
+
         //When
         testCGUserService.createUser(testUserCreationData);
 
         //Then
         Mockito.verify(testCGUserRepository).save(expectedUser);
+        Mockito.verify(testCGUserGameDataService).createGameData("testid");
 
     }
 
@@ -47,7 +60,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithBlankUsername() {
         // Given
         UserCreationData userCreationData = new UserCreationData(" ", "mail@testmail.de", "password", "password");
-        CGUserService userService = new CGUserService(null, null);
+        CGUserService userService = new CGUserService(null, null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -59,7 +72,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithBlankMail() {
         // Given
         UserCreationData userCreationData = new UserCreationData("testUSer", " ", "password", "password");
-        CGUserService userService = new CGUserService(null, null);
+        CGUserService userService = new CGUserService(null, null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -71,7 +84,7 @@ class CGUserServiceTest {
     void shouldNotCreateNewUserWithUnmatchingPasswords() {
         // Given
         UserCreationData userCreationData = new UserCreationData("testUSer", "mail@testmail.com", "password", "apssword");
-        CGUserService userService = new CGUserService(null, null);
+        CGUserService userService = new CGUserService(null, null, null);
 
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
@@ -90,11 +103,11 @@ class CGUserServiceTest {
                 .build();
 
         CGUserRepository testCGUserRepository = Mockito.mock(CGUserRepository.class);
-        KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
+        CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
         PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
 
 
-        CGUserService testCGUserService = new CGUserService(testCGUserRepository, passwordEncoder);
+        CGUserService testCGUserService = new CGUserService(testCGUserRepository, testCGUserGameDataService, passwordEncoder);
 
         String expectedSearchUsername = "testusername";
         Mockito.when(testCGUserRepository.findByUsername(expectedSearchUsername)).thenReturn(Optional.of(expectedUser));

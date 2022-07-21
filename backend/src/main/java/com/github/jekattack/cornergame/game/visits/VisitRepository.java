@@ -1,6 +1,5 @@
-package com.github.jekattack.cornergame.game;
+package com.github.jekattack.cornergame.game.visits;
 
-import com.github.jekattack.cornergame.userdata.CGUser;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface VisitRepository extends MongoRepository<Visit, String> {
