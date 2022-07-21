@@ -1,6 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {CGGeolocation, Kiosk, LoginResponse, Visit} from "./models";
-import useGeolocation from "./locationService";
+import {Kiosk, LoginResponse, Visit} from "./models";
 
 export function fetchAllKiosks() {
     return (

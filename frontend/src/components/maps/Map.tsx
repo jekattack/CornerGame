@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
-import {GoogleMap, InfoWindow, Marker, useJsApiLoader} from "@react-google-maps/api";
+import React, {useCallback} from 'react';
+import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, center, options } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
 import { Kiosk } from "../../service/models";
@@ -112,15 +112,18 @@ const Map: React.FC = () => {
                     map,
                     shouldFocus: false
                 });
-                google.maps.event.addListener(infoWindow, "domready", () => {
-                    document.getElementById("visit-button")!.onclick=addVisit;
-                });
+                google.maps.event.addListener(infoWindow, "domready", buttonFunctionality);
             })
 
             //Adding marker to MarkerArray
             kioskMarkers.push(marker);
         }
     }
+
+    //Adding Functionality to button
+    function buttonFunctionality (){
+        document.getElementById("visit-button")!.onclick=addVisit;
+    };
 
     //Action for Button in InfoWindow
     function addVisit(){
