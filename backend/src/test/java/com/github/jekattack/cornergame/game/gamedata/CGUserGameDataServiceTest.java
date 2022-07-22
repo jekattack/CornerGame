@@ -42,13 +42,13 @@ class CGUserGameDataServiceTest {
         CGUserGameDataRespository testGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
         Mockito.when(testGameDataRepository.findByUserId("testId")).thenReturn(Optional.of(testGameData));
         CGUserRepository testUserRepository = Mockito.mock(CGUserRepository.class);
-        Mockito.when(testUserRepository.findByUsername("testUsername")).thenReturn(Optional.of(testUser));
+        Mockito.when(testUserRepository.findById("testId")).thenReturn(Optional.of(testUser));
 
         CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository);
 
         //When
         CGUserGameDataDTO expected = new CGUserGameDataDTO("testUsername", 0);
-        CGUserGameDataDTO actual = testGameDataService.getScore(testUser.getUsername());
+        CGUserGameDataDTO actual = testGameDataService.getScore(testUser.getId());
 
         //Then
         Assertions.assertThat(expected).isEqualTo(actual);
