@@ -1,6 +1,5 @@
 package com.github.jekattack.cornergame.kioskdata;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ public class KioskController {
 
     public KioskController(KioskService kioskService){
         this.kioskService = kioskService;
-    };
+    }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)

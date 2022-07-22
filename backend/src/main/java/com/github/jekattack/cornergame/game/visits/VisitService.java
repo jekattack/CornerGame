@@ -1,17 +1,14 @@
 package com.github.jekattack.cornergame.game.visits;
 
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
-import com.github.jekattack.cornergame.userdata.CGUser;
-import com.github.jekattack.cornergame.userdata.CGUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +19,7 @@ public class VisitService {
 
     private final VisitRepository visitRepository;
     private final KioskRepository kioskRepository;
-    private final CGUserRepository cgUserRepository;
-    private final CGUserGameDataService cgUserGameDataService;
+        private final CGUserGameDataService cgUserGameDataService;
     public void createVisit(VisitCreationData visitCreationData, String userId) {
 
         //User Coordinates
@@ -36,7 +32,7 @@ public class VisitService {
         double kioskToVisitLng = kioskToVisit.getKioskLocation().getLocation().getLng();
 
         //Check if User visited Kiosk within the last 24 hours
-        List<Visit> allVisitsAtKioskToVisit = Arrays.stream(visitRepository.findAllByUserId(userId))
+        List<Visit> allVisitsAtKioskToVisit = visitRepository.findAllByUserId(userId).stream()
                 .filter(visit -> (visit.getGooglePlacesId()).equals(visitCreationData.getGooglePlacesId())).toList();
         if(!allVisitsAtKioskToVisit.isEmpty()){
             List<Date> timestamps = allVisitsAtKioskToVisit.stream().map(Visit::getTimestamp).toList();
@@ -62,7 +58,7 @@ public class VisitService {
         }
     }
 
-    public List<Visit> getUsersVisits(String userId) {
-        return Arrays.stream(visitRepository.findAllByUserId(userId)).toList();
+    public ArrayList<Visit> getUsersVisits(String userId) {
+        return visitRepository.findAllByUserId(userId);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.ArrayList;
 
 @CrossOrigin
 @RestController
@@ -30,7 +30,7 @@ public class VisitController {
 
     @GetMapping("/progress")
     @ResponseStatus(HttpStatus.OK)
-    public List<Visit> getUsersVisits(Principal principal){
+    public ArrayList<Visit> getUsersVisits(Principal principal){
         //principal.getName() contains userId
         return visitService.getUsersVisits(principal.getName());
     }

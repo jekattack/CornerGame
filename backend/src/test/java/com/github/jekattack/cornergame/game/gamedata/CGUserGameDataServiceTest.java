@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class CGUserGameDataServiceTest {
 
     @Test
@@ -95,7 +93,7 @@ class CGUserGameDataServiceTest {
         CGUserGameDataDTO testGameDataDTO4 = new CGUserGameDataDTO(testUser4.getUsername(),testGameData4.getScore());
 
         CGUserGameDataRespository testGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
-        Mockito.when(testGameDataRepository.findTop10ByOrderByScoreDesc()).thenReturn(new ArrayList<CGUserGameData>(List.of(testGameData1, testGameData2, testGameData3, testGameData4)));
+        Mockito.when(testGameDataRepository.findTop10ByOrderByScoreDesc()).thenReturn(new ArrayList<>(List.of(testGameData1, testGameData2, testGameData3, testGameData4)));
 
         CGUserRepository testUserRepository = Mockito.mock(CGUserRepository.class);
         Mockito.when(testUserRepository.findById("testId1")).thenReturn(Optional.of(testUser1));
@@ -107,7 +105,7 @@ class CGUserGameDataServiceTest {
 
 
         //When
-        ArrayList<CGUserGameDataDTO> expected = new ArrayList<CGUserGameDataDTO>(List.of(testGameDataDTO1,testGameDataDTO2,testGameDataDTO3,testGameDataDTO4));
+        ArrayList<CGUserGameDataDTO> expected = new ArrayList<>(List.of(testGameDataDTO1,testGameDataDTO2,testGameDataDTO3,testGameDataDTO4));
         ArrayList<CGUserGameDataDTO> actual = testGameDataService.getTop10Highscore();
 
         //Then

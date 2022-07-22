@@ -1,7 +1,6 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

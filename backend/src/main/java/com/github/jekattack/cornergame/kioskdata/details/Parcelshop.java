@@ -7,5 +7,5 @@ public enum Parcelshop {
     DPD,
     UPS,
     GLS,
-    OTHER;
+    OTHER
 }
