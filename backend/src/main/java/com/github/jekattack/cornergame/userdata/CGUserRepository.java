@@ -7,6 +7,5 @@ import java.util.Optional;
 public interface CGUserRepository extends MongoRepository<CGUser, String> {
 
     Optional<CGUser> findByUsername(String username);
-    Optional<CGUser> findByEmail(String email);
-
+    Optional<CGUser> findById(String userId);
 }

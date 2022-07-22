@@ -20,6 +20,7 @@ public class VisitController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<HttpStatus> createVisit(@RequestBody VisitCreationData visitCreationData, Principal principal) {
         try {
+            //principal.getName() contains userId
             visitService.createVisit(visitCreationData, principal.getName());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalStateException e) {
@@ -30,6 +31,7 @@ public class VisitController {
     @GetMapping("/progress")
     @ResponseStatus(HttpStatus.OK)
     public List<Visit> getUsersVisits(Principal principal){
+        //principal.getName() contains userId
         return visitService.getUsersVisits(principal.getName());
     }
 }

@@ -24,10 +24,9 @@ public class VisitService {
     private final KioskRepository kioskRepository;
     private final CGUserRepository cgUserRepository;
     private final CGUserGameDataService cgUserGameDataService;
-    public void createVisit(VisitCreationData visitCreationData, String username) {
+    public void createVisit(VisitCreationData visitCreationData, String userId) {
 
         //User Coordinates
-        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
         double userLocationLat = visitCreationData.getUserLocation().getUserLocationCoordinates().getLat();
         double userLocationLng = visitCreationData.getUserLocation().getUserLocationCoordinates().getLng();
 
@@ -37,7 +36,7 @@ public class VisitService {
         double kioskToVisitLng = kioskToVisit.getKioskLocation().getLocation().getLng();
 
         //Check if User visited Kiosk within the last 24 hours
-        List<Visit> allVisitsAtKioskToVisit = Arrays.stream(visitRepository.findAllByUserId(user.getId()))
+        List<Visit> allVisitsAtKioskToVisit = Arrays.stream(visitRepository.findAllByUserId(userId))
                 .filter(visit -> (visit.getGooglePlacesId()).equals(visitCreationData.getGooglePlacesId())).toList();
         if(!allVisitsAtKioskToVisit.isEmpty()){
             List<Date> timestamps = allVisitsAtKioskToVisit.stream().map(Visit::getTimestamp).toList();
@@ -55,16 +54,15 @@ public class VisitService {
                 && kioskToVisitLat + 0.0001 > userLocationLat
                 && kioskToVisitLng - 0.0001 < userLocationLng
                 && kioskToVisitLng + 0.0001 > userLocationLng){
-            Visit newVisit = new Visit(null, user.getId(), kioskToVisit.getGooglePlacesId(), Date.from(Instant.now()), null);
+            Visit newVisit = new Visit(null, userId, kioskToVisit.getGooglePlacesId(), Date.from(Instant.now()), null);
             visitRepository.save(newVisit);
-            cgUserGameDataService.scoreForNewVisit(user.getId());
+            cgUserGameDataService.scoreForNewVisit(userId);
         } else {
             throw new IllegalStateException();
         }
     }
 
-    public List<Visit> getUsersVisits(String username) {
-        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
-        return Arrays.stream(visitRepository.findAllByUserId(user.getId())).toList();
+    public List<Visit> getUsersVisits(String userId) {
+        return Arrays.stream(visitRepository.findAllByUserId(userId)).toList();
     }
 }

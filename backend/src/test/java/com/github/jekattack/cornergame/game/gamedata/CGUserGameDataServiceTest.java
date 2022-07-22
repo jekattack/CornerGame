@@ -6,6 +6,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,6 +78,41 @@ class CGUserGameDataServiceTest {
         Mockito.verify(testGameDataRepository).save(testGameData);
     }
 
+    @Test
+    void shouldGetHighscoreForTop10Users(){
+        //Given
+        CGUser testUser1 = CGUser.builder().id("testId1").username("testUsername1").build();
+        CGUser testUser2 = CGUser.builder().id("testId2").username("testUsername2").build();
+        CGUser testUser3 = CGUser.builder().id("testId3").username("testUsername3").build();
+        CGUser testUser4 = CGUser.builder().id("testId4").username("testUsername4").build();
+        CGUserGameData testGameData1 = CGUserGameData.builder().id("gameDataId1").userId("testId1").score(400).build();
+        CGUserGameData testGameData2 = CGUserGameData.builder().id("gameDataId2").userId("testId2").score(300).build();
+        CGUserGameData testGameData3 = CGUserGameData.builder().id("gameDataId3").userId("testId3").score(100).build();
+        CGUserGameData testGameData4 = CGUserGameData.builder().id("gameDataId4").userId("testId4").score(0).build();
+        CGUserGameDataDTO testGameDataDTO1 = new CGUserGameDataDTO(testUser1.getUsername(),testGameData1.getScore());
+        CGUserGameDataDTO testGameDataDTO2 = new CGUserGameDataDTO(testUser2.getUsername(),testGameData2.getScore());
+        CGUserGameDataDTO testGameDataDTO3 = new CGUserGameDataDTO(testUser3.getUsername(),testGameData3.getScore());
+        CGUserGameDataDTO testGameDataDTO4 = new CGUserGameDataDTO(testUser4.getUsername(),testGameData4.getScore());
 
+        CGUserGameDataRespository testGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
+        Mockito.when(testGameDataRepository.findTop10ByOrderByScoreDesc()).thenReturn(new ArrayList<CGUserGameData>(List.of(testGameData1, testGameData2, testGameData3, testGameData4)));
+
+        CGUserRepository testUserRepository = Mockito.mock(CGUserRepository.class);
+        Mockito.when(testUserRepository.findById("testId1")).thenReturn(Optional.of(testUser1));
+        Mockito.when(testUserRepository.findById("testId2")).thenReturn(Optional.of(testUser2));
+        Mockito.when(testUserRepository.findById("testId3")).thenReturn(Optional.of(testUser3));
+        Mockito.when(testUserRepository.findById("testId4")).thenReturn(Optional.of(testUser4));
+
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository);
+
+
+        //When
+        ArrayList<CGUserGameDataDTO> expected = new ArrayList<CGUserGameDataDTO>(List.of(testGameDataDTO1,testGameDataDTO2,testGameDataDTO3,testGameDataDTO4));
+        ArrayList<CGUserGameDataDTO> actual = testGameDataService.getTop10Highscore();
+
+        //Then
+        Assertions.assertThat(actual).isEqualTo(expected);
+
+    }
 
 }

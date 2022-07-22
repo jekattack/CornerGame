@@ -24,6 +24,7 @@ public class CGUserGameDataController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public CGUserGameDataDTO getScore(Principal principal){
+        //principal.getName() contains userId
         return cgUserGameDataService.getScore(principal.getName());
     }
 

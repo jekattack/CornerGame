@@ -32,9 +32,8 @@ public class QuestService {
         return questRepository.findAll();
     }
 
-    public ArrayList<StartedQuest> startQuest(String username, String questId) {
-        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
-        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(user.getId()).orElseThrow();
+    public ArrayList<StartedQuest> startQuest(String userId, String questId) {
+        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
         Quest questToStart = questRepository.findById(questId).orElseThrow();
         ArrayList<StartedQuest> startedQuests = gameData.getStartedQuests();
         startedQuests.add(new StartedQuest(questToStart.getId(), Date.from(Instant.now())));
