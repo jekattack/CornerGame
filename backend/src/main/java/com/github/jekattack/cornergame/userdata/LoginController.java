@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @CrossOrigin
 @RestController
@@ -41,14 +42,18 @@ public class LoginController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refreshToken(Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public LoginResponse refreshToken(Principal principal) {
         //principal.getName() contains userId
-        CGUser user = userService.getUser(principal.getName()).orElseThrow();
+        try{
+            CGUser user = userService.getUser(principal.getName()).orElseThrow();
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("role", user.getRole());
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole());
-
-        String token = jwtService.createToken(claims, user.getId());
-        return ResponseEntity.ok(new LoginResponse(token));
+            String token = jwtService.createToken(claims, user.getId());
+            return new LoginResponse(token);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("User not found");
+        }
     }
 }

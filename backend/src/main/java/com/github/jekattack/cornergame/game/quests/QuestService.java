@@ -2,8 +2,6 @@ package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
-import com.github.jekattack.cornergame.userdata.CGUser;
-import com.github.jekattack.cornergame.userdata.CGUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,6 @@ public class QuestService {
 
     private final QuestRepository questRepository;
     private final CGUserGameDataRespository cgUserGameDataRespository;
-    private final CGUserRepository cgUserRepository;
 
     public Quest addQuest(Quest newQuest) {
         return questRepository.save(newQuest);
@@ -42,30 +40,33 @@ public class QuestService {
     }
 
 
-        public ArrayList<ActiveQuestDTO> getActiveQuests(String username) {
+    public ArrayList<ActiveQuestDTO> getActiveQuests(String userId) {
         //Datenbankanfrage für alle Visits eines Users mit questId
-        CGUser user = cgUserRepository.findByUsername(username).orElseThrow();
-        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(user.getId()).orElseThrow();
+        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
 
         ArrayList<StartedQuest> startedQuests = gameData.getStartedQuests();
         ArrayList<ActiveQuestDTO> startedQuestsResponse = new ArrayList<>();
 
-        //Check, welche Quests noch aktiv sind
-        for(StartedQuest startedQuest : startedQuests){
-            Quest quest = questRepository.findById(startedQuest.getQuestId()).orElseThrow();
-            Instant timeLeft = startedQuest.getTimestamp().toInstant()
-                    .plus(quest.getDurationInMinutes(), ChronoUnit.MINUTES)
-                    .minus(Instant.now().toEpochMilli()/1000/60, ChronoUnit.MINUTES);
+        try {
+            //Check, welche Quests noch aktiv sind
+            for(StartedQuest startedQuest : startedQuests){
+                Quest quest = questRepository.findById(startedQuest.getQuestId()).orElseThrow();
+                Instant timeLeft = startedQuest.getTimestamp().toInstant()
+                        .plus(quest.getDurationInMinutes(), ChronoUnit.MINUTES)
+                        .minus(Instant.now().toEpochMilli()/1000/60, ChronoUnit.MINUTES);
 
-            int minutesLeft = Math.toIntExact(timeLeft.toEpochMilli()/1000/60);
+                int minutesLeft = Math.toIntExact(timeLeft.toEpochMilli()/1000/60);
 
-            if(minutesLeft <= 0){
-                startedQuests.remove(startedQuest);
-                continue;
+                if(minutesLeft <= 0){
+                    startedQuests.remove(startedQuest);
+                    continue;
+                }
+                startedQuestsResponse.add(new ActiveQuestDTO(quest, minutesLeft));
             }
-            startedQuestsResponse.add(new ActiveQuestDTO(quest, minutesLeft));
-        }
 
-        return startedQuestsResponse;
+            return startedQuestsResponse;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("At least one started quest could not be found");
+        }
     }
 }

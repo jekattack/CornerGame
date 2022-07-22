@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/user/register", "/api/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/test.html").permitAll()
-                .antMatchers(HttpMethod.GET, "/*", "/index*", "/static/**", "/*.js", "/*.json", "/*.ico","/*.png").permitAll()
+                .antMatchers(HttpMethod.GET, "/*", "/index*", "/static/**", "/*.js", "/*.json", "/*.ico","/*.png", "/*.svg","/images/*.png", "/images/*.svg").permitAll()
                 .antMatchers("/api/placesapi").hasRole("admin")
                 .antMatchers("/**").authenticated()
                 .and()

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @CrossOrigin
 @RestController
@@ -30,7 +31,12 @@ public class VisitController {
     @GetMapping("/progress")
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<Visit> getUsersVisits(Principal principal){
-        //principal.getName() contains userId
-        return visitService.getUsersVisits(principal.getName());
+        try{
+            //principal.getName() contains userId
+            return visitService.getUsersVisits(principal.getName());
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("No visits found for UserId:" + principal.getName());
+        }
+
     }
 }
