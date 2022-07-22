@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.ArrayList;
 
 @CrossOrigin
 @RestController
@@ -17,8 +17,10 @@ public class VisitController {
     private final VisitService visitService;
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<HttpStatus> createVisit(@RequestBody VisitCreationData visitCreationData, Principal principal) {
         try {
+            //principal.getName() contains userId
             visitService.createVisit(visitCreationData, principal.getName());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalStateException e) {
@@ -27,7 +29,9 @@ public class VisitController {
     }
 
     @GetMapping("/progress")
-    public List<Visit> getUsersVisits(Principal principal){
+    @ResponseStatus(HttpStatus.OK)
+    public ArrayList<Visit> getUsersVisits(Principal principal){
+        //principal.getName() contains userId
         return visitService.getUsersVisits(principal.getName());
     }
 }

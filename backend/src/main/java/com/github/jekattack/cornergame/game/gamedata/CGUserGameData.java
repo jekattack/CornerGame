@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.quests.StartedQuest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class CGUserGameData {
     private String userId;
     private int score = 0;
     private ArrayList<String> achievementIds;
-    private ArrayList<String> activeQuests;
+    private ArrayList<StartedQuest> startedQuests;
 
     public CGUserGameData(String userId){
         this.userId = userId;

@@ -1,24 +1,18 @@
 package com.github.jekattack.cornergame.placesapi;
 
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
-import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import com.github.jekattack.cornergame.kioskdata.KioskResponseData;
 import com.github.jekattack.cornergame.kioskdata.KioskService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 public class PlacesApiService {
@@ -32,7 +26,7 @@ public class PlacesApiService {
         this.kioskService = kioskService;
         this.restTemplate = restTemplate;
         this.googleMapsApiKey = googleMapsApiKey;
-    };
+    }
 
 
     public List<KioskResponseData> getAllKiosksFromGoogle() {

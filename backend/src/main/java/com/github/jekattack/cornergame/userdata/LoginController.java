@@ -42,7 +42,8 @@ public class LoginController {
 
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refreshToken(Principal principal) {
-        CGUser user = userService.findByUsername(principal.getName()).orElseThrow();
+        //principal.getName() contains userId
+        CGUser user = userService.getUser(principal.getName()).orElseThrow();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole());

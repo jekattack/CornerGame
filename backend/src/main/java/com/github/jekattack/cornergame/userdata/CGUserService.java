@@ -39,4 +39,7 @@ public class CGUserService {
     }
 
 
+    public Optional<CGUser> getUser(String userId) {
+        return cgUserRepository.findById(userId);
+    }
 }

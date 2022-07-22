@@ -1,13 +1,11 @@
 package com.github.jekattack.cornergame.userdata;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
-import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 class CGUserServiceTest {
@@ -93,10 +91,11 @@ class CGUserServiceTest {
     }
 
     @Test
-    void shouldSearchForUserByUsername() {
+    void shouldGetLoggedInUser() {
         //Given
         CGUser expectedUser = CGUser.builder()
                 .role("user")
+                .id("testUserId")
                 .username("testusername")
                 .email("testmail@test.de")
                 .password("hashedPassword")
@@ -109,15 +108,15 @@ class CGUserServiceTest {
 
         CGUserService testCGUserService = new CGUserService(testCGUserRepository, testCGUserGameDataService, passwordEncoder);
 
-        String expectedSearchUsername = "testusername";
-        Mockito.when(testCGUserRepository.findByUsername(expectedSearchUsername)).thenReturn(Optional.of(expectedUser));
+        String expectedSearchUserId = "testUserId";
+        Mockito.when(testCGUserRepository.findById(expectedSearchUserId)).thenReturn(Optional.of(expectedUser));
 
         //When
-        testCGUserService.findByUsername("TestUserName");
+        testCGUserService.getUser("testUserId");
 
         //Then
-        Mockito.verify(testCGUserRepository).findByUsername("testusername");
-        Assertions.assertThat(testCGUserService.findByUsername("TestUserName").orElseThrow()).isEqualTo(expectedUser);
+        Mockito.verify(testCGUserRepository).findById("testUserId");
+        Assertions.assertThat(testCGUserService.getUser("testUserId").orElseThrow()).isEqualTo(expectedUser);
     }
 
 }
