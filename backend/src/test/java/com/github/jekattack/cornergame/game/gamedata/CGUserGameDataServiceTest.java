@@ -110,7 +110,7 @@ class CGUserGameDataServiceTest {
 
         //Then
         Assertions.assertThat(actual).isEqualTo(expected);
-
     }
 
 }
+

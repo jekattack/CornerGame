@@ -18,13 +18,12 @@ public class VisitController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<HttpStatus> createVisit(@RequestBody VisitCreationData visitCreationData, Principal principal) {
+    public void createVisit(@RequestBody VisitCreationData visitCreationData, Principal principal) {
         try {
             //principal.getName() contains userId
             visitService.createVisit(visitCreationData, principal.getName());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalStateException("Visit not created: To far away or already visited within 24h.");
         }
     }
 
