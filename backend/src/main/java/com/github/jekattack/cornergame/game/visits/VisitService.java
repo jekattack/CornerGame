@@ -20,7 +20,7 @@ public class VisitService {
 
     private final VisitRepository visitRepository;
     private final KioskRepository kioskRepository;
-        private final CGUserGameDataService cgUserGameDataService;
+    private final CGUserGameDataService cgUserGameDataService;
     public void createVisit(VisitCreationData visitCreationData, String userId) {
 
         //User Coordinates

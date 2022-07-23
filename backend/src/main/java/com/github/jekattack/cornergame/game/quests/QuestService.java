@@ -41,7 +41,7 @@ public class QuestService {
 
 
     public ArrayList<ActiveQuestDTO> getActiveQuests(String userId) {
-        //Datenbankanfrage für alle Visits eines Users mit questId
+        //Datenbankanfrage für alle Quest-Starts eines Users
         CGUserGameData gameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
 
         ArrayList<StartedQuest> startedQuests = gameData.getStartedQuests();
