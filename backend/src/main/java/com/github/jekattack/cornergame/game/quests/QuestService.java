@@ -50,7 +50,7 @@ public class QuestService {
         cgUserGameDataService.refreshQuestItemsStatus(userId);
         CGUserGameData gameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
 
-        List<QuestItem> questItems = gameData.getQuestItems().stream().filter(questItem -> QuestStatus.STARTED.equals(questItem.getQuestStatus())).collect(Collectors.toList());
+        List<QuestItem> questItems = gameData.getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.STARTED)).toList();
         ArrayList<ActiveQuestDTO> startedQuestsResponse = new ArrayList<>();
 
         try {

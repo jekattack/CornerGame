@@ -4,6 +4,7 @@ import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
+import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -87,7 +88,7 @@ class QuestServiceTest {
                 .id("TestGameDataId")
                 .score(100)
                 .questItems(new ArrayList<>(List.of(
-                new QuestItem(testQuest.getId(), Date.from(Instant.now())))
+                new QuestItem("testQuestItemId", testQuest.getId(), Date.from(Instant.now()), QuestStatus.STARTED))
         )).build();
 
         Mockito.when(testGameDataRepository.findByUserId("TestUserId")).thenReturn(Optional.of(testGameData));
