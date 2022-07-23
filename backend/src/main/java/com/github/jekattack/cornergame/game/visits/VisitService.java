@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class VisitService {
     private final KioskRepository kioskRepository;
     private final CGUserGameDataService cgUserGameDataService;
     private final QuestService questService;
-    public void createVisit(VisitCreationData visitCreationData, String userId) {
+    public String createVisit(VisitCreationData visitCreationData, String userId) {
 
         //User Coordinates
         double userLocationLat = visitCreationData.getUserLocation().getUserLocationCoordinates().getLat();
@@ -51,7 +50,7 @@ public class VisitService {
         }
 
         //Check if Users Location is valid for visit
-        if(!(kioskToVisitLat - 0.0001 < userLocationLat
+        if((kioskToVisitLat - 0.0001 < userLocationLat
                 && kioskToVisitLat + 0.0001 > userLocationLat
                 && kioskToVisitLng - 0.0001 < userLocationLng
                 && kioskToVisitLng + 0.0001 > userLocationLng)){
@@ -68,13 +67,11 @@ public class VisitService {
                 newVisit.setQuestId(questDTO.getQuest().getId());
                 visitRepository.save(newVisit);
                 cgUserGameDataService.scoreForNewVisit(userId);
-            //Checken, ob Quest abgeschlossen ist
+            //Checken, ob Quest abgeschlossen ist.
                 //Alle questbezogenen Visits laden:
                 List<Visit> visitsForQuestId = visitRepository.findAllByQuestId(questDTO.getQuest().getId());
                 // Visits filtern:
-                // Bedingung, dass Visits für Quest-Durchlauf gültig sind:
-                // Zeitpunkt des Visits muss nach dem
-                // Startzeitpunkt des Quests liegen
+                // Bedingung, dass Visits für Quest-Durchlauf gültig sind: Zeitpunkt des Visits muss nach dem Startzeitpunkt des Quests liegen
                 CGUserGameData userGameData = cgUserGameDataService.getByUserId(userId).orElseThrow();
                 List<QuestItem> usersQuestItems = userGameData.getQuestItems();
                 QuestItem usersQuestItemForQuest = usersQuestItems.stream()
@@ -83,7 +80,7 @@ public class VisitService {
                 Date questStartedAt = usersQuestItemForQuest.getTimestamp();
                 List<Visit> relevantVisitsForQuestId = visitsForQuestId.stream().filter(visit -> visit.getTimestamp().after(questStartedAt)).toList();
                 // Eventuelle mehrfachbesuche aussortieren
-                List<String> forQuestVisitedKiosks = relevantVisitsForQuestId.stream().map(visit -> visit.getGooglePlacesId()).distinct().toList();
+                List<String> forQuestVisitedKiosks = relevantVisitsForQuestId.stream().map(Visit::getGooglePlacesId).distinct().toList();
 
                 //Check, ob alle Kioske besucht wurden:
                 if (forQuestVisitedKiosks.size()==questDTO.getQuest().getKioskGooglePlacesIds().length){
@@ -96,16 +93,16 @@ public class VisitService {
                     cgUserGameDataService.save(userGameData);
 
                     //Add bonus points for finishing quest
-                    cgUserGameDataService.scoreForQuest(userId, questDTO.getQuest().getScoreMultiplier(), forQuestVisitedKiosks.size());
-                    break;
+                    int bonusPoints = cgUserGameDataService.scoreForQuest(userId, questDTO.getQuest().getScoreMultiplier(), forQuestVisitedKiosks.size());
+                    return "Du hast den Quest " + questDTO.getQuest().getName() + " erfolgreich abgeschlossen und " + bonusPoints + "Bonuspunkte erhalten!";
                 }
-
-
             }
         }
         //Visit hinzufügen, wenn er zu keinem aktiven Quest gehört
         visitRepository.save(newVisit);
         cgUserGameDataService.scoreForNewVisit(userId);
+
+        return "Du hast den Kiosk erfolgreich besucht!";
 
     }
 

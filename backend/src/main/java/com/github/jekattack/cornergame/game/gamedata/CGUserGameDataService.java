@@ -41,12 +41,13 @@ public class CGUserGameDataService {
         cgUserGameDataRespository.save(userGameData);
         log.info(userId + ": 100 Points added for new Visit");
     }
-    public void scoreForQuest(String userId, int scoreMultiplier, int numberOfVisitsForQuest) {
+    public int scoreForQuest(String userId, int scoreMultiplier, int numberOfVisitsForQuest) {
         CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
         int pointsToAdd = numberOfVisitsForQuest * 100 * scoreMultiplier - numberOfVisitsForQuest * 100;
         userGameData.setScore(userGameData.getScore() + pointsToAdd);
         cgUserGameDataRespository.save(userGameData);
         log.info(userId + ": " + pointsToAdd + " Points added for new Visit");
+        return pointsToAdd;
     }
 
     public ArrayList<CGUserGameDataDTO> getTop10Highscore() {
@@ -70,6 +71,7 @@ public class CGUserGameDataService {
                 quest.setQuestStatus(QuestStatus.EXPIRED);
             }
         }
+        cgUserGameDataRespository.save(userGameData);
     }
 
     public int checkMinutesLeft(QuestItem questItem){
