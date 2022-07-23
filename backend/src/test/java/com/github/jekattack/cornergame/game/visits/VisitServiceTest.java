@@ -3,6 +3,7 @@ package com.github.jekattack.cornergame.game.visits;
 import com.github.jekattack.cornergame.game.UserLocation;
 import com.github.jekattack.cornergame.game.UserLocationCoordinates;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
+import com.github.jekattack.cornergame.game.quests.QuestService;
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskRepository;
 import com.github.jekattack.cornergame.kioskdata.details.KioskLocation;
@@ -40,10 +41,10 @@ class VisitServiceTest {
         KioskRepository testKioskRepository = Mockito.mock(KioskRepository.class);
         Mockito.when(testKioskRepository.findByGooglePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4")).thenReturn(Optional.of(testKiosk));
 
-
         CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        QuestService testQuestService = Mockito.mock(QuestService.class);
 
-        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserGameDataService);
+        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserGameDataService, testQuestService);
 
         Visit expectedVisit = Visit.builder().userId(testUserId).googlePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4").timestamp(Date.from(Instant.now())).build();
 
@@ -77,8 +78,9 @@ class VisitServiceTest {
         Mockito.when(testKioskRepository.findByGooglePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4")).thenReturn(Optional.of(testKiosk));
 
         CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        QuestService testQuestService = Mockito.mock(QuestService.class);
 
-        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserGameDataService);
+        VisitService testVisitService = new VisitService(testVisitRepository, testKioskRepository, testCGUserGameDataService, testQuestService);
 
         //Then
         Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> testVisitService.createVisit(testVisitCreationData, testUsername));
