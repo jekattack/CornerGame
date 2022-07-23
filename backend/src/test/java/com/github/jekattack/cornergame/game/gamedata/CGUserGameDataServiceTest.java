@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.quests.QuestRepository;
 import com.github.jekattack.cornergame.userdata.CGUser;
 import com.github.jekattack.cornergame.userdata.CGUserRepository;
 import org.assertj.core.api.Assertions;
@@ -21,8 +22,9 @@ class CGUserGameDataServiceTest {
         Mockito.when(testGameDataRepository.findByUserId("testId")).thenReturn(Optional.of(testGameData));
         CGUserRepository testUserRepository = Mockito.mock(CGUserRepository.class);
         Mockito.when(testUserRepository.findByUsername("testUsername")).thenReturn(Optional.of(testUser));
+        QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository);
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository);
 
         CGUserGameData expected = new CGUserGameData("testId");
 
@@ -43,8 +45,9 @@ class CGUserGameDataServiceTest {
         Mockito.when(testGameDataRepository.findByUserId("testId")).thenReturn(Optional.of(testGameData));
         CGUserRepository testUserRepository = Mockito.mock(CGUserRepository.class);
         Mockito.when(testUserRepository.findById("testId")).thenReturn(Optional.of(testUser));
+        QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository);
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository);
 
         //When
         CGUserGameDataDTO expected = new CGUserGameDataDTO("testUsername", 0);
@@ -63,8 +66,9 @@ class CGUserGameDataServiceTest {
         Mockito.when(testGameDataRepository.findByUserId("testId")).thenReturn(Optional.of(testGameData));
         CGUserRepository testUserRepository = Mockito.mock(CGUserRepository.class);
         Mockito.when(testUserRepository.findByUsername("testUsername")).thenReturn(Optional.of(testUser));
+        QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository);
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository);
 
         CGUserGameData expected = testGameData;
         expected.setScore(expected.getScore()+100);
@@ -101,7 +105,9 @@ class CGUserGameDataServiceTest {
         Mockito.when(testUserRepository.findById("testId3")).thenReturn(Optional.of(testUser3));
         Mockito.when(testUserRepository.findById("testId4")).thenReturn(Optional.of(testUser4));
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository);
+        QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
+
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository);
 
 
         //When

@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.game.quests;
+package com.github.jekattack.cornergame.game.gamedata.questItem;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,13 +14,15 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StartedQuest {
+public class QuestItem {
     @Id
     private String id;
     private String questId;
     private Date timestamp;
+    @Builder.Default
+    private QuestStatus questStatus = QuestStatus.STARTED;
 
-    public StartedQuest(String questId, Date timestamp){
+    public QuestItem(String questId, Date timestamp){
         this.questId = questId;
         this.timestamp = timestamp;
     }
