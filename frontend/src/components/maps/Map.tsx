@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
-import {CGGeolocation, Kiosk} from "../../service/models";
+import { Kiosk } from "../../service/models";
 import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
@@ -33,11 +33,9 @@ const Map: React.FC = () => {
             .then((response) => setMarkers(map, response, visitedIdsSet));
     }
 
-    //Setting Marker for current position
-    let positionMarker: google.maps.Marker;
 
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
-        positionMarker = new google.maps.Marker({
+        new google.maps.Marker({
             map: map,
             position: currentLocationCoords,
             icon: "/images/CGIconStandort.png",
