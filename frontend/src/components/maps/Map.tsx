@@ -33,7 +33,7 @@ const Map: React.FC = () => {
             .then((response) => setMarkers(map, response, visitedIdsSet));
     }
 
-
+    //Setting Marker for current position
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
         new google.maps.Marker({
             map: map,
@@ -53,7 +53,7 @@ const Map: React.FC = () => {
 
     //Setting Markers for Kiosks
     function setMarkers(map: google.maps.Map, kiosks: Kiosk[], progress: Set<String>) {
-        let infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow;
+        let infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow();
         const image = {
             url: "/images/CGLogoBildBGIcon.png",
         };
