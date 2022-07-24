@@ -145,7 +145,7 @@ class VisitServiceTest {
                 .scoreMultiplier(2)
                 .build();
 
-        UserLocationCoordinates testUserLocationCoordinates = new UserLocationCoordinates(53.001, 9.001);
+        UserLocationCoordinates testUserLocationCoordinates = new UserLocationCoordinates(53.00001, 9.00001);
         UserLocation testUserLocation = new UserLocation(testUserLocationCoordinates);
         VisitCreationData testVisitCreationData = new VisitCreationData(testUserLocation, testKiosk1.getGooglePlacesId());
 

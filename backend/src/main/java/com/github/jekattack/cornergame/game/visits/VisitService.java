@@ -50,7 +50,7 @@ public class VisitService {
         }
 
         //Check if Users Location is valid for visit
-        if((kioskToVisitLat - 0.0001 < userLocationLat
+        if(!(kioskToVisitLat - 0.0001 < userLocationLat
                 && kioskToVisitLat + 0.0001 > userLocationLat
                 && kioskToVisitLng - 0.0001 < userLocationLng
                 && kioskToVisitLng + 0.0001 > userLocationLng)){
