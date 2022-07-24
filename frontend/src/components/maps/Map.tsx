@@ -36,13 +36,6 @@ const Map: React.FC = () => {
     //Setting Marker for current position
     let positionMarker: google.maps.Marker;
 
-    const setContinuouslyPositionMarker = useCallback((location: CGGeolocation) => {
-        if(mapRef.current != null && location.loaded) {
-            setPositionMarker(mapRef.current, location.coordinates)
-        }
-    }, [location])
-    setContinuouslyPositionMarker(location);
-
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
         positionMarker = new google.maps.Marker({
             map: map,
@@ -52,6 +45,13 @@ const Map: React.FC = () => {
             zIndex: 300,
         });
     }
+
+    const setContinuouslyPositionMarker = useCallback((location: CGGeolocation) => {
+        if(mapRef.current && location.loaded) {
+            setPositionMarker(mapRef.current, location.coordinates)
+        }
+    }, [location])
+    setContinuouslyPositionMarker(location);
 
     //Setting Markers for Kiosks
 
@@ -69,8 +69,7 @@ const Map: React.FC = () => {
             type: "circle",
         };
         const kioskMarkers = new Array<google.maps.Marker>();
-        for (let i = 0; i < kiosks.length; i++) {
-            const kiosk = kiosks[i];
+        kiosks.forEach(kiosk => {
             let marker: google.maps.Marker;
 
             //Differentiation if Kiosk is already visited
@@ -128,7 +127,7 @@ const Map: React.FC = () => {
 
             //Adding marker to MarkerArray
             kioskMarkers.push(marker);
-        }
+        })
     }
 
     //Adding Functionality to button
