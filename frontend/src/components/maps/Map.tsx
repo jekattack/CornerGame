@@ -46,18 +46,16 @@ const Map: React.FC = () => {
         });
     }
 
-    const setContinuouslyPositionMarker = useCallback((location: CGGeolocation) => {
+    const setContinuouslyPositionMarker = useCallback(() => {
         if(mapRef.current && location.loaded) {
             setPositionMarker(mapRef.current, location.coordinates)
         }
     }, [location])
-    setContinuouslyPositionMarker(location);
+    setContinuouslyPositionMarker();
 
     //Setting Markers for Kiosks
-
-    let infoWindow = new google.maps.InfoWindow();
-
     function setMarkers(map: google.maps.Map, kiosks: Kiosk[], progress: Set<String>) {
+        let infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow;
         const image = {
             url: "/images/CGLogoBildBGIcon.png",
         };
@@ -69,7 +67,8 @@ const Map: React.FC = () => {
             type: "circle",
         };
         const kioskMarkers = new Array<google.maps.Marker>();
-        kiosks.forEach(kiosk => {
+
+        kiosks.forEach((kiosk) => {
             let marker: google.maps.Marker;
 
             //Differentiation if Kiosk is already visited
@@ -107,8 +106,6 @@ const Map: React.FC = () => {
                 "</div>" +
                 "</div>";
 
-
-
             google.maps.event.addListener(infoWindow, "domready", buttonFunctionality);
 
             marker.addListener("click", () => {
@@ -133,7 +130,7 @@ const Map: React.FC = () => {
     //Adding Functionality to button
     function buttonFunctionality (){
         document.getElementById("visit-button")!.onclick=addVisit;
-    };
+    }
 
     //Action for Button in InfoWindow
     function addVisit(){

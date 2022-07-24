@@ -3,8 +3,9 @@ import {CGGeolocation} from "../../service/models";
 export function options(location: CGGeolocation) {
     return {
         center: location.loaded && location.error.code===0 ? location.coordinates : center,
-            mapId: "fe949f204787b654",
-        disableDefaultUI: true
+        mapId: "fe949f204787b654",
+        disableDefaultUI: true,
+        clickableIcons: false
     } as google.maps.MapOptions
 }
 
