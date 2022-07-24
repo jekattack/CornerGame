@@ -21,6 +21,6 @@ public class Visit {
     private String userId;
     private String googlePlacesId;
     private Date timestamp;
-    private String questid;
+    private String questId;
 
 }
