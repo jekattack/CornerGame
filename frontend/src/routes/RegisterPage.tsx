@@ -12,7 +12,7 @@ export default function RegisterPage(){
         if(localStorage.getItem("jwt")){
             nav("/map")
         }
-    }, [])
+    }, [nav])
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');

@@ -11,7 +11,7 @@ export default function WelcomePage(){
         if(localStorage.getItem("jwt")){
             nav("/map")
         }
-    }, [])
+    }, [nav])
 
     return (
         <div id={"app-container"}>
