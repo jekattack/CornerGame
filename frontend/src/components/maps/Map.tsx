@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
-import { containerStyle, center, options } from "./mapSettings";
+import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
-import { Kiosk } from "../../service/models";
+import {CGGeolocation, Kiosk} from "../../service/models";
 import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
@@ -23,7 +23,6 @@ const Map: React.FC = () => {
     //When Map is loaded
     const onLoad = (map: google.maps.Map): void => {
         mapRef.current = map;
-        setContinuouslyCurrentPosition();
 
         const visitedIdsSet: Set<String> = new Set();
         fetchProgress()
@@ -35,23 +34,29 @@ const Map: React.FC = () => {
     }
 
     //Setting Marker for current position
-    const setContinuouslyCurrentPosition = useCallback(() => {
-        if(mapRef.current != null && location.coordinates != null) {
+    let positionMarker: google.maps.Marker;
+
+    const setContinuouslyPositionMarker = useCallback((location: CGGeolocation) => {
+        if(mapRef.current != null && location.loaded) {
             setPositionMarker(mapRef.current, location.coordinates)
         }
     }, [location])
+    setContinuouslyPositionMarker(location);
 
     function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
-        new google.maps.Marker({
+        positionMarker = new google.maps.Marker({
+            map: map,
             position: currentLocationCoords,
-            map,
             icon: "/images/CGIconStandort.png",
             title: "Du",
-            zIndex: 300
-        })
+            zIndex: 300,
+        });
     }
 
     //Setting Markers for Kiosks
+
+    let infoWindow = new google.maps.InfoWindow();
+
     function setMarkers(map: google.maps.Map, kiosks: Kiosk[], progress: Set<String>) {
         const image = {
             url: "/images/CGLogoBildBGIcon.png",
@@ -103,12 +108,17 @@ const Map: React.FC = () => {
                 "</div>" +
                 "</div>";
 
-            const infoWindow = new google.maps.InfoWindow({
-                content: contentString});
+
 
             google.maps.event.addListener(infoWindow, "domready", buttonFunctionality);
 
             marker.addListener("click", () => {
+                if (infoWindow) {
+                    infoWindow.close();
+                }
+                infoWindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
                 infoWindow.open({
                     anchor: marker,
                     map,
@@ -141,8 +151,8 @@ const Map: React.FC = () => {
         <div className={"wrapper"}>
             <GoogleMap
                 mapContainerStyle={containerStyle}
-                options={options as google.maps.MapOptions}
-                center={location.loaded && location.error.code===0 ? location.coordinates :center}
+                options={options(location)}
+                center={centerOnceOnPositionWhenLoaded(location)}
                 zoom={16}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
