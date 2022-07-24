@@ -1,12 +1,18 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {FormEvent, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {register} from "../service/apiService";
 
 export default function RegisterPage(){
 
     const nav = useNavigate();
+
+    useEffect(() => {
+        if(localStorage.getItem("jwt")){
+            nav("/map")
+        }
+    }, [])
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
