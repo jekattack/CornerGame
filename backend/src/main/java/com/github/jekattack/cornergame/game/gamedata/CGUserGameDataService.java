@@ -62,16 +62,18 @@ public class CGUserGameDataService {
         return top10GameDataExport;
     }
 
-    public void refreshQuestItemsStatus(String userId){
+    public CGUserGameData refreshQuestItemsStatus(String userId){
         CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
-        List<QuestItem> activeQuests = userGameData.getQuestItems().stream().filter(quest -> quest.getQuestStatus().equals(QuestStatus.STARTED)).toList();
-        for(QuestItem quest : activeQuests){
-            int minutesLeft = checkMinutesLeft(quest);
-            if(quest.getQuestStatus()!=QuestStatus.DONE && minutesLeft <= 0){
-                quest.setQuestStatus(QuestStatus.EXPIRED);
+        if(userGameData.getQuestItems()!=null || !userGameData.getQuestItems().isEmpty()){
+            List<QuestItem> activeQuests = userGameData.getQuestItems().stream().filter(quest -> quest.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+            for(QuestItem quest : activeQuests){
+                int minutesLeft = checkMinutesLeft(quest);
+                if(quest.getQuestStatus()!=QuestStatus.DONE && minutesLeft <= 0){
+                    quest.setQuestStatus(QuestStatus.EXPIRED);
+                }
             }
         }
-        cgUserGameDataRespository.save(userGameData);
+        return cgUserGameDataRespository.save(userGameData);
     }
 
     public int checkMinutesLeft(QuestItem questItem){
@@ -91,4 +93,12 @@ public class CGUserGameDataService {
         cgUserGameDataRespository.save(userGameData);
     }
 
+    public void scoreForQuestAndMarkAsDone(String userId, Quest quest) {
+        CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
+        userGameData.getQuestItems().stream()
+                .filter(qi -> qi.getQuestId().equals(quest.getId()))
+                .findFirst().get().setQuestStatus(QuestStatus.DONE);
+        save(userGameData);
+        scoreForQuest(userId, quest.getScoreMultiplier(), quest.getKioskGooglePlacesIds().length);
+    }
 }

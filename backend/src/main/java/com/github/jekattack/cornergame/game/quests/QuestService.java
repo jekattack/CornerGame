@@ -5,18 +5,14 @@ import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
+import com.github.jekattack.cornergame.game.visits.Visit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +43,7 @@ public class QuestService {
 
     public ArrayList<ActiveQuestDTO> getActiveQuests(String userId) {
 
-        cgUserGameDataService.refreshQuestItemsStatus(userId);
-        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
+        CGUserGameData gameData = cgUserGameDataService.refreshQuestItemsStatus(userId);
 
         List<QuestItem> questItems = gameData.getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.STARTED)).toList();
         ArrayList<ActiveQuestDTO> startedQuestsResponse = new ArrayList<>();
@@ -66,5 +61,24 @@ public class QuestService {
             throw new NoSuchElementException("At least one started quest could not be found");
         }
     }
+
+    public Optional<Quest> returnActiveQuestWithKiosk(String userId, String googlePlacesId) {
+        ArrayList<ActiveQuestDTO> activeQuestsDTO = getActiveQuests(userId);
+        Optional<Quest> activeQuestWithKiosk = Optional.of(new Quest());
+        for(ActiveQuestDTO questDTO : activeQuestsDTO){
+            if (questRepository.existsByIdAndKioskGooglePlacesIdsContaining(
+                    questDTO.getQuest().getId(),
+                    googlePlacesId)){
+                return activeQuestWithKiosk = Optional.of(questDTO.getQuest());
+            }
+        }
+        return activeQuestWithKiosk;
+    }
+
+    public boolean checkIfQuestComplete(List<Visit> visits, String questId){
+        List<String> distinctVisits = visits.stream().map(Visit::getGooglePlacesId).distinct().toList();
+        return distinctVisits.size() == questRepository.findById(questId).get().getKioskGooglePlacesIds().length;
+    }
+
 
 }
