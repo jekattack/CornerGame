@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @CrossOrigin
@@ -30,9 +31,14 @@ public class CGUserController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CGUser> getUser(Principal principal) {
         //principal.getName() contains userId
-        return cgUserService.getUser(principal.getName());
+        try{
+            return cgUserService.getUser(principal.getName());
+        } catch (NoSuchElementException e){
+            throw new NoSuchElementException("User not found");
+        }
     }
 
 

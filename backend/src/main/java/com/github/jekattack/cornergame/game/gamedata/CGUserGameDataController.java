@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @CrossOrigin
 @RestController
@@ -24,8 +25,12 @@ public class CGUserGameDataController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public CGUserGameDataDTO getScore(Principal principal){
-        //principal.getName() contains userId
-        return cgUserGameDataService.getScore(principal.getName());
+        try{
+            //principal.getName() contains userId
+            return cgUserGameDataService.getScore(principal.getName());
+        } catch(NoSuchElementException e){
+            throw new NoSuchElementException("No score found for User-Id:" + principal.getName());
+        }
     }
 
 }
