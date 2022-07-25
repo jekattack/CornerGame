@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
@@ -34,22 +34,30 @@ const Map: React.FC = () => {
     }
 
     //Setting Marker for current position
-    function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
-        new google.maps.Marker({
-            map: map,
-            position: currentLocationCoords,
-            icon: "/images/CGIconStandort.png",
-            title: "Du",
-            zIndex: 300,
-        });
+    const [_, setPositionMarker] = useState<google.maps.Marker>()
+    function refreshPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
+        debugger
+        setPositionMarker((positionMarker) => {
+            positionMarker?.setVisible(false);
+            return (
+                new google.maps.Marker({
+                    map: map,
+                    position: currentLocationCoords,
+                    icon: "/images/CGIconStandort.png",
+                    title: "Du",
+                    zIndex: 300,
+                })
+            )
+        })
     }
 
-    const setContinuouslyPositionMarker = useCallback(() => {
+    useEffect(() => {
         if(mapRef.current && location.loaded) {
-            setPositionMarker(mapRef.current, location.coordinates)
+            debugger
+            refreshPositionMarker(mapRef.current, location.coordinates)
         }
     }, [location])
-    setContinuouslyPositionMarker();
+
 
     //Setting Markers for Kiosks
     function setMarkers(map: google.maps.Map, kiosks: Kiosk[], progress: Set<String>) {
