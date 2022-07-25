@@ -37,7 +37,7 @@ public class LoginController {
 
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.quests;
 
+import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class QuestController {
 
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ArrayList<StartedQuest> startQuest(@RequestBody String questId, Principal principal){
+    public ArrayList<QuestItem> startQuest(@RequestBody String questId, Principal principal){
         try{
             //principal.getName() contains userId
             return questService.startQuest(principal.getName(), questId);

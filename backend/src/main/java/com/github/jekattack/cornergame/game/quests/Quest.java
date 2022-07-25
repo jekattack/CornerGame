@@ -18,7 +18,7 @@ public class Quest {
     private String id;
     private String name;
     private String description;
-    private String[] kioskIds;
+    private String[] kioskGooglePlacesIds;
     private int durationInMinutes;
     private int scoreMultiplier;
 }
