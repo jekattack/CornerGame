@@ -34,6 +34,7 @@ const Map: React.FC = () => {
     }
 
     //Setting Marker for current position
+    // eslint-disable-next-line
     const [_, setPositionMarker] = useState<google.maps.Marker>()
     function refreshPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
         debugger
