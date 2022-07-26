@@ -148,39 +148,13 @@ class VisitServiceTest {
 
         VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, questService, visitObservers);
 
-        Visit expectedVisit = Visit.builder()
-                .userId(testUser.getId())
-                .googlePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4")
-                .timestamp(Date.from(Instant.now()))
-                .questId(testQuest1.getId())
-                .build();
-
         //When
         String actual = testVisitService.createVisit(testVisitCreationData, testUser.getId());
 
         //Then
         Assertions.assertThat(actual).isEqualTo("Kiosk besucht!");
 
-//      Todo
-//       Mockito.verify(visitRepository).save(
-//                Mockito.argThat(actualVisit ->
-//                        Objects.equals(actualVisit.getId(), expectedVisit.getId()) &&
-//                        Objects.equals(actualVisit.getUserId(), expectedVisit.getUserId()) &&
-//                        Objects.equals(actualVisit.getGooglePlacesId(), expectedVisit.getGooglePlacesId()) &&
-//                        (actualVisit.getTimestamp().getTime() > expectedVisit.getTimestamp().getTime()) &&
-//                        Objects.equals(actualVisit.getQuestId(), expectedVisit.getQuestId())
-//                )
-//        );
-//        Mockito.verify(visitObserver).onVisitCreated(
-//                Mockito.argThat(actualVisit ->
-//                                Objects.equals(actualVisit.getUserId(), expectedVisit.getUserId()) &&
-//                                Objects.equals(actualVisit.getQuestId(), expectedVisit.getQuestId()) &&
-//                                Objects.equals(actualVisit.getGooglePlacesId(), expectedVisit.getGooglePlacesId())
-//                        ),
-//                Mockito.argThat(actualGameData ->
-//                            Objects.equals(actualGameData.getUserId(), testUserGameData.getUserId()) &&
-//                            Objects.equals(actualGameData.getId(), testUserGameData.getId()))
-//                        );
+        Mockito.verify(visitObserver).onVisitCreated(newTestVisit, testUserGameData);
     }
 
 

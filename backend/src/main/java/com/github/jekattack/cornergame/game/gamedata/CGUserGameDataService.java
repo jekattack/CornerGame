@@ -60,21 +60,20 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
         cgUserGameDataRespository.save(userGameData);
         log.info(userId + ": 100 Points added for new Visit");
     }
-    public void scoreForQuest(String userId, int scoreMultiplier, int numberOfVisitsForQuest) {
-        CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
-        int pointsToAdd = numberOfVisitsForQuest * 100 * scoreMultiplier - numberOfVisitsForQuest * 100;
-        userGameData.setScore(userGameData.getScore() + pointsToAdd);
-        cgUserGameDataRespository.save(userGameData);
-        log.info(userId + ": " + pointsToAdd + " Points added for new Visit");
-    }
+
     public void scoreForQuestAndMarkAsDone(String userId, Quest quest) {
         CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
         Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
                 .filter(qi -> qi.getQuestId().equals(quest.getId()))
                 .findFirst();
         questItem.ifPresent(item -> item.setQuestStatus(QuestStatus.DONE));
-        save(userGameData);
-        scoreForQuest(userId, quest.getScoreMultiplier(), quest.getKioskGooglePlacesIds().length);
+
+        int numberOfVisitsForQuest = quest.getKioskGooglePlacesIds().length;
+        int pointsToAdd = numberOfVisitsForQuest * 100 * quest.getScoreMultiplier() - numberOfVisitsForQuest * 100;
+        userGameData.setScore(userGameData.getScore() + pointsToAdd);
+
+        cgUserGameDataRespository.save(userGameData);
+        log.info(userId + ": " + pointsToAdd + " Points added for new Visit");
     }
     public CGUserGameData refreshQuestItemsStatus(String userId){
         CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
