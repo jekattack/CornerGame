@@ -42,25 +42,25 @@ export default function RegisterPage(){
                                 <label htmlFor={"username"}>Username</label>
                             </div>
                             <div>
-                                <input id={"username"} type={"text"} value={username} onChange={(ev) => setUsername(ev.target.value)}/>
+                                <input id={"username"} type={"text"} value={username} onChange={(ev) => setUsername(ev.target.value)} required/>
                             </div>
                             <div>
                                 <label htmlFor={"email"}>E-Mail</label>
                             </div>
                             <div>
-                                <input id={"email"} type={"text"} value={email} onChange={(ev) => setEmail(ev.target.value)}/>
+                                <input id={"email"} type={"text"} value={email} onChange={(ev) => setEmail(ev.target.value)} required/>
                             </div>
                             <div>
                                 <label htmlFor={"password"}>Password</label>
                             </div>
                             <div>
-                                <input id={"password"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)}/>
+                                <input id={"password"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)} required/>
                             </div>
                             <div>
                                 <label htmlFor={"password-again"}>Password bestätigen</label>
                             </div>
                             <div>
-                                <input id={"password-again"} type={"password"} value={passwordAgain} onChange={(ev) => setPasswordAgain(ev.target.value)}/>
+                                <input id={"password-again"} type={"password"} value={passwordAgain} onChange={(ev) => setPasswordAgain(ev.target.value)} required/>
                             </div>
                             <div>
                                 <input type={"submit"} value={"Register"}/>

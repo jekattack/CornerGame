@@ -2,6 +2,10 @@ import '../Components.css';
 import ContentControlsHeader from "./ContentControlsHeader";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import AchievementPage from "../subpages/AchievementPage";
+import ProfilePage from "../subpages/ProfilePage";
+import QuestPage from "../subpages/QuestPage";
+import ScoreboardPage from "../subpages/ScoreboardPage";
 
 export default function Menu(props: any){
 
@@ -9,7 +13,7 @@ export default function Menu(props: any){
 
     const [menuMode, setMenuMode] = useState(true)
     const [profilePage, setProfilePage] = useState(false)
-    const [cliquePage, setCliquePage] = useState(false)
+    const [achievementPage, setAchievementPage] = useState(false)
     const [questPage, setQuestPage] = useState(false)
     const [scoreboardPage, setScoreboardPage] = useState(false)
 
@@ -25,7 +29,7 @@ export default function Menu(props: any){
 
     function togglePage() {
         setProfilePage(false);
-        setCliquePage(false);
+        setAchievementPage(false);
         setQuestPage(false);
         setScoreboardPage(false);
     }
@@ -36,7 +40,7 @@ export default function Menu(props: any){
             {menuMode &&
                 <>
                     <h1 onClick={() => toPageMode(setProfilePage)}>Dein Profil</h1>
-                    <h1 onClick={() => toPageMode(setCliquePage)}>Deine Clique</h1>
+                    <h1 onClick={() => toPageMode(setAchievementPage)}>Achievements</h1>
                     <h1 onClick={() => toPageMode(setQuestPage)}>Quests</h1>
                     <h1 onClick={() => toPageMode(setScoreboardPage)}>Scoreboard</h1>
                     <h1 onClick={logout}>Logout</h1>
@@ -44,22 +48,22 @@ export default function Menu(props: any){
             }
             {profilePage &&
                 <>
-                    <h1>Dein Profil</h1>
+                    <ProfilePage/>
                 </>
             }
-            {cliquePage &&
+            {achievementPage &&
                 <>
-                    <h1>Deine Clique</h1>
+                    <AchievementPage/>
                 </>
             }
             {questPage &&
                 <>
-                    <h1>Quests</h1>
+                    <QuestPage/>
                 </>
             }
             {scoreboardPage &&
                 <>
-                    <h1>Scoreboard</h1>
+                    <ScoreboardPage/>
                 </>
             }
         </>
