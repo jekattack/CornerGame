@@ -43,7 +43,7 @@ public class QuestController {
 
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ArrayList<QuestItem> startQuest(@RequestBody String questId, Principal principal){
+    public String startQuest(@RequestBody String questId, Principal principal){
         try{
             //principal.getName() contains userId
             return questService.startQuest(principal.getName(), questId);
