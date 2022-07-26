@@ -2,6 +2,7 @@ import '../components/Components.css';
 import Map from "../components/maps/Map";
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import "../App.css";
 
 export default function WelcomePage(){
 

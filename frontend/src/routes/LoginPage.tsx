@@ -3,6 +3,7 @@ import Map from "../components/maps/Map";
 import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../service/apiService";
+import "../App.css";
 
 export default function LoginPage(){
 

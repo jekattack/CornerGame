@@ -1,6 +1,7 @@
 import Map from "../components/maps/Map";
 import React, {useState} from "react";
 import Menu from "../components/controls/Menu";
+import "../App.css";
 
 export default function HomePage(){
 

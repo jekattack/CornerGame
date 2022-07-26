@@ -4,3 +4,7 @@
     position: relative;
 }
 
+#app-container{
+    overflow: hidden;
+}
+

@@ -97,6 +97,7 @@ class QuestServiceTest {
         Mockito.when(testQuestRepository.findById(testQuest.getId())).thenReturn(Optional.of(testQuest));
 
         CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        Mockito.when(testCGUserGameDataService.refreshQuestItemsStatus("TestUserId")).thenReturn(testGameData);
 
         QuestService testQuestService = new QuestService(testQuestRepository,testGameDataRepository,testCGUserGameDataService);
 
