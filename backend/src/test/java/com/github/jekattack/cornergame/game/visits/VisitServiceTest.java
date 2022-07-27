@@ -6,7 +6,6 @@ import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
-import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestService;
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
@@ -16,11 +15,8 @@ import com.github.jekattack.cornergame.kioskdata.details.KioskLocationCoordinate
 import com.github.jekattack.cornergame.userdata.CGUser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -135,7 +131,7 @@ class VisitServiceTest {
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
 
         QuestService questService = Mockito.mock(QuestService.class);
-        Mockito.when(questService.returnActiveQuestWithKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
+        Mockito.when(questService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
 
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId("testUserId")).thenReturn(new ArrayList<>(List.of(testVisit)));
@@ -154,7 +150,7 @@ class VisitServiceTest {
         //Then
         Assertions.assertThat(actual).isEqualTo("Kiosk besucht!");
 
-        Mockito.verify(visitObserver).onVisitCreated(newTestVisit, testUserGameData);
+        Mockito.verify(visitObserver).onVisitCreated(newTestVisit);
     }
 
 
@@ -230,7 +226,7 @@ class VisitServiceTest {
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
 
         QuestService questService = Mockito.mock(QuestService.class);
-        Mockito.when(questService.returnActiveQuestWithKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
+        Mockito.when(questService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
 
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId("testUserId")).thenReturn(new ArrayList<>(List.of(testVisit)));

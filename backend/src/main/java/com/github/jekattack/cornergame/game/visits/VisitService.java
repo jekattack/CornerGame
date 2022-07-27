@@ -1,6 +1,5 @@
 package com.github.jekattack.cornergame.game.visits;
 
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestService;
@@ -22,7 +21,6 @@ public class VisitService {
     private final VisitRepository visitRepository;
     private final KioskRepository kioskRepository;
     private final CGUserGameDataService cgUserGameDataService;
-    private final QuestService questService;
     private final List<VisitObserver> visitObservers;
 
     public ArrayList<Visit> getUsersVisits(String userId) {
@@ -30,32 +28,25 @@ public class VisitService {
     }
     public String createVisit(VisitCreationData visitCreationData, String userId) {
 
-        //User Coordinates
-        double userLat = visitCreationData.getUserLocation().getUserLocationCoordinates().getLat();
-        double userLng = visitCreationData.getUserLocation().getUserLocationCoordinates().getLng();
-
-        //Kiosk Coordinates
-        Kiosk kiosk = kioskRepository.findByGooglePlacesId(visitCreationData.getGooglePlacesId()).orElseThrow();
-        double kioskLat = kiosk.getKioskLocation().getLocation().getLat();
-        double kioskLng = kiosk.getKioskLocation().getLocation().getLng();
-
+        validateUsersLocation(visitCreationData);
         checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
-        validateUsersLocation(kioskLat, kioskLng, userLat, userLng);
-        Visit newVisit = new Visit(null, userId, kiosk.getGooglePlacesId(), Date.from(Instant.now()), null);
 
-        cgUserGameDataService.refreshQuestItemsStatus(userId);
-        CGUserGameData userGameData = cgUserGameDataService.getByUserId(userId).orElseThrow();
-
-        Optional<Quest> activeQuestWithKioskOptional = questService.returnActiveQuestWithKiosk(userId, kiosk.getGooglePlacesId());
-        if(activeQuestWithKioskOptional.isPresent() && activeQuestWithKioskOptional.get().getId()!=null){
-            Quest quest = activeQuestWithKioskOptional.get();
-            newVisit.setQuestId(quest.getId());
-        }
+        Visit newVisit = new Visit(null, userId, visitCreationData.getGooglePlacesId(), Date.from(Instant.now()), null);
+        setQuestIdIfVisitIsPartOfActiveQuest(userId, visitCreationData, newVisit);
 
         Visit visitCreated = visitRepository.save(newVisit);
-        visitObservers.forEach(visitObserver -> visitObserver.onVisitCreated(visitCreated, userGameData));
+        visitObservers.forEach(visitObserver -> visitObserver.onVisitCreated(visitCreated));
 
         return "Kiosk besucht!";
+    }
+
+    private void setQuestIdIfVisitIsPartOfActiveQuest(String userId, VisitCreationData visitCreationData, Visit newVisit) {
+        cgUserGameDataService.refreshQuestItemsStatus(userId);
+
+        Quest activeQuestForKiosk = cgUserGameDataService.getActiveQuestForKiosk(userId, visitCreationData.getGooglePlacesId());
+        if(activeQuestForKiosk != null){
+            newVisit.setQuestId(activeQuestForKiosk.getId());
+        }
     }
 
     private void checkIfUserDidNotVisitKioskWithin24Hours(String userId, VisitCreationData visitCreationData){
@@ -66,11 +57,19 @@ public class VisitService {
             throw new IllegalStateException("Kiosk already visited within last 24h");
         }
     }
-    private void validateUsersLocation(double kioskLocationLat, double kioskLocationLng, double userLocationLat, double userLocationLng){
-        if(!(kioskLocationLat - 0.0001 < userLocationLat
-                && kioskLocationLat + 0.0001 > userLocationLat
-                && kioskLocationLng - 0.0001 < userLocationLng
-                && kioskLocationLng + 0.0001 > userLocationLng)){
+    private void validateUsersLocation(VisitCreationData visitCreationData){
+
+        double userLat = visitCreationData.getUserLocation().getUserLocationCoordinates().getLat();
+        double userLng = visitCreationData.getUserLocation().getUserLocationCoordinates().getLng();
+
+        Kiosk kiosk = kioskRepository.findByGooglePlacesId(visitCreationData.getGooglePlacesId()).orElseThrow();
+        double kioskLat = kiosk.getKioskLocation().getLocation().getLat();
+        double kioskLng = kiosk.getKioskLocation().getLocation().getLng();
+
+        if(!(kioskLat - 0.0001 < userLat
+                && kioskLat + 0.0001 > userLat
+                && kioskLng - 0.0001 < userLng
+                && kioskLng + 0.0001 > userLng)){
             throw new IllegalStateException("Users location is not adequate");
         }
     }

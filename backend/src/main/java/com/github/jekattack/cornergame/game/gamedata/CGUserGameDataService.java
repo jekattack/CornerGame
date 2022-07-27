@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestObserver;
 import com.github.jekattack.cornergame.game.quests.QuestRepository;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +52,50 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
         }
         return top10GameDataExport;
     }
+
+    public Quest getActiveQuestForKiosk(String userId, String googlePlacesId) {
+        List<Quest> quests = getActiveQuests(userId);
+        Optional<Quest> expectedQuest = questRepository.findByKioskGooglePlacesIdsContaining(googlePlacesId);
+        if(!quests.isEmpty() && expectedQuest.isPresent()){
+            for(Quest quest : quests){
+                if(quest.equals(expectedQuest.get())){
+                    return quest;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<ActiveQuestDTO> getActiveQuestInfo(String userId){
+        List<Quest> activeQuests = getActiveQuests(userId);
+        List<QuestItem> activeQuestItems = getActiveQuestItems(userId);
+        List<ActiveQuestDTO> activeQuestDTOs = new ArrayList<>();
+        if(!activeQuestItems.isEmpty()){
+            for(Quest activeQuest : activeQuests){
+                QuestItem questItemResult = activeQuestItems.stream()
+                        .filter(questItem -> questItem.getQuestId().equals(activeQuest.getId()))
+                        .toList().get(0);
+                activeQuestDTOs.add(new ActiveQuestDTO(activeQuest, checkMinutesLeft(questItemResult)));
+            }
+        }
+        return activeQuestDTOs;
+    }
+
+    public List<Quest> getActiveQuests(String userId){
+        List<QuestItem> questItems = getActiveQuestItems(userId);
+        List<Quest> quests = new ArrayList<>();
+        for(QuestItem questItem : questItems){
+            Optional<Quest> questOptional = questRepository.findById(questItem.getQuestId());
+            questOptional.ifPresent(quests::add);
+        }
+        return quests;
+    }
+
+    public List<QuestItem> getActiveQuestItems(String userId){
+        CGUserGameData gameData = refreshQuestItemsStatus(userId);
+        return gameData.getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+    }
+
     public void scoreForNewVisit(String userId) {
         CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
         userGameData.setScore(userGameData.getScore() + 100);
@@ -98,7 +140,7 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
     }
 
     @Override
-    public void onVisitCreated(Visit visit, CGUserGameData cgUserGameData) {
+    public void onVisitCreated(Visit visit) {
         scoreForNewVisit(visit.getUserId());
     }
 
