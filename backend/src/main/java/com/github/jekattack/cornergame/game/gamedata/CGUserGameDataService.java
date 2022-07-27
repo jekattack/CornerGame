@@ -93,7 +93,11 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
 
     public List<QuestItem> getActiveQuestItems(String userId){
         CGUserGameData gameData = refreshQuestItemsStatus(userId);
-        return gameData.getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+        List<QuestItem> activeQuestItems = new ArrayList<>();
+        if(!(gameData.getQuestItems().isEmpty())){
+            activeQuestItems = gameData.getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+        }
+        return activeQuestItems;
     }
 
     public void scoreForNewVisit(String userId) {
@@ -118,9 +122,12 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
         log.info(userId + ": " + pointsToAdd + " Points added for new Visit");
     }
     public CGUserGameData refreshQuestItemsStatus(String userId){
-        CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
-        if(userGameData.getQuestItems()!=null || !userGameData.getQuestItems().isEmpty()){
-            List<QuestItem> activeQuests = userGameData.getQuestItems().stream().filter(quest -> quest.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+        Optional<CGUserGameData> userGameData = cgUserGameDataRespository.findByUserId(userId);
+        if(userGameData.isEmpty()){
+            createGameData(userId);
+            userGameData = cgUserGameDataRespository.findByUserId(userId);
+        } else if(userGameData.get().getQuestItems().size()>0){
+            List<QuestItem> activeQuests = userGameData.get().getQuestItems().stream().filter(quest -> quest.getQuestStatus().equals(QuestStatus.STARTED)).toList();
             for(QuestItem quest : activeQuests){
                 int minutesLeft = checkMinutesLeft(quest);
                 if(quest.getQuestStatus()!=QuestStatus.DONE && minutesLeft <= 0){
@@ -128,7 +135,7 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
                 }
             }
         }
-        return cgUserGameDataRespository.save(userGameData);
+        return cgUserGameDataRespository.save(userGameData.orElseThrow());
     }
     public int checkMinutesLeft(QuestItem questItem){
         Quest quest = questRepository.findById(questItem.getQuestId()).orElseThrow();

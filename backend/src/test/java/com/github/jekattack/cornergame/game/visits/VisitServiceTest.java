@@ -48,12 +48,11 @@ class VisitServiceTest {
         Mockito.when(kioskRepository.findByGooglePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4")).thenReturn(Optional.of(testKiosk));
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
-        QuestService questService = Mockito.mock(QuestService.class);
 
         VisitObserver visitObserver = Mockito.mock(VisitObserver.class);
         List<VisitObserver> visitObservers = List.of(visitObserver);
 
-        VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, questService, visitObservers);
+        VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, visitObservers);
 
         //Then
         Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> testVisitService.createVisit(testVisitCreationData, testUsername));
@@ -129,9 +128,7 @@ class VisitServiceTest {
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
-
-        QuestService questService = Mockito.mock(QuestService.class);
-        Mockito.when(questService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
+        Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(testQuest1);
 
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId("testUserId")).thenReturn(new ArrayList<>(List.of(testVisit)));
@@ -142,7 +139,7 @@ class VisitServiceTest {
         VisitObserver visitObserver = Mockito.mock(VisitObserver.class);
         List<VisitObserver> visitObservers = List.of(visitObserver);
 
-        VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, questService, visitObservers);
+        VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, visitObservers);
 
         //When
         String actual = testVisitService.createVisit(testVisitCreationData, testUser.getId());
@@ -224,9 +221,7 @@ class VisitServiceTest {
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
-
-        QuestService questService = Mockito.mock(QuestService.class);
-        Mockito.when(questService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
+        Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(testQuest1);
 
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId("testUserId")).thenReturn(new ArrayList<>(List.of(testVisit)));
@@ -237,14 +232,7 @@ class VisitServiceTest {
         VisitObserver visitObserver = Mockito.mock(VisitObserver.class);
         List<VisitObserver> visitObservers = List.of(visitObserver);
 
-        VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, questService, visitObservers);
-
-        Visit expectedVisit = Visit.builder()
-                .userId(testUser.getId())
-                .googlePlacesId("ChIJ5Xr0R1CPsUcRwgzxHRvBnf4")
-                .timestamp(Date.from(Instant.now()))
-                .questId(testQuest1.getId())
-                .build();
+        VisitService testVisitService = new VisitService(visitRepository, kioskRepository, userGameDataService, visitObservers);
 
         //Then
         Assertions.assertThatIllegalStateException().isThrownBy(() -> testVisitService.createVisit(testVisitCreationData, testUser.getId()));
