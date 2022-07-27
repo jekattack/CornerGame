@@ -57,7 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         CGUser user = cgUserService.findById(claims.getSubject()).orElseThrow();
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), "", grantedAuthorities);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getId(), "", grantedAuthorities);
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 

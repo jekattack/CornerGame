@@ -1,13 +1,18 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React from "react";
+import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import "../App.css";
 
 export default function WelcomePage(){
 
     const nav = useNavigate();
 
-
+    useEffect(() => {
+        if(localStorage.getItem("jwt")){
+            nav("/map")
+        }
+    }, [nav])
 
     return (
         <div id={"app-container"}>

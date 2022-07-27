@@ -1,12 +1,19 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {FormEvent, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../service/apiService";
+import "../App.css";
 
 export default function LoginPage(){
 
     const nav = useNavigate();
+
+    useEffect(() => {
+        if(localStorage.getItem("jwt")){
+            nav("/map")
+        }
+    }, [nav])
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -31,13 +38,13 @@ export default function LoginPage(){
                             <label htmlFor={"username"}>Username</label>
                         </div>
                         <div>
-                            <input id={"username"} type={"text"} value={username} onChange={(ev) => setUsername(ev.target.value)}/>
+                            <input id={"username"} type={"text"} value={username} onChange={(ev) => setUsername(ev.target.value)} required/>
                         </div>
                         <div>
                             <label htmlFor={"password"}>Password</label>
                         </div>
                         <div>
-                            <input id={"password"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)}/>
+                            <input id={"password"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)} required/>
                         </div>
                         <div>
                             <input type={"submit"} value={"Los geht's!"}/>

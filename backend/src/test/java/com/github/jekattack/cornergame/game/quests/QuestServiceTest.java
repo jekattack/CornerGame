@@ -5,6 +5,8 @@ import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
+import com.github.jekattack.cornergame.game.visits.VisitObserver;
+import com.github.jekattack.cornergame.game.visits.VisitRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,10 +29,12 @@ class QuestServiceTest {
                 .build();
 
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
-        CGUserGameDataRespository testCGUserGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
-        CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
+        VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
+        QuestObserver questObserver = Mockito.mock(QuestObserver.class);
+        List<QuestObserver> questObservers = List.of(questObserver);
 
-        QuestService testService = new QuestService(testQuestRepository, testCGUserGameDataRepository, testCGUserGameDataService);
+        QuestService testService = new QuestService(testQuestRepository, visitRepository, userGameDataService, questObservers);
 
         //When
         testService.addQuest(testQuest);
@@ -53,10 +57,12 @@ class QuestServiceTest {
 
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
         Mockito.when(testQuestRepository.findAll()).thenReturn(List.of(testQuest));
-        CGUserGameDataRespository testCGUserGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
+        VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        QuestObserver questObserver = Mockito.mock(QuestObserver.class);
+        List<QuestObserver> questObservers = List.of(questObserver);
 
-        QuestService testService = new QuestService(testQuestRepository, testCGUserGameDataRepository, testCGUserGameDataService);
+        QuestService testService = new QuestService(testQuestRepository, visitRepository, testCGUserGameDataService, questObservers);
 
         List<Quest> expected = List.of(testQuest);
 
@@ -82,7 +88,7 @@ class QuestServiceTest {
                 .scoreMultiplier(2)
                 .build();
 
-        CGUserGameDataRespository testGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
+        VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         CGUserGameData testGameData = CGUserGameData.builder()
                 .userId("TestUserId")
                 .id("TestGameDataId")
@@ -91,14 +97,16 @@ class QuestServiceTest {
                 new QuestItem("testQuestItemId", testQuest.getId(), Date.from(Instant.now()), QuestStatus.STARTED))
         )).build();
 
-        Mockito.when(testGameDataRepository.findByUserId("TestUserId")).thenReturn(Optional.of(testGameData));
-
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
         Mockito.when(testQuestRepository.findById(testQuest.getId())).thenReturn(Optional.of(testQuest));
 
         CGUserGameDataService testCGUserGameDataService = Mockito.mock(CGUserGameDataService.class);
+        Mockito.when(testCGUserGameDataService.refreshQuestItemsStatus("TestUserId")).thenReturn(testGameData);
 
-        QuestService testQuestService = new QuestService(testQuestRepository,testGameDataRepository,testCGUserGameDataService);
+        QuestObserver questObserver = Mockito.mock(QuestObserver.class);
+        List<QuestObserver> questObservers = List.of(questObserver);
+
+        QuestService testQuestService = new QuestService(testQuestRepository,visitRepository,testCGUserGameDataService, questObservers);
 
         ArrayList<ActiveQuestDTO> expected = new ArrayList<>(List.of(new ActiveQuestDTO(testQuest, 30)));
 

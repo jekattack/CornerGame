@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, {useEffect, useState} from 'react';
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
-import { containerStyle, center, options } from "./mapSettings";
+import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
 import { Kiosk } from "../../service/models";
 import '../Components.css';
@@ -23,7 +23,6 @@ const Map: React.FC = () => {
     //When Map is loaded
     const onLoad = (map: google.maps.Map): void => {
         mapRef.current = map;
-        setContinuouslyCurrentPosition();
 
         const visitedIdsSet: Set<String> = new Set();
         fetchProgress()
@@ -35,24 +34,33 @@ const Map: React.FC = () => {
     }
 
     //Setting Marker for current position
-    const setContinuouslyCurrentPosition = useCallback(() => {
-        if(mapRef.current != null && location.coordinates != null) {
-            setPositionMarker(mapRef.current, location.coordinates)
-        }
-    }, [location])
-
-    function setPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
-        new google.maps.Marker({
-            position: currentLocationCoords,
-            map,
-            icon: "/images/CGIconStandort.png",
-            title: "Du",
-            zIndex: 300
+    // eslint-disable-next-line
+    const [_, setPositionMarker] = useState<google.maps.Marker>()
+    function refreshPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
+        setPositionMarker((positionMarker) => {
+            positionMarker?.setVisible(false);
+            return (
+                new google.maps.Marker({
+                    map: map,
+                    position: currentLocationCoords,
+                    icon: "/images/CGIconStandort.png",
+                    title: "Du",
+                    zIndex: 300,
+                })
+            )
         })
     }
 
+    useEffect(() => {
+        if(mapRef.current && location.loaded) {
+            refreshPositionMarker(mapRef.current, location.coordinates)
+        }
+    }, [location])
+
+
     //Setting Markers for Kiosks
     function setMarkers(map: google.maps.Map, kiosks: Kiosk[], progress: Set<String>) {
+        let infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow();
         const image = {
             url: "/images/CGLogoBildBGIcon.png",
         };
@@ -64,8 +72,8 @@ const Map: React.FC = () => {
             type: "circle",
         };
         const kioskMarkers = new Array<google.maps.Marker>();
-        for (let i = 0; i < kiosks.length; i++) {
-            const kiosk = kiosks[i];
+
+        kiosks.forEach((kiosk) => {
             let marker: google.maps.Marker;
 
             //Differentiation if Kiosk is already visited
@@ -103,12 +111,15 @@ const Map: React.FC = () => {
                 "</div>" +
                 "</div>";
 
-            const infoWindow = new google.maps.InfoWindow({
-                content: contentString});
-
             google.maps.event.addListener(infoWindow, "domready", buttonFunctionality);
 
             marker.addListener("click", () => {
+                if (infoWindow) {
+                    infoWindow.close();
+                }
+                infoWindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
                 infoWindow.open({
                     anchor: marker,
                     map,
@@ -118,13 +129,13 @@ const Map: React.FC = () => {
 
             //Adding marker to MarkerArray
             kioskMarkers.push(marker);
-        }
+        })
     }
 
     //Adding Functionality to button
     function buttonFunctionality (){
         document.getElementById("visit-button")!.onclick=addVisit;
-    };
+    }
 
     //Action for Button in InfoWindow
     function addVisit(){
@@ -141,8 +152,8 @@ const Map: React.FC = () => {
         <div className={"wrapper"}>
             <GoogleMap
                 mapContainerStyle={containerStyle}
-                options={options as google.maps.MapOptions}
-                center={location.loaded && location.error.code===0 ? location.coordinates :center}
+                options={options(location)}
+                center={centerOnceOnPositionWhenLoaded(location)}
                 zoom={16}
                 onLoad={onLoad}
                 onUnmount={onUnmount}

@@ -140,58 +140,6 @@ class CGUserGameDataServiceTest {
     }
 
     @Test
-    void shouldAddPointsForResolvedQuest(){
-        //Given
-        CGUser testUser = CGUser.builder()
-                .id("testUserId")
-                .username("testusername")
-                .email("test@mail.com")
-                .password("hashedPassword")
-                .role("user")
-                .build();
-        CGUserGameData testGameData = CGUserGameData.builder()
-                .id("testGameDataId")
-                .userId("testUserId")
-                .score(300)
-                .questItems(new ArrayList<>(List.of(new QuestItem("testQuestId", Date.from(Instant.now())))))
-                .build();
-
-        String[] kioskGooglePlacesIdsInput = {"ChIJO1UA9SqJsUcRXBMA3ct5jS8", "ChIJAQANpGyJsUcR3pgAdCAy5Zk", "ChIJgSutDYGJsUcR6sH-beVN7Ic"};
-        Quest testQuest = Quest.builder()
-                .name("testName")
-                .description("Dies ist der TestNameQuest!")
-                .durationInMinutes(60)
-                .kioskGooglePlacesIds(kioskGooglePlacesIdsInput)
-                .scoreMultiplier(2)
-                .build();
-
-        CGUserRepository cgUserRepository = Mockito.mock(CGUserRepository.class);
-        Mockito.when(cgUserRepository.findById("testUserId")).thenReturn(Optional.of(testUser));
-        CGUserGameDataRespository cgUserGameDataRespository = Mockito.mock(CGUserGameDataRespository.class);
-        Mockito.when(cgUserGameDataRespository.findByUserId("testUserId")).thenReturn(Optional.of(testGameData));
-        QuestRepository questRepository = Mockito.mock(QuestRepository.class);
-
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRespository,cgUserRepository,questRepository);
-
-        CGUserGameData expected = CGUserGameData.builder()
-                .id("testGameDataId")
-                .userId("testUserId")
-                .score(600)
-                .questItems(new ArrayList<>(List.of(new QuestItem("testQuestId", Date.from(Instant.now())))))
-                .build();
-
-        //When
-        cgUserGameDataService.scoreForQuest(testUser.getId(), testQuest.getScoreMultiplier(), testQuest.getKioskGooglePlacesIds().length);
-
-        //Then
-        Mockito.verify(cgUserGameDataRespository).save(Mockito.argThat(gd ->
-                Objects.equals(gd.getId(), expected.getId()) &&
-                Objects.equals(gd.getScore(), expected.getScore()) &&
-                ((gd.getQuestItems().stream().findFirst().get().getTimestamp().toInstant().toEpochMilli() - expected.getQuestItems().stream().findFirst().get().getTimestamp().toInstant().toEpochMilli()) < 1000)));
-
-    }
-
-    @Test
     void shouldRefreshQuestItemStatus(){
         //Given
 
@@ -361,5 +309,89 @@ class CGUserGameDataServiceTest {
 
     }
 
+
+    @Test
+    void shouldAddQuestItemToUsersGameData(){
+        //Given
+        String[] kioskIdsInput = {"testPlacesId", "testPlacesId2"};
+        Quest testQuest3 = Quest.builder()
+                .id("testQuestId3")
+                .name("testName3")
+                .description("Dies ist der TestNameQuest3!")
+                .durationInMinutes(60)
+                .kioskGooglePlacesIds(kioskIdsInput)
+                .scoreMultiplier(2)
+                .build();
+
+        QuestItem questItem1 = new QuestItem("testQuestItemId1", "testQuestId1", Date.from(Instant.now().minus(24, ChronoUnit.HOURS)), QuestStatus.STARTED);
+        QuestItem questItem2 = new QuestItem("testQuestItemId1","testQuestId2", Date.from(Instant.now().minus(24, ChronoUnit.MINUTES)), QuestStatus.STARTED);
+
+        CGUserGameData testGameData = CGUserGameData.builder()
+                .id("testGameDataId")
+                .userId("testUserId")
+                .score(300)
+                .questItems(new ArrayList<>(List.of(questItem1,questItem2)))
+                .build();
+
+        QuestRepository questRepository = Mockito.mock(QuestRepository.class);
+        CGUserRepository cgUserRepository = Mockito.mock(CGUserRepository.class);
+        CGUserGameDataRespository cgUserGameDataRespository = Mockito.mock(CGUserGameDataRespository.class);
+        Mockito.when(cgUserGameDataRespository.findByUserId("testUserId")).thenReturn(Optional.of(testGameData));
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRespository,cgUserRepository,questRepository);
+
+        QuestItem questItem3 = new QuestItem("testQuestItemId3","testQuestId3", Date.from(Instant.now().minus(24, ChronoUnit.MINUTES)), QuestStatus.STARTED);
+        CGUserGameData expectedTestGameData = CGUserGameData.builder()
+                .id("testGameDataId")
+                .userId("testUserId")
+                .score(300)
+                .questItems(new ArrayList<>(List.of(questItem1,questItem2,questItem3)))
+                .build();
+
+        //When
+        cgUserGameDataService.onQuestStarted(testGameData.getUserId(), testQuest3);
+
+        //Then
+        Mockito.verify(cgUserGameDataRespository).save(Mockito.argThat(gameData -> Objects.equals(gameData.getQuestItems().size(), expectedTestGameData.getQuestItems().size())));
+
+    }
+
+    @Test
+    void onQuestCompleted(){
+        String[] kioskIdsInput = {"testPlacesId", "testPlacesId2"};
+        Quest testQuest1 = Quest.builder()
+                .id("testQuestId1")
+                .name("testName1")
+                .description("Dies ist der TestNameQuest1!")
+                .durationInMinutes(60)
+                .kioskGooglePlacesIds(kioskIdsInput)
+                .scoreMultiplier(2)
+                .build();
+
+        QuestItem questItem1 = new QuestItem("testQuestItemId1", "testQuestId1", Date.from(Instant.now().minus(24, ChronoUnit.HOURS)), QuestStatus.STARTED);
+        QuestItem questItem2 = new QuestItem("testQuestItemId2","testQuestId2", Date.from(Instant.now().minus(24, ChronoUnit.MINUTES)), QuestStatus.STARTED);
+
+        CGUserGameData testGameData = CGUserGameData.builder()
+                .id("testGameDataId")
+                .userId("testUserId")
+                .score(300)
+                .questItems(new ArrayList<>(List.of(questItem1,questItem2)))
+                .build();
+
+        QuestRepository questRepository = Mockito.mock(QuestRepository.class);
+        CGUserRepository cgUserRepository = Mockito.mock(CGUserRepository.class);
+        CGUserGameDataRespository cgUserGameDataRespository = Mockito.mock(CGUserGameDataRespository.class);
+        Mockito.when(cgUserGameDataRespository.findByUserId("testUserId")).thenReturn(Optional.of(testGameData));
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRespository,cgUserRepository,questRepository);
+
+        //When
+        cgUserGameDataService.scoreForQuestAndMarkAsDone("testUserId", testQuest1);
+
+        testGameData.setScore(500);
+        testGameData.getQuestItems().get(0).setQuestStatus(QuestStatus.DONE);
+        //Then
+        Mockito.verify(cgUserGameDataRespository).save(testGameData);
+    }
 }
 

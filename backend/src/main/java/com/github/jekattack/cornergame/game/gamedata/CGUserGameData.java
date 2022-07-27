@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "gamedata")
 @Data
@@ -23,7 +24,7 @@ public class CGUserGameData {
     @Builder.Default
     private int score = 0;
     private ArrayList<String> achievementIds;
-    private ArrayList<QuestItem> questItems;
+    private ArrayList<QuestItem> questItems = new ArrayList<>(List.of());
 
     public CGUserGameData(String userId){
         this.userId = userId;
