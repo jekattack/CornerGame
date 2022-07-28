@@ -2,6 +2,7 @@ package com.github.jekattack.cornergame.game.gamedata;
 
 import com.github.jekattack.cornergame.game.achievements.AchievementObserver;
 
+import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestObserver;
 import com.github.jekattack.cornergame.game.quests.QuestRepository;
@@ -154,7 +155,7 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver, Achi
     }
 
     @Override
-    public void onVisitCreated(Visit visit) {
+    public void onVisitCreated(Visit visit, CGUserGameData gameData) {
         scoreForNewVisit(visit.getUserId());
     }
 

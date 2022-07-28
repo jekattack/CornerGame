@@ -422,7 +422,7 @@ class CGUserGameDataServiceTest {
         CGUserRepository userRepository = Mockito.mock(CGUserRepository.class);
         QuestRepository questRepository = Mockito.mock(QuestRepository.class);
         Mockito.when(questRepository.findById(testQuest.getId())).thenReturn(Optional.of(testQuest));
-        CGUserGameDataRespository gameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         Mockito.when(gameDataRepository.findByUserId("TestUserId")).thenReturn(Optional.of(testGameData));
         Mockito.when(gameDataRepository.save(testGameData)).thenReturn(testGameData);
         CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(gameDataRepository,userRepository,questRepository);

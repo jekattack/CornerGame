@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.visits;
 
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestService;
@@ -27,7 +28,7 @@ public class VisitService {
         return visitRepository.findAllByUserId(userId);
     }
     public String createVisit(VisitCreationData visitCreationData, String userId) {
-        cgUserGameDataService.refreshQuestItemsStatus(userId);
+        CGUserGameData gameData = cgUserGameDataService.refreshQuestItemsStatus(userId);
 
         validateUsersLocation(visitCreationData);
         checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
@@ -36,7 +37,7 @@ public class VisitService {
         setQuestIdIfVisitIsPartOfActiveQuest(userId, visitCreationData, newVisit);
 
         Visit visitCreated = visitRepository.save(newVisit);
-        visitObservers.forEach(visitObserver -> visitObserver.onVisitCreated(visitCreated));
+        visitObservers.forEach(visitObserver -> visitObserver.onVisitCreated(visitCreated, gameData));
 
         return "Kiosk besucht!";
     }
