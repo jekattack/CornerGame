@@ -1,5 +1,7 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.achievements.Achievement;
+import com.github.jekattack.cornergame.game.achievements.AchievementObserver;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestObserver;
 import com.github.jekattack.cornergame.game.quests.QuestRepository;
@@ -23,7 +25,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CGUserGameDataService implements VisitObserver, QuestObserver {
+public class CGUserGameDataService implements VisitObserver, QuestObserver, AchievementObserver {
 
     private final CGUserGameDataRespository cgUserGameDataRespository;
     private final CGUserRepository cgUserRepository;
@@ -114,5 +116,10 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
         questItems.add(new QuestItem(quest.getId(), Date.from(Instant.now())));
         gameData.setQuestItems(questItems);
         cgUserGameDataRespository.save(gameData);
+    }
+
+    @Override
+    public void onAchievementRecieved(String achievementId, String userId) {
+
     }
 }
