@@ -23,6 +23,5 @@ public class Achievement {
     private int questsStarted;
     private int questsFinished;
     private int kiosksVisited;
-    private int score;
 
 }

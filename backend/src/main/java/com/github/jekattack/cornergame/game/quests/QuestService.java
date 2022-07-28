@@ -1,7 +1,6 @@
 package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
-import java.time.Instant;
 import java.util.*;
 
 @Service

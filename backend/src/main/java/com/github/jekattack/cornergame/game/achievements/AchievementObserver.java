@@ -1,5 +1,7 @@
 package com.github.jekattack.cornergame.game.achievements;
 
+import java.util.List;
+
 public interface AchievementObserver {
-    void onAchievementRecieved(String achievementId, String userId);
+    void onAchievementReceived(List<String> achievementId, String userId);
 }

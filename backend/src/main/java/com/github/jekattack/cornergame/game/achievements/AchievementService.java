@@ -1,7 +1,7 @@
 package com.github.jekattack.cornergame.game.achievements;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import com.github.jekattack.cornergame.game.quests.Quest;
@@ -13,10 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -25,10 +23,9 @@ import java.util.stream.Stream;
 public class AchievementService implements VisitObserver, QuestObserver {
 
     private final AchievementRepository achievementRepository;
-    private final CGUserGameDataRespository gameDataRepository;
-    private final List<AchievementObserver> achievementObservers;
-
+    private final CGUserGameDataRepository gameDataRepository;
     private final VisitRepository visitRepository;
+    private final List<AchievementObserver> achievementObservers;
 
     public List<Achievement> getAllAchievements() {
         return achievementRepository.findAll();
@@ -38,12 +35,14 @@ public class AchievementService implements VisitObserver, QuestObserver {
         return achievementRepository.save(achievement);
     }
 
-    public Optional<Achievement> getAchievementById(String id) {
-        return achievementRepository.findById(id);
+    public Achievement getAchievementById(String id) {
+        return achievementRepository.findById(id).orElseThrow();
     }
 
     public void deleteAchievement(String id) {
-        achievementRepository.deleteById(id);
+        if(achievementRepository.existsById(id)){
+            achievementRepository.deleteById(id);
+        }
     }
 
     @Override
@@ -52,8 +51,9 @@ public class AchievementService implements VisitObserver, QuestObserver {
         if(gameData.isPresent()){
             List<QuestItem> doneQuests = gameData.get().getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.DONE)).toList();
             List<Achievement> achievements = achievementRepository.findAllByQuestsFinished(doneQuests.size());
-            for(Achievement achievement : achievements){
-                achievementObservers.forEach(observer -> observer.onAchievementRecieved(achievement.getId(), userId));
+            if(!achievements.isEmpty()){
+                List<String> achievementIds = achievements.stream().map(Achievement::getId).toList();
+                achievementObservers.forEach(observer -> observer.onAchievementReceived(achievementIds, userId));
             }
         }
     }
@@ -64,8 +64,9 @@ public class AchievementService implements VisitObserver, QuestObserver {
         if(gameData.isPresent()){
             List<QuestItem> startedQuests = gameData.get().getQuestItems();
             List<Achievement> achievements = achievementRepository.findAllByQuestsStarted(startedQuests.size());
-            for(Achievement achievement : achievements){
-                achievementObservers.forEach(observer -> observer.onAchievementRecieved(achievement.getId(), userId));
+            if(!achievements.isEmpty()){
+                List<String> achievementIds = achievements.stream().map(Achievement::getId).toList();
+                achievementObservers.forEach(observer -> observer.onAchievementReceived(achievementIds, userId));
             }
         }
     }
@@ -80,8 +81,9 @@ public class AchievementService implements VisitObserver, QuestObserver {
                     achievementRepository.findAllByVisitsCreated(allVisits.size()).stream(),
                     achievementRepository.findAllByKiosksVisited(kiosksVisited.size()).stream()
             ).toList();
-            for(Achievement achievement : achievements){
-                achievementObservers.forEach(observer -> observer.onAchievementRecieved(achievement.getId(), visit.getUserId()));
+            if(!achievements.isEmpty()){
+                List<String> achievementIds = achievements.stream().map(Achievement::getId).toList();
+                achievementObservers.forEach(observer -> observer.onAchievementReceived(achievementIds, visit.getUserId()));
             }
         }
     }

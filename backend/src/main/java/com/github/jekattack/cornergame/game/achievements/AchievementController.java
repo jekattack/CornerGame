@@ -32,7 +32,7 @@ public class AchievementController {
     @ResponseStatus(HttpStatus.OK)
     public Achievement getAchievementById(@PathVariable String id){
         try{
-            return achievementService.getAchievementById(id).orElseThrow();
+            return achievementService.getAchievementById(id);
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Kein Achievement für " + id + "gefunden.");
         }
