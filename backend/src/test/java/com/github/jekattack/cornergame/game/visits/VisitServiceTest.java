@@ -128,7 +128,7 @@ class VisitServiceTest {
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
-        Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(testQuest1);
+        Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
 
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId("testUserId")).thenReturn(new ArrayList<>(List.of(testVisit)));
@@ -221,7 +221,7 @@ class VisitServiceTest {
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
-        Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(testQuest1);
+        Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
 
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId("testUserId")).thenReturn(new ArrayList<>(List.of(testVisit)));

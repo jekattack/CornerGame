@@ -27,6 +27,7 @@ public class VisitService {
         return visitRepository.findAllByUserId(userId);
     }
     public String createVisit(VisitCreationData visitCreationData, String userId) {
+        cgUserGameDataService.refreshQuestItemsStatus(userId);
 
         validateUsersLocation(visitCreationData);
         checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
@@ -41,12 +42,8 @@ public class VisitService {
     }
 
     private void setQuestIdIfVisitIsPartOfActiveQuest(String userId, VisitCreationData visitCreationData, Visit newVisit) {
-        cgUserGameDataService.refreshQuestItemsStatus(userId);
-
-        Quest activeQuestForKiosk = cgUserGameDataService.getActiveQuestForKiosk(userId, visitCreationData.getGooglePlacesId());
-        if(activeQuestForKiosk != null){
-            newVisit.setQuestId(activeQuestForKiosk.getId());
-        }
+        Optional<Quest> activeQuestForKiosk = cgUserGameDataService.getActiveQuestForKiosk(userId, visitCreationData.getGooglePlacesId());
+        activeQuestForKiosk.ifPresent(quest -> newVisit.setQuestId(quest.getId()));
     }
 
     private void checkIfUserDidNotVisitKioskWithin24Hours(String userId, VisitCreationData visitCreationData){

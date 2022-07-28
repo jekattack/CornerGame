@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -53,17 +54,17 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
         return top10GameDataExport;
     }
 
-    public Quest getActiveQuestForKiosk(String userId, String googlePlacesId) {
+    public Optional<Quest> getActiveQuestForKiosk(String userId, String googlePlacesId) {
         List<Quest> quests = getActiveQuests(userId);
         Optional<Quest> expectedQuest = questRepository.findByKioskGooglePlacesIdsContaining(googlePlacesId);
         if(!quests.isEmpty() && expectedQuest.isPresent()){
             for(Quest quest : quests){
                 if(quest.equals(expectedQuest.get())){
-                    return quest;
+                    return Optional.of(quest);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<ActiveQuestDTO> getActiveQuestInfo(String userId){
