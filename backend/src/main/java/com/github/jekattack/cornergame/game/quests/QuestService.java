@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -23,26 +22,9 @@ public class QuestService implements VisitObserver {
 
     private final QuestRepository questRepository;
     private final VisitRepository visitRepository;
-    private final CGUserGameDataService cgUserGameDataService;
+    private final CGUserGameDataRespository gameDataRepository;
     private final List<QuestObserver> questObservers;
 
-    @Override
-    public void onVisitCreated(Visit visit, CGUserGameData userGameData) {
-
-        if(visit.getQuestId()!=null){
-            Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
-                    .filter(qi -> qi.getQuestId().equals(visit.getQuestId()) && qi.getQuestStatus().equals(QuestStatus.STARTED))
-                    .findFirst();
-            if(questItem.isPresent()){
-                List<Visit> questVisits = visitRepository.findAllByQuestIdAndTimestampIsAfter(
-                        visit.getQuestId(),questItem.get().getTimestamp());
-                if(checkIfQuestComplete(questVisits, visit.getQuestId())){
-                    Quest quest = questRepository.findById(visit.getQuestId()).orElseThrow();
-                    questObservers.forEach(observer -> observer.onQuestCompleted(visit.getUserId(), quest));
-                }
-            }
-        }
-    }
 
     public Quest addQuest(Quest newQuest) {
         return questRepository.save(newQuest);
@@ -58,37 +40,7 @@ public class QuestService implements VisitObserver {
         return "Quest " + quest.getName() + " gestartet!";
     }
 
-
-    public ArrayList<ActiveQuestDTO> getActiveQuests(String userId) {
-        CGUserGameData gameData = cgUserGameDataService.refreshQuestItemsStatus(userId);
-        List<QuestItem> questItems = gameData.getQuestItems().stream().filter(questItem -> questItem.getQuestStatus().equals(QuestStatus.STARTED)).toList();
-        ArrayList<ActiveQuestDTO> startedQuestsResponse = new ArrayList<>();
-        try {
-            //Check, welche Quests noch aktiv sind
-            for(QuestItem questItem : questItems){
-                int minutesLeft = cgUserGameDataService.checkMinutesLeft(questItem);
-                Quest quest = questRepository.findById(questItem.getQuestId()).orElseThrow();
-                startedQuestsResponse.add(new ActiveQuestDTO(quest, minutesLeft));
-            }
-            return startedQuestsResponse;
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("At least one started quest could not be found");
-        }
-    }
-
-    public Optional<Quest> returnActiveQuestWithKiosk(String userId, String googlePlacesId) {
-        ArrayList<ActiveQuestDTO> activeQuestsDTO = getActiveQuests(userId);
-        for(ActiveQuestDTO questDTO : activeQuestsDTO){
-            if (questRepository.existsByIdAndKioskGooglePlacesIdsContaining(
-                    questDTO.getQuest().getId(),
-                    googlePlacesId)){
-                return Optional.of(questDTO.getQuest());
-            }
-        }
-        return Optional.of(new Quest());
-    }
-
-    public boolean checkIfQuestComplete(List<Visit> visits, String questId){
+    private boolean checkIfQuestComplete(List<Visit> visits, String questId){
         List<String> distinctVisits = visits.stream().map(Visit::getGooglePlacesId).distinct().toList();
         if(questRepository.findById(questId).isPresent()){
             return distinctVisits.size() == questRepository.findById(questId).get().getKioskGooglePlacesIds().length;
@@ -97,5 +49,21 @@ public class QuestService implements VisitObserver {
         }
     }
 
-
+    @Override
+    public void onVisitCreated(Visit visit) {
+        CGUserGameData userGameData = gameDataRepository.getByUserId(visit.getUserId()).orElseThrow();
+        if(visit.getQuestId()!=null){
+            Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
+                    .filter(qi -> qi.getQuestId().equals(visit.getQuestId()) && qi.getQuestStatus().equals(QuestStatus.STARTED))
+                    .findFirst();
+            if(questItem.isPresent()){
+                List<Visit> questVisits = visitRepository.findAllByQuestIdAndTimestampIsAfter(
+                        visit.getQuestId(),questItem.get().getTimestamp());
+                if(checkIfQuestComplete(questVisits, visit.getQuestId())){
+                    Quest quest = questRepository.findById(visit.getQuestId()).orElseThrow();
+                    questObservers.forEach(observer -> observer.onQuestCompleted(visit.getUserId(), quest));
+                }
+            }
+        }
+    }
 }

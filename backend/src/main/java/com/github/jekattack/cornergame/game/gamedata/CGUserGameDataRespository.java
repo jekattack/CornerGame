@@ -10,4 +10,5 @@ public interface CGUserGameDataRespository extends MongoRepository<CGUserGameDat
     Optional<CGUserGameData> findByUserId(String userId);
     ArrayList<CGUserGameData> findTop10ByOrderByScoreDesc();
 
+    Optional<CGUserGameData> getByUserId(String userId);
 }

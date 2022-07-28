@@ -30,17 +30,6 @@ public class QuestController {
         return questService.addQuest(newQuest);
     }
 
-    @GetMapping("/active")
-    @ResponseStatus(HttpStatus.OK)
-    public ArrayList<ActiveQuestDTO> getActiveQuests(Principal principal){
-        try{
-            //principal.getName() contains userId
-            return questService.getActiveQuests(principal.getName());
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Active quests could not be found. User or at least one started Quest invalid.");
-        }
-    }
-
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String startQuest(@RequestBody String questId, Principal principal){
