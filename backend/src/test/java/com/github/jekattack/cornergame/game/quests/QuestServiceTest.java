@@ -1,11 +1,10 @@
 package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
-import com.github.jekattack.cornergame.game.visits.VisitObserver;
 import com.github.jekattack.cornergame.game.visits.VisitRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ class QuestServiceTest {
                 .build();
 
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
-        CGUserGameDataRespository userGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
+        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         QuestObserver questObserver = Mockito.mock(QuestObserver.class);
         List<QuestObserver> questObservers = List.of(questObserver);
@@ -59,7 +58,7 @@ class QuestServiceTest {
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
         Mockito.when(testQuestRepository.findAll()).thenReturn(List.of(testQuest));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        CGUserGameDataRespository userGameDataRepository = Mockito.mock(CGUserGameDataRespository.class);
+        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         QuestObserver questObserver = Mockito.mock(QuestObserver.class);
         List<QuestObserver> questObservers = List.of(questObserver);
 

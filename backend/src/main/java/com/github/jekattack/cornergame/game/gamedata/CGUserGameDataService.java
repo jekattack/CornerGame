@@ -1,5 +1,7 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.achievements.AchievementObserver;
+
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestObserver;
@@ -17,33 +19,37 @@ import org.springframework.stereotype.Service;
 import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CGUserGameDataService implements VisitObserver, QuestObserver {
+public class CGUserGameDataService implements VisitObserver, QuestObserver, AchievementObserver {
 
-    private final CGUserGameDataRespository cgUserGameDataRespository;
+    private final CGUserGameDataRepository cgUserGameDataRepository;
     private final CGUserRepository cgUserRepository;
     private final QuestRepository questRepository;
 
     public void createGameData(String userId) {
-        cgUserGameDataRespository.save(new CGUserGameData(userId));
+        cgUserGameDataRepository.save(new CGUserGameData(userId));
     }
     public void save(CGUserGameData userGameData) {
-        cgUserGameDataRespository.save(userGameData);
+        cgUserGameDataRepository.save(userGameData);
     }
     public CGUserGameDataDTO getScore(String userId) {
         CGUser user = cgUserRepository.findById(userId).orElseThrow();
-        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(user.getId()).orElseThrow();
+        CGUserGameData gameData = cgUserGameDataRepository.findByUserId(user.getId()).orElseThrow();
         return new CGUserGameDataDTO(user.getUsername(), gameData.getScore());
     }
     public Optional<CGUserGameData> getByUserId(String userId) {
-        return cgUserGameDataRespository.findByUserId(userId);
+        return cgUserGameDataRepository.findByUserId(userId);
     }
     public ArrayList<CGUserGameDataDTO> getTop10Highscore() {
-        ArrayList<CGUserGameData> top10GameData = cgUserGameDataRespository.findTop10ByOrderByScoreDesc();
+        ArrayList<CGUserGameData> top10GameData = cgUserGameDataRepository.findTop10ByOrderByScoreDesc();
         ArrayList<CGUserGameDataDTO> top10GameDataExport = new ArrayList<>();
         for(CGUserGameData gameData : top10GameData){
             CGUserGameDataDTO gameDataDTO = new CGUserGameDataDTO(cgUserRepository
@@ -102,14 +108,14 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
     }
 
     public void scoreForNewVisit(String userId) {
-        CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
+        CGUserGameData userGameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
         userGameData.setScore(userGameData.getScore() + 100);
-        cgUserGameDataRespository.save(userGameData);
+        cgUserGameDataRepository.save(userGameData);
         log.info(userId + ": 100 Points added for new Visit");
     }
 
     public void scoreForQuestAndMarkAsDone(String userId, Quest quest) {
-        CGUserGameData userGameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
+        CGUserGameData userGameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
         Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
                 .filter(qi -> qi.getQuestId().equals(quest.getId()))
                 .findFirst();
@@ -119,16 +125,15 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
         int pointsToAdd = numberOfVisitsForQuest * 100 * quest.getScoreMultiplier() - numberOfVisitsForQuest * 100;
         userGameData.setScore(userGameData.getScore() + pointsToAdd);
 
-        cgUserGameDataRespository.save(userGameData);
+        cgUserGameDataRepository.save(userGameData);
         log.info(userId + ": " + pointsToAdd + " Points added for new Visit");
     }
     public CGUserGameData refreshQuestItemsStatus(String userId){
-        Optional<CGUserGameData> userGameData = cgUserGameDataRespository.findByUserId(userId);
-        if(userGameData.isEmpty()){
-            createGameData(userId);
-            userGameData = cgUserGameDataRespository.findByUserId(userId);
-        } else if(userGameData.get().getQuestItems().size()>0){
-            List<QuestItem> activeQuests = userGameData.get().getQuestItems().stream().filter(quest -> quest.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+
+        CGUserGameData userGameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
+        if(userGameData.getQuestItems()!=null || !userGameData.getQuestItems().isEmpty()){
+            List<QuestItem> activeQuests = userGameData.getQuestItems().stream().filter(quest -> quest.getQuestStatus().equals(QuestStatus.STARTED)).toList();
+
             for(QuestItem quest : activeQuests){
                 int minutesLeft = checkMinutesLeft(quest);
                 if(quest.getQuestStatus()!=QuestStatus.DONE && minutesLeft <= 0){
@@ -136,7 +141,9 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
                 }
             }
         }
-        return cgUserGameDataRespository.save(userGameData.orElseThrow());
+
+        return cgUserGameDataRepository.save(userGameData);
+
     }
     public int checkMinutesLeft(QuestItem questItem){
         Quest quest = questRepository.findById(questItem.getQuestId()).orElseThrow();
@@ -148,7 +155,7 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
     }
 
     @Override
-    public void onVisitCreated(Visit visit) {
+    public void onVisitCreated(Visit visit, CGUserGameData gameData) {
         scoreForNewVisit(visit.getUserId());
     }
 
@@ -159,10 +166,19 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
 
     @Override
     public void onQuestStarted(String userId, Quest quest) {
-        CGUserGameData gameData = cgUserGameDataRespository.findByUserId(userId).orElseThrow();
+        CGUserGameData gameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
         ArrayList<QuestItem> questItems = gameData.getQuestItems();
         questItems.add(new QuestItem(quest.getId(), Date.from(Instant.now())));
         gameData.setQuestItems(questItems);
-        cgUserGameDataRespository.save(gameData);
+        cgUserGameDataRepository.save(gameData);
+    }
+
+    @Override
+    public void onAchievementReceived(List<String> achievementIds, String userId) {
+        CGUserGameData gameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
+        gameData.setAchievementIds(
+            Stream.concat(gameData.getAchievementIds().stream(), achievementIds.stream()).toList()
+        );
+        cgUserGameDataRepository.save(gameData);
     }
 }

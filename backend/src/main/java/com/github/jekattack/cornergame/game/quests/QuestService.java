@@ -1,7 +1,7 @@
 package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRespository;
+import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
@@ -22,7 +22,7 @@ public class QuestService implements VisitObserver {
 
     private final QuestRepository questRepository;
     private final VisitRepository visitRepository;
-    private final CGUserGameDataRespository gameDataRepository;
+    private final CGUserGameDataRepository gameDataRepository;
     private final List<QuestObserver> questObservers;
 
 
@@ -50,7 +50,7 @@ public class QuestService implements VisitObserver {
     }
 
     @Override
-    public void onVisitCreated(Visit visit) {
+    public void onVisitCreated(Visit visit, CGUserGameData gameData) {
         CGUserGameData userGameData = gameDataRepository.getByUserId(visit.getUserId()).orElseThrow();
         if(visit.getQuestId()!=null){
             Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
