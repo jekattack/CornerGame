@@ -127,6 +127,7 @@ class VisitServiceTest {
         Mockito.when(kioskRepository.findByGooglePlacesId("ChIJO1UA9SqJsUcRXBMA3ct5jS8")).thenReturn(Optional.of(testKiosk1));
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
+        Mockito.when(userGameDataService.refreshQuestItemsStatus(testUser.getId())).thenReturn(testUserGameData);
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
         Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
 
@@ -147,7 +148,7 @@ class VisitServiceTest {
         //Then
         Assertions.assertThat(actual).isEqualTo("Kiosk besucht!");
 
-        Mockito.verify(visitObserver).onVisitCreated(newTestVisit);
+        Mockito.verify(visitObserver).onVisitCreated(newTestVisit, testUserGameData);
     }
 
 
@@ -220,6 +221,7 @@ class VisitServiceTest {
         Mockito.when(kioskRepository.findByGooglePlacesId("ChIJO1UA9SqJsUcRXBMA3ct5jS8")).thenReturn(Optional.of(testKiosk1));
 
         CGUserGameDataService userGameDataService = Mockito.mock(CGUserGameDataService.class);
+        Mockito.when(userGameDataService.refreshQuestItemsStatus(testUser.getId())).thenReturn(testUserGameData);
         Mockito.when(userGameDataService.getByUserId(testUser.getId())).thenReturn(Optional.of(testUserGameData));
         Mockito.when(userGameDataService.getActiveQuestForKiosk(testUser.getId(), testKiosk1.getGooglePlacesId())).thenReturn(Optional.of(testQuest1));
 
