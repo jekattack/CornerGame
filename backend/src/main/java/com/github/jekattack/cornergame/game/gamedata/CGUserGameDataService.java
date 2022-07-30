@@ -1,7 +1,9 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.achievements.Achievement;
 import com.github.jekattack.cornergame.game.achievements.AchievementObserver;
 
+import com.github.jekattack.cornergame.game.achievements.AchievementRepository;
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
 import com.github.jekattack.cornergame.game.quests.QuestObserver;
@@ -33,6 +35,7 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver, Achi
     private final CGUserGameDataRepository cgUserGameDataRepository;
     private final CGUserRepository cgUserRepository;
     private final QuestRepository questRepository;
+    private final AchievementRepository achievementRepository;
 
     public void createGameData(String userId) {
         cgUserGameDataRepository.save(new CGUserGameData(userId));
@@ -47,6 +50,19 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver, Achi
     }
     public Optional<CGUserGameData> getByUserId(String userId) {
         return cgUserGameDataRepository.findByUserId(userId);
+    }
+
+    public List<Achievement> getAchievementsForUserByUserId(String userId){
+        CGUserGameData gameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
+        List<String> achievementIds = gameData.getAchievementIds();
+        List<Achievement> achievementResponse = new ArrayList<>();
+        for(String achievementId : achievementIds){
+            Optional<Achievement> achievement = achievementRepository.findById(achievementId);
+            if(achievement.isPresent()){
+                achievementResponse.add(achievement.get());
+            }
+        }
+        return achievementResponse;
     }
     public ArrayList<CGUserGameDataDTO> getTop10Highscore() {
         ArrayList<CGUserGameData> top10GameData = cgUserGameDataRepository.findTop10ByOrderByScoreDesc();
@@ -176,9 +192,11 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver, Achi
     @Override
     public void onAchievementReceived(List<String> achievementIds, String userId) {
         CGUserGameData gameData = cgUserGameDataRepository.findByUserId(userId).orElseThrow();
-        gameData.setAchievementIds(
-            Stream.concat(gameData.getAchievementIds().stream(), achievementIds.stream()).toList()
-        );
+        for(String achievementId : achievementIds){
+            if(!gameData.getAchievementIds().contains(achievementId)){
+                gameData.getAchievementIds().add(achievementId);
+            }
+        }
         cgUserGameDataRepository.save(gameData);
     }
 }

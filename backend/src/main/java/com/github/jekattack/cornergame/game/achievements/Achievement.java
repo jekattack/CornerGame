@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Achievement {
+public class  Achievement {
     @Id
     private String id;
     @Indexed(unique = true)

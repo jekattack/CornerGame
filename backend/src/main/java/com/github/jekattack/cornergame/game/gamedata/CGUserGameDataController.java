@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
+import com.github.jekattack.cornergame.game.achievements.Achievement;
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,17 @@ public class CGUserGameDataController {
             return cgUserGameDataService.getScore(principal.getName());
         } catch(NoSuchElementException e){
             throw new NoSuchElementException("No score found for User-Id:" + principal.getName());
+        }
+    }
+
+    @GetMapping("/achievements")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Achievement> getAchievementsForUserByUserId(Principal principal){
+        //principal.getName() contains userId
+        try{
+            return cgUserGameDataService.getAchievementsForUserByUserId(principal.getName());
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Du hast noch keine Achievements gesammelt.");
         }
     }
 

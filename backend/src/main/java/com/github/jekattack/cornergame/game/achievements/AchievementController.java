@@ -24,7 +24,7 @@ public class AchievementController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Achievement createAchievement(Achievement achievement){
+    public Achievement createAchievement(@RequestBody Achievement achievement){
         return achievementService.createAchievement(achievement);
     }
 

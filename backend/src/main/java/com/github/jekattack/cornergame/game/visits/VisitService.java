@@ -64,10 +64,10 @@ public class VisitService {
         double kioskLat = kiosk.getKioskLocation().getLocation().getLat();
         double kioskLng = kiosk.getKioskLocation().getLocation().getLng();
 
-        if(!(kioskLat - 0.0001 < userLat
-                && kioskLat + 0.0001 > userLat
-                && kioskLng - 0.0001 < userLng
-                && kioskLng + 0.0001 > userLng)){
+        if(!(kioskLat - 0.001 < userLat
+                && kioskLat + 0.001 > userLat
+                && kioskLng - 0.001 < userLng
+                && kioskLng + 0.001 > userLng)){
             throw new IllegalStateException("Users location is not adequate");
         }
     }
