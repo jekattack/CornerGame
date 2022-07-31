@@ -33,3 +33,10 @@ export function visit(googlePlacesId: string, lat: number, lng: number){
         place_id: googlePlacesId
     }, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
 }
+
+// LocalDateTime from java has been converted to String for the request, this creates a js Date from it
+function parseISOString(s: string) {
+    const b = s.split(/\D+/);
+    let month = Number(b[1]);
+    return new Date(Date.UTC(Number(b[0]), --month, Number(b[2]), Number(b[3]), Number(b[4]), Number(b[5]), Number(b[6])));
+}
