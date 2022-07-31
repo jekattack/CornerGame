@@ -2,7 +2,6 @@ package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import com.github.jekattack.cornergame.game.visits.Visit;
@@ -36,9 +35,30 @@ public class QuestService implements VisitObserver {
 
     public String startQuest(String userId, String questId) {
         Quest quest = questRepository.findById(questId).orElseThrow();
+        CGUserGameData gameData = gameDataRepository.findByUserId(userId).orElseThrow();
+        Optional<QuestItem> questItem = gameData.getQuestItems().stream()
+                .filter(qi-> qi.getQuestId().equals(questId) && qi.getQuestStatus().equals(QuestStatus.STARTED))
+                .findFirst();
+        if(questItem.isPresent()){
+            return "Quest wurde bereits gestartet.";
+        }
         questObservers.forEach(observer -> observer.onQuestStarted(userId, quest));
         return "Quest " + quest.getName() + " gestartet!";
     }
+
+    public String cancelQuest(String userId, String questId) {
+        Quest quest = questRepository.findById(questId).orElseThrow();
+        CGUserGameData gameData = gameDataRepository.findByUserId(userId).orElseThrow();
+        Optional<QuestItem> questItem = gameData.getQuestItems().stream()
+                .filter(qi-> qi.getQuestId().equals(questId) && qi.getQuestStatus().equals(QuestStatus.STARTED))
+                .findFirst();
+        if(questItem.isPresent()){
+            questObservers.forEach(questObserver -> questObserver.onQuestCanceled(userId, quest));
+            return "Quest " + quest.getName() + " abgebrochen.";
+        }
+        return "Quest nicht gestartet oder schon abgelaufen.";
+    }
+
 
     private boolean checkIfQuestComplete(List<Visit> visits, String questId){
         List<String> distinctVisits = visits.stream().map(Visit::getGooglePlacesId).distinct().toList();
@@ -51,9 +71,8 @@ public class QuestService implements VisitObserver {
 
     @Override
     public void onVisitCreated(Visit visit, CGUserGameData gameData) {
-        CGUserGameData userGameData = gameDataRepository.getByUserId(visit.getUserId()).orElseThrow();
         if(visit.getQuestId()!=null){
-            Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
+            Optional<QuestItem> questItem = gameData.getQuestItems().stream()
                     .filter(qi -> qi.getQuestId().equals(visit.getQuestId()) && qi.getQuestStatus().equals(QuestStatus.STARTED))
                     .findFirst();
             if(questItem.isPresent()){

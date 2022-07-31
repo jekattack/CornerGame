@@ -40,4 +40,15 @@ public class QuestController {
             throw new NoSuchElementException("User or Quest not found");
         }
     }
+
+    @DeleteMapping("/cancel")
+    @ResponseStatus(HttpStatus.GONE)
+    public String cancelQuest(@RequestBody String questId, Principal principal){
+        try{
+            //principal.getName() contains userId
+            return questService.cancelQuest(principal.getName(), questId);
+        } catch (NoSuchElementException e){
+            throw new NoSuchElementException("User or Quest not found");
+        }
+    }
 }

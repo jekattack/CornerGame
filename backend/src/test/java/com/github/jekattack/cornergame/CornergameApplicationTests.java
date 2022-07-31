@@ -3,6 +3,7 @@ package com.github.jekattack.cornergame;
 import com.github.jekattack.cornergame.game.UserLocation;
 import com.github.jekattack.cornergame.game.UserLocationCoordinates;
 import com.github.jekattack.cornergame.game.achievements.Achievement;
+import com.github.jekattack.cornergame.game.achievements.AchievementRequirements;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataDTO;
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
@@ -24,7 +25,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CornergameApplicationTests {
@@ -49,12 +49,27 @@ class CornergameApplicationTests {
             .passwordAgain("admin")
             .build();
 
+    UserCreationData failedUserUserCreationData1 = UserCreationData.builder()
+            .username(" ")
+            .email("user@mail.com")
+            .password("user")
+            .passwordAgain("user")
+            .build();
+
+    UserCreationData failedUserUserCreationData2 = UserCreationData.builder()
+            .username("Lasse")
+            .email("user@mail.com")
+            .password("Essal")
+            .passwordAgain("Lasse")
+            .build();
+
     UserCreationData userUserCreationData = UserCreationData.builder()
             .username("user")
             .email("user@mail.com")
             .password("user")
             .passwordAgain("user")
             .build();
+
     KioskLocationCoordinates kioskLocationCoordinates1 = new KioskLocationCoordinates(53.5622178, 9.9635319);
     KioskLocationCoordinates kioskLocationCoordinates2 = new KioskLocationCoordinates(53.5623225, 9.964518399999999);
     KioskLocationCoordinates kioskLocationCoordinates3 = new KioskLocationCoordinates(53.560944, 9.9673876);
@@ -98,40 +113,31 @@ class CornergameApplicationTests {
     KioskResponseData response2 = new KioskResponseData(kiosksResponse2, "testNextPageToken");
     KioskResponseData response3 = new KioskResponseData(kiosksResponse3, null);
 
+
+    Achievement duplicateAchievement = Achievement.builder()
+            .name("Falscher Fünfer")
+            .description("Ich versuche mich reinzumogeln")
+            .requirements(new AchievementRequirements(1,0,0,0))
+            .build();
     Achievement achievement1 = Achievement.builder()
             .name("Hallo, ich bin der Neue!")
             .description("Erster Kioskbesuch.")
-            .kiosksVisited(0)
-            .visitsCreated(1)
-            .questsFinished(0)
-            .questsStarted(0)
+            .requirements(new AchievementRequirements(1,0,0,0))
             .build();
-
     Achievement achievement2 = Achievement.builder()
             .name("Schön hier")
             .description("Erster Kioskbesuch.")
-            .kiosksVisited(1)
-            .visitsCreated(0)
-            .questsFinished(0)
-            .questsStarted(0)
+            .requirements(new AchievementRequirements(0,0,0,1))
             .build();
-
     Achievement achievement3 = Achievement.builder()
             .name("On Tour")
             .description("Ersten Quest gestartet.")
-            .kiosksVisited(0)
-            .visitsCreated(0)
-            .questsFinished(0)
-            .questsStarted(1)
+            .requirements(new AchievementRequirements(0,1,0,0))
             .build();
-
     Achievement achievement4 = Achievement.builder()
             .name("So wirds gemacht!")
             .description("Ersten Quest abgeschlossen.")
-            .kiosksVisited(0)
-            .visitsCreated(0)
-            .questsFinished(1)
-            .questsStarted(0)
+            .requirements(new AchievementRequirements(0,0,1,0))
             .build();
 
     String[] quest1Kiosks = {kiosk4.getGooglePlacesId(), kiosk3.getGooglePlacesId()};
@@ -155,6 +161,7 @@ class CornergameApplicationTests {
             .build();
 
     VisitCreationData visitCreationData1 = new VisitCreationData(new UserLocation(new UserLocationCoordinates(53.562296522492076, 9.963459293671585)), kiosk1.getGooglePlacesId());
+    VisitCreationData failedVisitCreationData1 = new VisitCreationData(new UserLocation(new UserLocationCoordinates(53.564, 9.965)), kiosk1.getGooglePlacesId());
     VisitCreationData visitCreationData2 = new VisitCreationData(new UserLocation(new UserLocationCoordinates(53.56274688744848, 9.96101875527712)), kiosk4.getGooglePlacesId());
     VisitCreationData visitCreationData3 = new VisitCreationData(new UserLocation(new UserLocationCoordinates(53.56098542125737, 9.96735762197416)), kiosk3.getGooglePlacesId());
 
@@ -231,10 +238,7 @@ class CornergameApplicationTests {
         Assertions.assertThat(achievementPostResponse1.getBody().getId()).isNotEmpty();
         Assertions.assertThat(achievementPostResponse1.getBody().getName()).isEqualTo(achievement1.getName());
         Assertions.assertThat(achievementPostResponse1.getBody().getDescription()).isEqualTo(achievement1.getDescription());
-        Assertions.assertThat(achievementPostResponse1.getBody().getVisitsCreated()).isEqualTo(achievement1.getVisitsCreated());
-        Assertions.assertThat(achievementPostResponse1.getBody().getQuestsStarted()).isEqualTo(achievement1.getQuestsStarted());
-        Assertions.assertThat(achievementPostResponse1.getBody().getQuestsFinished()).isEqualTo(achievement1.getQuestsFinished());
-        Assertions.assertThat(achievementPostResponse1.getBody().getKiosksVisited()).isEqualTo(achievement1.getKiosksVisited());
+        Assertions.assertThat(achievementPostResponse1.getBody().getRequirements()).isEqualTo(achievement1.getRequirements());
 
         ResponseEntity<Achievement> achievementPostResponse2 = testRestTemplate.exchange(
                 "/api/achievements/add",
@@ -247,11 +251,7 @@ class CornergameApplicationTests {
         Assertions.assertThat(achievementPostResponse2.getBody().getId()).isNotEmpty();
         Assertions.assertThat(achievementPostResponse2.getBody().getName()).isEqualTo(achievement2.getName());
         Assertions.assertThat(achievementPostResponse2.getBody().getDescription()).isEqualTo(achievement2.getDescription());
-        Assertions.assertThat(achievementPostResponse2.getBody().getVisitsCreated()).isEqualTo(achievement2.getVisitsCreated());
-        Assertions.assertThat(achievementPostResponse2.getBody().getQuestsStarted()).isEqualTo(achievement2.getQuestsStarted());
-        Assertions.assertThat(achievementPostResponse2.getBody().getQuestsFinished()).isEqualTo(achievement2.getQuestsFinished());
-        Assertions.assertThat(achievementPostResponse2.getBody().getKiosksVisited()).isEqualTo(achievement2.getKiosksVisited());
-
+        Assertions.assertThat(achievementPostResponse2.getBody().getRequirements()).isEqualTo(achievement2.getRequirements());
 
         ResponseEntity<Achievement> achievementPostResponse3 = testRestTemplate.exchange(
                 "/api/achievements/add",
@@ -264,11 +264,7 @@ class CornergameApplicationTests {
         Assertions.assertThat(achievementPostResponse3.getBody().getId()).isNotEmpty();
         Assertions.assertThat(achievementPostResponse3.getBody().getName()).isEqualTo(achievement3.getName());
         Assertions.assertThat(achievementPostResponse3.getBody().getDescription()).isEqualTo(achievement3.getDescription());
-        Assertions.assertThat(achievementPostResponse3.getBody().getVisitsCreated()).isEqualTo(achievement3.getVisitsCreated());
-        Assertions.assertThat(achievementPostResponse3.getBody().getQuestsStarted()).isEqualTo(achievement3.getQuestsStarted());
-        Assertions.assertThat(achievementPostResponse3.getBody().getQuestsFinished()).isEqualTo(achievement3.getQuestsFinished());
-        Assertions.assertThat(achievementPostResponse3.getBody().getKiosksVisited()).isEqualTo(achievement3.getKiosksVisited());
-
+        Assertions.assertThat(achievementPostResponse3.getBody().getRequirements()).isEqualTo(achievement3.getRequirements());
 
         ResponseEntity<Achievement> achievementPostResponse4 = testRestTemplate.exchange(
                 "/api/achievements/add",
@@ -281,11 +277,19 @@ class CornergameApplicationTests {
         Assertions.assertThat(achievementPostResponse4.getBody().getId()).isNotEmpty();
         Assertions.assertThat(achievementPostResponse4.getBody().getName()).isEqualTo(achievement4.getName());
         Assertions.assertThat(achievementPostResponse4.getBody().getDescription()).isEqualTo(achievement4.getDescription());
-        Assertions.assertThat(achievementPostResponse4.getBody().getVisitsCreated()).isEqualTo(achievement4.getVisitsCreated());
-        Assertions.assertThat(achievementPostResponse4.getBody().getQuestsStarted()).isEqualTo(achievement4.getQuestsStarted());
-        Assertions.assertThat(achievementPostResponse4.getBody().getQuestsFinished()).isEqualTo(achievement4.getQuestsFinished());
-        Assertions.assertThat(achievementPostResponse4.getBody().getKiosksVisited()).isEqualTo(achievement4.getKiosksVisited());
+        Assertions.assertThat(achievementPostResponse4.getBody().getRequirements()).isEqualTo(achievement4.getRequirements());
 
+
+        //Achievement erstellen schlägt fehl: Achievement-Wert schon vergeben
+        //AchievementController
+        ResponseEntity<Achievement> failedAchievementResponse = testRestTemplate.exchange(
+                "/api/achievements/add",
+                HttpMethod.POST,
+                new HttpEntity<>(duplicateAchievement, createHeaders(tokenAdmin)),
+                Achievement.class
+        );
+
+        Assertions.assertThat(failedAchievementResponse.getStatusCodeValue()).isEqualTo(500);
 
         //Quests erstellen
         //QuestController
@@ -323,6 +327,18 @@ class CornergameApplicationTests {
 
         quest2.setId(questResponse2.getBody().getId());
 
+        //User registrieren failed: Username blank
+        //UserController
+        ResponseEntity<Void> failedUserCreationResponse1 = testRestTemplate.postForEntity("/api/user/register", failedUserUserCreationData1, Void.class);
+
+        Assertions.assertThat(failedUserCreationResponse1.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        //User registrieren failed: Passwörter matchen nicht
+        //UserController
+        ResponseEntity<Void> failedUserCreationResponse2 = testRestTemplate.postForEntity("/api/user/register", failedUserUserCreationData2, Void.class);
+
+        Assertions.assertThat(failedUserCreationResponse2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
         //User registrieren (User)
         //UserController
         ResponseEntity<Void> userCreationResponse = testRestTemplate.postForEntity("/api/user/register", userUserCreationData, Void.class);
@@ -338,7 +354,29 @@ class CornergameApplicationTests {
         Assertions.assertThat(userLoginResponse.getBody().getToken()).isNotEmpty();
 
         String tokenUser = userLoginResponse.getBody().getToken();
-        
+
+        //Kiosks laden unterbunden, weil keine Admin-Rechte
+        //PlacesApiController
+//        ResponseEntity<KioskResponseData[]> failedPlacesApiServiceResponse = testRestTemplate.exchange(
+//                "/api/placesapi/loadAllKiosks",
+//                HttpMethod.GET,
+//                new HttpEntity<>(createHeaders(tokenUser)),
+//                KioskResponseData[].class
+//        );
+//
+//        Assertions.assertThat(failedPlacesApiServiceResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+        //Achievements erstellen unterbunden, weil keine Admin-Rechte
+        //AchievementController
+        ResponseEntity<Achievement> failedAchievementPostResponse1 = testRestTemplate.exchange(
+                "/api/achievements/add",
+                HttpMethod.POST,
+                new HttpEntity<>(achievement1, createHeaders(tokenUser)),
+                Achievement.class
+        );
+
+        Assertions.assertThat(failedAchievementPostResponse1.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
         //Visit anlegen
         //VisitController
         ResponseEntity<Void> visitResponse1 = testRestTemplate.exchange(
@@ -349,6 +387,28 @@ class CornergameApplicationTests {
         );
 
         Assertions.assertThat(visitResponse1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //Visit failed, weil Standort nicht passt
+        //VisitController
+        ResponseEntity<Void> failedVisitResponse1 = testRestTemplate.exchange(
+                "/api/visits/add",
+                HttpMethod.POST,
+                new HttpEntity<>(failedVisitCreationData1, createHeaders(tokenUser)),
+                Void.class
+        );
+
+        Assertions.assertThat(failedVisitResponse1.getStatusCodeValue()).isEqualTo(500);
+
+        //Visit failed, weil schon innerhalb der letzten 24h besucht
+        //VisitController
+        ResponseEntity<Void> failedVisitResponse2 = testRestTemplate.exchange(
+                "/api/visits/add",
+                HttpMethod.POST,
+                new HttpEntity<>(visitCreationData1, createHeaders(tokenUser)),
+                Void.class
+        );
+
+        Assertions.assertThat(failedVisitResponse1.getStatusCodeValue()).isEqualTo(500);
 
         //Score abrufen
         //GameDataController
@@ -374,6 +434,43 @@ class CornergameApplicationTests {
         Assertions.assertThat(activeQuestResponse1.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(activeQuestResponse1.getBody().length).isEqualTo(0);
 
+        //Quest starten, um ihn abzubrechen
+        //QuestController
+        ResponseEntity<String> startQuest2Response = testRestTemplate.exchange(
+                "/api/quests/start",
+                HttpMethod.POST,
+                new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
+                String.class
+        );
+
+        Assertions.assertThat(startQuest2Response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(startQuest2Response.getBody()).isEqualTo("Quest " + quest2.getName() + " gestartet!");
+
+        //Quest abbrechen
+        //QuestController
+        ResponseEntity<String> cancelQuest2Response = testRestTemplate.exchange(
+                "/api/quests/cancel",
+                HttpMethod.DELETE,
+                new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
+                String.class
+        );
+
+        Assertions.assertThat(cancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.GONE);
+        Assertions.assertThat(cancelQuest2Response.getBody()).isEqualTo("Quest " + quest2.getName() + " abgebrochen.");
+
+        //Quest abbrechen abgelehnt
+        //QuestController
+        ResponseEntity<String> failedCancelQuest2Response = testRestTemplate.exchange(
+                "/api/quests/cancel",
+                HttpMethod.DELETE,
+                new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
+                String.class
+        );
+
+        Assertions.assertThat(failedCancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.GONE);
+        Assertions.assertThat(failedCancelQuest2Response.getBody()).isEqualTo("Quest nicht gestartet oder schon abgelaufen.");
+
+
         //Quest starten
         //QuestController
         ResponseEntity<String> startQuest1Response = testRestTemplate.exchange(
@@ -385,6 +482,18 @@ class CornergameApplicationTests {
 
         Assertions.assertThat(startQuest1Response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(startQuest1Response.getBody()).isEqualTo("Quest " + quest1.getName() + " gestartet!");
+
+        //Quest starten abgelehnt
+        //QuestController
+        ResponseEntity<String> failedStartQuest1Response = testRestTemplate.exchange(
+                "/api/quests/start",
+                HttpMethod.POST,
+                new HttpEntity<>(quest1.getId(), createHeaders(tokenUser)),
+                String.class
+        );
+
+        Assertions.assertThat(failedStartQuest1Response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(failedStartQuest1Response.getBody()).isEqualTo("Quest wurde bereits gestartet.");
 
         //Aktive Quests abrufen
         //GameDataController
@@ -483,7 +592,6 @@ class CornergameApplicationTests {
         Assertions.assertThat(achievementResponse2.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(achievementResponse2.getBody().length).isEqualTo(4);
         Assertions.assertThat(achievementResponse2.getBody()).containsExactlyInAnyOrder(achievement1, achievement2, achievement3, achievement4);
-
 
     }
 }

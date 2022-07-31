@@ -17,44 +17,36 @@ import java.util.*;
 
 class AchievementServiceTest {
 
+    AchievementRequirements achievementRequirements1 = new AchievementRequirements(0,0,0,1);
     Achievement achievement1 = Achievement.builder()
             .id("achievementId1")
             .name("achievement1")
             .description("This is achievement1.")
-            .kiosksVisited(1)
-            .questsFinished(0)
-            .questsStarted(0)
-            .visitsCreated(0)
+            .requirements(achievementRequirements1)
             .build();
 
+    AchievementRequirements achievementRequirements2 = new AchievementRequirements(0,0,1,0);
     Achievement achievement2 = Achievement.builder()
             .id("achievementId2")
             .name("achievement2")
             .description("This is achievement2.")
-            .kiosksVisited(0)
-            .questsFinished(1)
-            .questsStarted(0)
-            .visitsCreated(0)
+            .requirements(achievementRequirements2)
             .build();
 
+    AchievementRequirements achievementRequirements3 = new AchievementRequirements(0,1,0,0);
     Achievement achievement3 = Achievement.builder()
             .id("achievementId3")
             .name("achievement3")
             .description("This is achievement3.")
-            .kiosksVisited(0)
-            .questsFinished(0)
-            .questsStarted(1)
-            .visitsCreated(0)
+            .requirements(achievementRequirements3)
             .build();
 
+    AchievementRequirements achievementRequirements4 = new AchievementRequirements(1,0,0,0);
     Achievement achievement4 = Achievement.builder()
             .id("achievementId4")
             .name("achievement4")
             .description("This is achievement4.")
-            .kiosksVisited(0)
-            .questsFinished(0)
-            .questsStarted(0)
-            .visitsCreated(1)
+            .requirements(achievementRequirements4)
             .build();
 
     QuestItem questItem0 = QuestItem.builder()
@@ -102,12 +94,10 @@ class AchievementServiceTest {
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
         Mockito.when(achievementRepository.findAll()).thenReturn(List.of(testAchievement1,testAchievement2));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         List<Achievement> expected = List.of(achievement1,achievement2);
 
@@ -127,10 +117,9 @@ class AchievementServiceTest {
         Mockito.when(achievementRepository.save(testAchievement1)).thenReturn(testAchievement1);
         CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         //When
         Achievement actual = achievementService.createAchievement(testAchievement1);
@@ -147,12 +136,10 @@ class AchievementServiceTest {
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
         Mockito.when(achievementRepository.findById(testAchievement1Id)).thenReturn(Optional.of(testAchievement1));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         Achievement expected = achievement1;
 
@@ -171,12 +158,10 @@ class AchievementServiceTest {
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
         Mockito.when(achievementRepository.findById(testAchievement1Id)).thenReturn(Optional.of(testAchievement1));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         Achievement expected = achievement1;
 
@@ -191,12 +176,10 @@ class AchievementServiceTest {
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
         Mockito.when(achievementRepository.existsById(achievement1.getId())).thenReturn(true);
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         //When
         achievementService.deleteAchievement(testAchievement1.getId());
@@ -212,12 +195,10 @@ class AchievementServiceTest {
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
         Mockito.when(achievementRepository.existsById(wrongId)).thenReturn(false);
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         //When
         achievementService.deleteAchievement(wrongId);
@@ -235,20 +216,25 @@ class AchievementServiceTest {
         Quest testQuest1 = quest1;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        Mockito.when(achievementRepository.findAllByQuestsFinished(1)).thenReturn(List.of(testAchievement));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
-        Mockito.when(userGameDataRepository.findByUserId(testUserId1)).thenReturn(Optional.of(testGameData1));
+        Mockito.when(achievementRepository.findAllByRequirements(new AchievementRequirements(0,0,1,0))).thenReturn(List.of(testAchievement));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
+
+        CGUserGameData expectedTestGameData1 = CGUserGameData.builder()
+                .id("gameDataId1")
+                .userId("testUserId1")
+                .score(100)
+                .questItems(new ArrayList<>(List.of(questItem0)))
+                .achievementIds(List.of(testAchievement.getId()))
+                .build();
 
         //When
-        achievementService.onQuestCompleted(testUserId1, testQuest1);
+        achievementService.onQuestCompletedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver).onAchievementReceived(List.of(testAchievement.getId()), testUserId1);
+        Mockito.verify(gameDataRepository).save(expectedTestGameData1);
     }
 
     @Test
@@ -259,19 +245,16 @@ class AchievementServiceTest {
         Quest testQuest1 = quest1;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
-        Mockito.when(userGameDataRepository.findByUserId(testUserId1)).thenReturn(Optional.of(testGameData1));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         //When
-        achievementService.onQuestCompleted(testUserId1, testQuest1);
+        achievementService.onQuestCompletedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver, Mockito.never()).onAchievementReceived(Mockito.anyList(), Mockito.eq(testUserId1));
+        Mockito.verify(gameDataRepository, Mockito.never()).save(testGameData1);
     }
 
     @Test
@@ -283,20 +266,25 @@ class AchievementServiceTest {
         Quest testQuest1 = quest1;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        Mockito.when(achievementRepository.findAllByQuestsStarted(1)).thenReturn(List.of(testAchievement));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
-        Mockito.when(userGameDataRepository.findByUserId(testUserId1)).thenReturn(Optional.of(testGameData1));
+        Mockito.when(achievementRepository.findAllByRequirements(new AchievementRequirements(0,1,0,0))).thenReturn(List.of(testAchievement));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
+
+        CGUserGameData expectedTestGameData1 = CGUserGameData.builder()
+                .id("gameDataId1")
+                .userId("testUserId1")
+                .score(100)
+                .questItems(new ArrayList<>(List.of(questItem0)))
+                .achievementIds(List.of(testAchievement.getId()))
+                .build();
 
         //When
-        achievementService.onQuestStarted(testUserId1, testQuest1);
+        achievementService.onQuestStartedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver).onAchievementReceived(List.of(testAchievement.getId()), testUserId1);
+        Mockito.verify(gameDataRepository).save(expectedTestGameData1);
     }
 
     @Test
@@ -307,19 +295,16 @@ class AchievementServiceTest {
         Quest testQuest1 = quest1;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
-        Mockito.when(userGameDataRepository.findByUserId(testUserId1)).thenReturn(Optional.of(testGameData1));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         //When
-        achievementService.onQuestStarted(testUserId1, testQuest1);
+        achievementService.onQuestStartedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver, Mockito.never()).onAchievementReceived(Mockito.anyList(), Mockito.eq(testUserId1));
+        Mockito.verify(gameDataRepository, Mockito.never()).save(testGameData1);
     }
 
     @Test
@@ -332,21 +317,27 @@ class AchievementServiceTest {
         Achievement testAchievement4 = achievement4;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        Mockito.when(achievementRepository.findAllByVisitsCreated(1)).thenReturn(List.of(testAchievement4));
-        Mockito.when(achievementRepository.findAllByKiosksVisited(1)).thenReturn(List.of(testAchievement1));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
+        Mockito.when(achievementRepository.findAllByRequirements(new AchievementRequirements(1,0,0,0))).thenReturn(List.of(testAchievement4));
+        Mockito.when(achievementRepository.findAllByRequirements(new AchievementRequirements(0,0,0,1))).thenReturn(List.of(testAchievement1));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId(testUserId1)).thenReturn(new ArrayList<>(List.of(testVisit1)));
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
+
+        CGUserGameData expectedTestGameData1 = CGUserGameData.builder()
+                .id("gameDataId1")
+                .userId("testUserId1")
+                .score(100)
+                .questItems(new ArrayList<>(List.of(questItem0)))
+                .achievementIds(List.of(testAchievement4.getId(), testAchievement1.getId()))
+                .build();
 
         //When
-        achievementService.onVisitCreated(testVisit1, testGameData1);
+        achievementService.onVisitCreatedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver).onAchievementReceived(List.of(testAchievement4.getId(),testAchievement1.getId()), testUserId1);
+        Mockito.verify(gameDataRepository).save(expectedTestGameData1);
     }
 
     @Test
@@ -358,20 +349,26 @@ class AchievementServiceTest {
         Visit testVisit1 = visit1;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        Mockito.when(achievementRepository.findAllByKiosksVisited(1)).thenReturn(List.of(testAchievement1));
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
+        Mockito.when(achievementRepository.findAllByRequirements(new AchievementRequirements(0,0,0,1))).thenReturn(List.of(testAchievement1));
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId(testUserId1)).thenReturn(new ArrayList<>(List.of(testVisit1)));
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
+
+        CGUserGameData expectedTestGameData1 = CGUserGameData.builder()
+                .id("gameDataId1")
+                .userId("testUserId1")
+                .score(100)
+                .questItems(new ArrayList<>(List.of(questItem0)))
+                .achievementIds(List.of(testAchievement1.getId()))
+                .build();
 
         //When
-        achievementService.onVisitCreated(testVisit1, testGameData1);
+        achievementService.onVisitCreatedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver).onAchievementReceived(List.of(testAchievement1.getId()), testUserId1);
+        Mockito.verify(gameDataRepository).save(expectedTestGameData1);
     }
 
     @Test
@@ -383,19 +380,17 @@ class AchievementServiceTest {
         Visit testVisit1 = visit1;
 
         AchievementRepository achievementRepository = Mockito.mock(AchievementRepository.class);
-        CGUserGameDataRepository userGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         VisitRepository visitRepository = Mockito.mock(VisitRepository.class);
         Mockito.when(visitRepository.findAllByUserId(testUserId1)).thenReturn(new ArrayList<>(List.of(testVisit1)));
-        AchievementObserver achievementObserver = Mockito.mock(AchievementObserver.class);
-        List<AchievementObserver> observers = List.of(achievementObserver);
+        CGUserGameDataRepository gameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
 
-        AchievementService achievementService = new AchievementService(achievementRepository,userGameDataRepository,visitRepository,observers);
+        AchievementService achievementService = new AchievementService(achievementRepository,visitRepository,gameDataRepository);
 
         //When
-        achievementService.onVisitCreated(testVisit1, testGameData1);
+        achievementService.onVisitCreatedInGameData(testGameData1);
 
         //Then
-        Mockito.verify(achievementObserver, Mockito.never()).onAchievementReceived(List.of(testAchievement1.getId()), testUserId1);
+        Mockito.verify(gameDataRepository, Mockito.never()).save(testGameData1);
     }
 
 }

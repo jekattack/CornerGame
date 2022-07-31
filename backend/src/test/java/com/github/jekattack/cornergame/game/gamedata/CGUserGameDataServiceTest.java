@@ -5,9 +5,7 @@ import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
-import com.github.jekattack.cornergame.game.quests.QuestObserver;
 import com.github.jekattack.cornergame.game.quests.QuestRepository;
-import com.github.jekattack.cornergame.game.visits.VisitRepository;
 import com.github.jekattack.cornergame.userdata.CGUser;
 import com.github.jekattack.cornergame.userdata.CGUserRepository;
 import org.assertj.core.api.Assertions;
@@ -35,8 +33,10 @@ class CGUserGameDataServiceTest {
         Mockito.when(testUserRepository.findByUsername("testUsername")).thenReturn(Optional.of(testUser));
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository, testAchievementRepository);
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository, testAchievementRepository, observers);
 
         CGUserGameData expected = new CGUserGameData("testId");
 
@@ -59,8 +59,10 @@ class CGUserGameDataServiceTest {
         Mockito.when(testUserRepository.findByUsername("testUsername")).thenReturn(Optional.of(testUser));
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository, testAchievementRepository);
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository, testAchievementRepository, observers);
 
         CGUserGameData expected = testGameData;
         expected.setScore(expected.getScore()+100);
@@ -100,8 +102,10 @@ class CGUserGameDataServiceTest {
         QuestRepository testQuestRepository = Mockito.mock(QuestRepository.class);
 
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
 
-        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository, testAchievementRepository);
+        CGUserGameDataService testGameDataService = new CGUserGameDataService(testGameDataRepository, testUserRepository, testQuestRepository, testAchievementRepository, observers);
 
 
         //When
@@ -136,8 +140,10 @@ class CGUserGameDataServiceTest {
         QuestRepository questRepository = Mockito.mock(QuestRepository.class);
 
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository, testAchievementRepository);
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository, testAchievementRepository, observers);
 
         CGUserGameDataDTO expected = new CGUserGameDataDTO("testusername", 0);
 
@@ -191,7 +197,10 @@ class CGUserGameDataServiceTest {
 
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository, testAchievementRepository);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository, testAchievementRepository, observers);
 
         QuestItem expectedQuestItem1 = new QuestItem("testQuestItemId1", "testQuestId1", Date.from(Instant.now().minus(24, ChronoUnit.HOURS)), QuestStatus.EXPIRED);
 
@@ -254,7 +263,10 @@ class CGUserGameDataServiceTest {
 
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository, observers);
 
         //When
         int actual = cgUserGameDataService.checkMinutesLeft(questItem1);
@@ -288,7 +300,10 @@ class CGUserGameDataServiceTest {
 
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository, testAchievementRepository);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository, testAchievementRepository, observers);
 
         //When
         int actual = cgUserGameDataService.checkMinutesLeft(questItem1);
@@ -315,8 +330,10 @@ class CGUserGameDataServiceTest {
         CGUserRepository cgUserRepository = Mockito.mock(CGUserRepository.class);
         CGUserGameDataRepository cgUserGameDataRepository = Mockito.mock(CGUserGameDataRepository.class);
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository);
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository, observers);
 
         //When
         cgUserGameDataService.save(testGameData);
@@ -357,7 +374,10 @@ class CGUserGameDataServiceTest {
 
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository, observers);
 
         QuestItem questItem3 = new QuestItem("testQuestItemId3","testQuestId3", Date.from(Instant.now().minus(24, ChronoUnit.MINUTES)), QuestStatus.STARTED);
         CGUserGameData expectedTestGameData = CGUserGameData.builder()
@@ -403,7 +423,10 @@ class CGUserGameDataServiceTest {
         Mockito.when(cgUserGameDataRepository.findByUserId("testUserId")).thenReturn(Optional.of(testGameData));
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
 
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(cgUserGameDataRepository,cgUserRepository,questRepository,testAchievementRepository, observers);
 
         //When
         cgUserGameDataService.scoreForQuestAndMarkAsDone("testUserId", testQuest1);
@@ -443,7 +466,10 @@ class CGUserGameDataServiceTest {
         Mockito.when(gameDataRepository.findByUserId("TestUserId")).thenReturn(Optional.of(testGameData));
         Mockito.when(gameDataRepository.save(testGameData)).thenReturn(testGameData);
         AchievementRepository testAchievementRepository = Mockito.mock(AchievementRepository.class);
-        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(gameDataRepository,userRepository,questRepository,testAchievementRepository);
+        CGUserGameDataObserver observer = Mockito.mock(CGUserGameDataObserver.class);
+        List<CGUserGameDataObserver> observers = List.of(observer);
+
+        CGUserGameDataService cgUserGameDataService = new CGUserGameDataService(gameDataRepository,userRepository,questRepository,testAchievementRepository, observers);
 
         List<ActiveQuestDTO> expected = new ArrayList<>(List.of(new ActiveQuestDTO(testQuest, 30)));
 

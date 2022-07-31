@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.game.achievements;
 
+import org.springframework.dao.DuplicateKeyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,11 @@ public class AchievementController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public Achievement createAchievement(@RequestBody Achievement achievement){
-        return achievementService.createAchievement(achievement);
+        try{
+            return achievementService.createAchievement(achievement);
+        } catch (DuplicateKeyException e){
+            throw e;
+        }
     }
 
     @GetMapping("/get/{id}")

@@ -24,7 +24,7 @@ public class VisitController {
             //principal.getName() contains userId
             visitService.createVisit(visitCreationData, principal.getName());
         } catch (IllegalStateException e) {
-            throw new IllegalStateException("Visit not created: To far away or already visited within 24h");
+            throw e;
         }
     }
 

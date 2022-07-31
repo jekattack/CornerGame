@@ -19,9 +19,7 @@ public class  Achievement {
     @Indexed(unique = true)
     private String name;
     private String description;
-    private int visitsCreated;
-    private int questsStarted;
-    private int questsFinished;
-    private int kiosksVisited;
+    @Indexed(unique = true)
+    private AchievementRequirements requirements;
 
 }
