@@ -76,3 +76,29 @@ export interface Visit {
     issuedAt: Date,
     visitType: string
 }
+
+export interface Quest {
+    id: string;
+    name: string;
+    description: string;
+    kioskGooglePlacesIds: string[];
+    durationInMinutes: number;
+    scoreMultiplier: number;
+}
+
+export interface Achievement {
+    id: string;
+    name: string;
+    description: string;
+    requirements: {
+        visitsCreated: number;
+        questsStarted: number;
+        questsFinished: number;
+        kiosksVisited: number;
+    };
+}
+
+export interface CGUserGameDataDTO {
+    username: string;
+    score: number;
+}
