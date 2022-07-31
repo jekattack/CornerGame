@@ -2,6 +2,10 @@ package com.github.jekattack.cornergame.game.achievements;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
+import com.github.jekattack.cornergame.game.gamedata.achievements.Achievement;
+import com.github.jekattack.cornergame.game.gamedata.achievements.AchievementRepository;
+import com.github.jekattack.cornergame.game.gamedata.achievements.AchievementRequirements;
+import com.github.jekattack.cornergame.game.gamedata.achievements.AchievementService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import com.github.jekattack.cornergame.game.quests.Quest;

@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.userdata;
 
+import com.github.jekattack.cornergame.model.CGErrorDTO;
 import com.github.jekattack.cornergame.security.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class LoginController {
     private final CGUserService userService;
 
     @PostMapping()
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginData loginData) {
+    public ResponseEntity<Object> login(@RequestBody LoginData loginData) {
         try {
             loginData.setUsername(loginData.getUsername().toLowerCase());
 
@@ -37,23 +38,24 @@ public class LoginController {
 
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login failed"));
         }
     }
 
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
-    public LoginResponse refreshToken(Principal principal) {
-        //principal.getName() contains userId
+    public ResponseEntity<Object> refreshToken(Principal principal) {
+
         try{
+            //principal.getName() contains userId
             CGUser user = userService.getUser(principal.getName()).orElseThrow();
             Map<String, Object> claims = new HashMap<>();
             claims.put("role", user.getRole());
 
             String token = jwtService.createToken(claims, user.getId());
-            return new LoginResponse(token);
+            return ResponseEntity.ok().body(new LoginResponse(token));
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("User not found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Token invalid.", e.getMessage()));
         }
     }
 }

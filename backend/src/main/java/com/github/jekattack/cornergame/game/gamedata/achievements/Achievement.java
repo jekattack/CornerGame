@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.game.achievements;
+package com.github.jekattack.cornergame.game.gamedata.achievements;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

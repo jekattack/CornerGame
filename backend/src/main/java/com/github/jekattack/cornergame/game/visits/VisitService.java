@@ -30,8 +30,12 @@ public class VisitService {
     public String createVisit(VisitCreationData visitCreationData, String userId) {
         CGUserGameData gameData = cgUserGameDataService.refreshQuestItemsStatus(userId);
 
-        validateUsersLocation(visitCreationData);
-        checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
+        try{
+            validateUsersLocation(visitCreationData);
+            checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
+        } catch (IllegalStateException e){
+            throw e;
+        }
 
         Visit newVisit = new Visit(null, userId, visitCreationData.getGooglePlacesId(), Date.from(Instant.now()), null);
         setQuestIdIfVisitIsPartOfActiveQuest(userId, visitCreationData, newVisit);

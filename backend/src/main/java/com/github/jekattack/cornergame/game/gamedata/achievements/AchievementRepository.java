@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.game.achievements;
+package com.github.jekattack.cornergame.game.gamedata.achievements;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

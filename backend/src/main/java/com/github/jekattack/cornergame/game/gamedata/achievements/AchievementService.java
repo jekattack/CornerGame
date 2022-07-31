@@ -1,15 +1,11 @@
-package com.github.jekattack.cornergame.game.achievements;
+package com.github.jekattack.cornergame.game.gamedata.achievements;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataObserver;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
-import com.github.jekattack.cornergame.game.quests.Quest;
-import com.github.jekattack.cornergame.game.quests.QuestObserver;
 import com.github.jekattack.cornergame.game.visits.Visit;
-import com.github.jekattack.cornergame.game.visits.VisitObserver;
 import com.github.jekattack.cornergame.game.visits.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service

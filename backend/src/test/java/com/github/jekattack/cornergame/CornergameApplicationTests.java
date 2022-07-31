@@ -2,16 +2,18 @@ package com.github.jekattack.cornergame;
 
 import com.github.jekattack.cornergame.game.UserLocation;
 import com.github.jekattack.cornergame.game.UserLocationCoordinates;
-import com.github.jekattack.cornergame.game.achievements.Achievement;
-import com.github.jekattack.cornergame.game.achievements.AchievementRequirements;
+import com.github.jekattack.cornergame.game.gamedata.achievements.Achievement;
+import com.github.jekattack.cornergame.game.gamedata.achievements.AchievementRequirements;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataDTO;
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
 import com.github.jekattack.cornergame.game.quests.Quest;
+import com.github.jekattack.cornergame.game.quests.QuestEventDTO;
 import com.github.jekattack.cornergame.game.visits.VisitCreationData;
 import com.github.jekattack.cornergame.kioskdata.Kiosk;
 import com.github.jekattack.cornergame.kioskdata.KioskResponseData;
 import com.github.jekattack.cornergame.kioskdata.details.KioskLocation;
 import com.github.jekattack.cornergame.kioskdata.details.KioskLocationCoordinates;
+import com.github.jekattack.cornergame.model.CGErrorDTO;
 import com.github.jekattack.cornergame.placesapi.Coordinates;
 import com.github.jekattack.cornergame.userdata.*;
 import org.assertj.core.api.Assertions;
@@ -24,6 +26,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -390,25 +394,31 @@ class CornergameApplicationTests {
 
         //Visit failed, weil Standort nicht passt
         //VisitController
-        ResponseEntity<Void> failedVisitResponse1 = testRestTemplate.exchange(
+        ResponseEntity<Object> failedVisitResponse1 = testRestTemplate.exchange(
                 "/api/visits/add",
                 HttpMethod.POST,
                 new HttpEntity<>(failedVisitCreationData1, createHeaders(tokenUser)),
-                Void.class
+                Object.class
         );
 
-        Assertions.assertThat(failedVisitResponse1.getStatusCodeValue()).isEqualTo(500);
+        Assertions.assertThat(failedVisitResponse1.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(failedVisitResponse1.getBody()).hasFieldOrPropertyWithValue("message", "Visit not created");
+        Assertions.assertThat(failedVisitResponse1.getBody()).hasFieldOrPropertyWithValue("subMessages", List.of("Users location is not adequate"));
+
 
         //Visit failed, weil schon innerhalb der letzten 24h besucht
         //VisitController
-        ResponseEntity<Void> failedVisitResponse2 = testRestTemplate.exchange(
+        ResponseEntity<Object> failedVisitResponse2 = testRestTemplate.exchange(
                 "/api/visits/add",
                 HttpMethod.POST,
                 new HttpEntity<>(visitCreationData1, createHeaders(tokenUser)),
-                Void.class
+                Object.class
         );
 
-        Assertions.assertThat(failedVisitResponse1.getStatusCodeValue()).isEqualTo(500);
+        Assertions.assertThat(failedVisitResponse2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(failedVisitResponse2.getBody()).hasFieldOrPropertyWithValue("message", "Visit not created");
+        Assertions.assertThat(failedVisitResponse2.getBody()).hasFieldOrPropertyWithValue("subMessages", List.of("Kiosk already visited within last 24h"));
+
 
         //Score abrufen
         //GameDataController
@@ -436,64 +446,63 @@ class CornergameApplicationTests {
 
         //Quest starten, um ihn abzubrechen
         //QuestController
-        ResponseEntity<String> startQuest2Response = testRestTemplate.exchange(
+        ResponseEntity<QuestEventDTO> startQuest2Response = testRestTemplate.exchange(
                 "/api/quests/start",
                 HttpMethod.POST,
                 new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
-                String.class
+                QuestEventDTO.class
         );
 
-        Assertions.assertThat(startQuest2Response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertThat(startQuest2Response.getBody()).isEqualTo("Quest " + quest2.getName() + " gestartet!");
+        Assertions.assertThat(startQuest2Response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(startQuest2Response.getBody().getMessage()).isEqualTo("Quest " + quest2.getName() + " gestartet!");
 
         //Quest abbrechen
         //QuestController
-        ResponseEntity<String> cancelQuest2Response = testRestTemplate.exchange(
+        ResponseEntity<QuestEventDTO> cancelQuest2Response = testRestTemplate.exchange(
                 "/api/quests/cancel",
                 HttpMethod.DELETE,
                 new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
-                String.class
+                QuestEventDTO.class
         );
 
         Assertions.assertThat(cancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.GONE);
-        Assertions.assertThat(cancelQuest2Response.getBody()).isEqualTo("Quest " + quest2.getName() + " abgebrochen.");
+        Assertions.assertThat(cancelQuest2Response.getBody().getMessage()).isEqualTo("Quest " + quest2.getName() + " abgebrochen.");
 
         //Quest abbrechen abgelehnt
         //QuestController
-        ResponseEntity<String> failedCancelQuest2Response = testRestTemplate.exchange(
+        ResponseEntity<QuestEventDTO> failedCancelQuest2Response = testRestTemplate.exchange(
                 "/api/quests/cancel",
                 HttpMethod.DELETE,
                 new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
-                String.class
+                QuestEventDTO.class
         );
 
-        Assertions.assertThat(failedCancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.GONE);
-        Assertions.assertThat(failedCancelQuest2Response.getBody()).isEqualTo("Quest nicht gestartet oder schon abgelaufen.");
-
+        Assertions.assertThat(failedCancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(failedCancelQuest2Response.getBody().getMessage()).isEqualTo("Quest not canceled");
 
         //Quest starten
         //QuestController
-        ResponseEntity<String> startQuest1Response = testRestTemplate.exchange(
+        ResponseEntity<QuestEventDTO> startQuest1Response = testRestTemplate.exchange(
                 "/api/quests/start",
                 HttpMethod.POST,
                 new HttpEntity<>(quest1.getId(), createHeaders(tokenUser)),
-                String.class
+                QuestEventDTO.class
         );
 
-        Assertions.assertThat(startQuest1Response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertThat(startQuest1Response.getBody()).isEqualTo("Quest " + quest1.getName() + " gestartet!");
+        Assertions.assertThat(startQuest1Response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(startQuest1Response.getBody().getMessage()).isEqualTo("Quest " + quest1.getName() + " gestartet!");
 
         //Quest starten abgelehnt
         //QuestController
-        ResponseEntity<String> failedStartQuest1Response = testRestTemplate.exchange(
+        ResponseEntity<QuestEventDTO> failedStartQuest1Response = testRestTemplate.exchange(
                 "/api/quests/start",
                 HttpMethod.POST,
                 new HttpEntity<>(quest1.getId(), createHeaders(tokenUser)),
-                String.class
+                QuestEventDTO.class
         );
 
-        Assertions.assertThat(failedStartQuest1Response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertThat(failedStartQuest1Response.getBody()).isEqualTo("Quest wurde bereits gestartet.");
+        Assertions.assertThat(failedStartQuest1Response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(failedStartQuest1Response.getBody().getMessage()).isEqualTo("Quest not started");
 
         //Aktive Quests abrufen
         //GameDataController

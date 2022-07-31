@@ -1,6 +1,6 @@
 package com.github.jekattack.cornergame.game.gamedata;
 
-import com.github.jekattack.cornergame.game.achievements.AchievementRepository;
+import com.github.jekattack.cornergame.game.gamedata.achievements.AchievementRepository;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import com.github.jekattack.cornergame.game.quests.ActiveQuestDTO;
