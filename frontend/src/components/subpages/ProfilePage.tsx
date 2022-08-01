@@ -9,7 +9,7 @@ import {
     updatePassword,
     updateUser
 } from "../../service/apiService";
-import {CGUser, CGUserGameDataDTO, CGUserPasswordDTO, CGUserUpdateDTO, Kiosk, Visit} from "../../service/models";
+import {CGUser, CGUserGameDataDTO, CGUserUpdateDTO, Kiosk, Visit} from "../../service/models";
 
 export default function ProfilePage(){
 
