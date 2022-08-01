@@ -4,7 +4,6 @@ export default function AchievementPageItem(props: any){
 
     const name: string = props.achievementname;
     const description: string = props.achievementdescription;
-    const requirements: any = props.requirements;
 
     return (
         <div className={"achievement-wrapper"}>

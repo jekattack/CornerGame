@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {CGUserGameDataDTO, Quest} from "../../service/models";
 import {useNavigate} from "react-router-dom";
-import {fetchAllQuests, fetchHighscore} from "../../service/apiService";
-import QuestPageItem from "./QuestPageItem";
+import {fetchHighscore} from "../../service/apiService";
 import ScoreboardPageItem from "./ScoreboardPageItem";
 
 export default function ScoreboardPage(){
