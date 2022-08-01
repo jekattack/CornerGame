@@ -1,6 +1,7 @@
 .subpage-content{
     display: flex;
     flex-direction: column;
+    text-align: left;
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
@@ -42,6 +43,26 @@
     text-decoration-thickness: 2px;
 }
 
+
+.scoreboard-page-item-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.password-input{
+    border-style: dotted;
+    width: 6rem;
+}
+
+.quest-controls-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
 .achievement-grid{
     display: flex;
     flex-direction: row;
@@ -53,13 +74,10 @@
     width: 25%;
 }
 
-.scoreboard-page-item-wrapper{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.achievement-wrapper h4{
 }
 
-.password-input{
-    border-style: dotted;
-    width: 6rem;
+.achievement-wrapper textarea{
+    border: hidden;
+    resize: none;
 }

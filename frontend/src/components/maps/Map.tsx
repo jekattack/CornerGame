@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {GoogleMap, MarkerF, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
 import { Kiosk } from "../../service/models";

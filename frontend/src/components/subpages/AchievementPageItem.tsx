@@ -1,3 +1,4 @@
+import "./Subpage.css";
 import React from "react";
 
 export default function AchievementPageItem(props: any){

@@ -54,6 +54,11 @@ export function fetchAllAchievements(){
         .then((response: AxiosResponse<Achievement[]>) => response.data)
 }
 
+export function fetchUsersAchievements(){
+    return axios.get("/api/gamedata/achievements", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<Achievement[]>) => response.data)
+}
+
 export function fetchHighscore(){
     return axios.get("/api/gamedata/highscore", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<CGUserGameDataDTO[]>) => response.data)

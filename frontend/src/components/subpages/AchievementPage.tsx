@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Achievement} from "../../service/models";
 import {useNavigate} from "react-router-dom";
-import {fetchAllAchievements} from "../../service/apiService";
+import {fetchAllAchievements, fetchUsersAchievements} from "../../service/apiService";
 import AchievementPageItem from "./AchievementPageItem";
 
 export default function AchievementPage(){
@@ -11,7 +11,7 @@ export default function AchievementPage(){
     const nav = useNavigate();
 
     useEffect(() => {
-        fetchAllAchievements().then(response => setLoadedAchievements(response))
+        fetchUsersAchievements().then(response => setLoadedAchievements(response))
     }, [nav])
 
     function drawAchievementItems(){
@@ -23,7 +23,7 @@ export default function AchievementPage(){
             <h1>Achievements</h1>
             <p>Schau dir an, was du schon alles geschafft hast: Hier findest du alle Achievements, die du bisher freigeschaltet hast.</p>
             <div className={"achievement-grid"}>
-                {loadedAchievements ? drawAchievementItems() : <div>…loading…</div>}
+                {loadedAchievements ? drawAchievementItems() : <div>Noch hast du keine Achievements gesammelt. Auf zum Kiosk!</div>}
             </div>
         </>
     )

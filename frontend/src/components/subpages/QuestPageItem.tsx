@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 export default function QuestPageItem(props: any){
 
@@ -7,25 +7,46 @@ export default function QuestPageItem(props: any){
     const kioskcount: number = props.kioskcount;
     const durationMinutes: number = props.durationMinutes;
 
+    const [expanded, setExpanded] = useState<boolean>(false);
+
     return(
         <div className={"subpage-content"}>
-            <h2>{questname}</h2>
-
-            <div className={"subpage-input-fields"}>
-                <textarea className={"kioskcount-display"} readOnly={true} rows={3} cols={50} value={questdescription ?? "defaultDesc"}/>
+            <div className={"quest-controls-header"}>
+                <h2>{questname}</h2>
+                { expanded ?
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => setExpanded(false)}>
+                        <path d="M15 3H21V9" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9 21H3V15" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M21 3L14 10" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3 21L10 14" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    :
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => setExpanded(true)}>
+                        <path d="M4 14H10V20" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M20 10H14V4" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M14 10L21 3" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3 21L10 14" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                }
             </div>
+            { expanded &&
+                <>
+                    <div className={"subpage-input-fields"}>
+                        <textarea className={"kioskcount-display"} readOnly={true} rows={3} cols={50} value={questdescription ?? "defaultDesc"}/>
+                    </div>
 
-            <label htmlFor="kiosk-display">Anzahl Kioske:</label>
-            <div className={"subpage-input-fields"}>
-                <textarea className={"kioskcount-display"} readOnly={true} rows={1} cols={50} value={kioskcount ?? "defaultCount"}/>
-            </div>
+                    <label htmlFor="kiosk-display">Anzahl Kioske:</label>
+                    <div className={"subpage-input-fields"}>
+                    <textarea className={"kioskcount-display"} readOnly={true} rows={1} cols={50} value={kioskcount ?? "defaultCount"}/>
+                    </div>
 
-            <label htmlFor="kiosk-display">Zeitlimit (Minuten):</label>
-            <div className={"subpage-input-fields"}>
-                <textarea className={"duration-minutes-display"} readOnly={true} rows={1} cols={50} value={durationMinutes ?? "defaultDur"}/>
-            </div>
-
-            <div className={"subpage-input-button-bold"}>Zeig mir mehr!</div>
+                    <label htmlFor="kiosk-display">Zeitlimit (Minuten):</label>
+                    <div className={"subpage-input-fields"}>
+                    <textarea className={"duration-minutes-display"} readOnly={true} rows={1} cols={50} value={durationMinutes ?? "defaultDur"}/>
+                    </div>
+                    <div className={"subpage-input-button-bold"}>Zeig mir mehr!</div>
+                </>
+            }
         </div>
     )
 }
