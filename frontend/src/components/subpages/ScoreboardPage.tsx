@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {CGUserGameDataDTO, Quest} from "../../service/models";
+import {CGUserGameDataDTO} from "../../service/models";
 import {useNavigate} from "react-router-dom";
 import {fetchHighscore} from "../../service/apiService";
 import ScoreboardPageItem from "./ScoreboardPageItem";
