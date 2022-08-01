@@ -1,8 +1,11 @@
 package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
+import com.github.jekattack.cornergame.model.CGErrorDTO;
+import com.mongodb.DuplicateKeyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -20,24 +23,46 @@ public class QuestController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<Quest> getAllQuests(){
-        return questService.getAllQuests();
+    public ResponseEntity<Object> getAllQuests(){
+        try{
+            return ResponseEntity.ok().body(questService.getAllQuests());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
+        }
     }
 
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Quest addQuest(@RequestBody Quest newQuest){
-        return questService.addQuest(newQuest);
+    public ResponseEntity<Object> addQuest(@RequestBody Quest newQuest){
+        try{
+            return ResponseEntity.status(HttpStatus.CREATED).body(questService.addQuest(newQuest));
+        } catch (DuplicateKeyException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quests not created", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
+        }
     }
 
     @PostMapping("/start")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public String startQuest(@RequestBody String questId, Principal principal){
-        try{
+    public ResponseEntity<Object> startQuest(@RequestBody String questId, Principal principal){
+        try {
             //principal.getName() contains userId
-            return questService.startQuest(principal.getName(), questId);
-        } catch (NoSuchElementException e){
-            throw new NoSuchElementException("User or Quest not found");
+            return ResponseEntity.ok().body(questService.startQuest(principal.getName(), questId));
+        } catch (NoSuchElementException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quest not started", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
+        }
+    }
+
+    @DeleteMapping("/cancel")
+    public ResponseEntity<Object> cancelQuest(@RequestBody String questId, Principal principal){
+        try {
+            //principal.getName() contains userId
+            return ResponseEntity.status(HttpStatus.GONE).body(questService.cancelQuest(principal.getName(), questId));
+        } catch (NoSuchElementException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quest not canceled", e.getMessage(), "Quest not found or already expired"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
     }
 }

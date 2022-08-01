@@ -2,12 +2,12 @@ package com.github.jekattack.cornergame.game.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
-import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
 import com.github.jekattack.cornergame.game.visits.Visit;
 import com.github.jekattack.cornergame.game.visits.VisitObserver;
 import com.github.jekattack.cornergame.game.visits.VisitRepository;
+import com.mongodb.DuplicateKeyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,18 +27,43 @@ public class QuestService implements VisitObserver {
 
 
     public Quest addQuest(Quest newQuest) {
-        return questRepository.save(newQuest);
+        try{
+            return questRepository.save(newQuest);
+        } catch (DuplicateKeyException e){
+            throw e;
+        }
     }
 
     public List<Quest> getAllQuests() {
         return questRepository.findAll();
     }
 
-    public String startQuest(String userId, String questId) {
+    public QuestEventDTO startQuest(String userId, String questId) {
         Quest quest = questRepository.findById(questId).orElseThrow();
+        CGUserGameData gameData = gameDataRepository.findByUserId(userId).orElseThrow();
+        Optional<QuestItem> questItem = gameData.getQuestItems().stream()
+                .filter(qi-> qi.getQuestId().equals(questId) && qi.getQuestStatus().equals(QuestStatus.STARTED))
+                .findFirst();
+        if(questItem.isPresent()){
+            throw new IllegalStateException("Quest wurde bereits gestartet.");
+        }
         questObservers.forEach(observer -> observer.onQuestStarted(userId, quest));
-        return "Quest " + quest.getName() + " gestartet!";
+        return new QuestEventDTO("Quest " + quest.getName() + " gestartet!", quest);
     }
+
+    public QuestEventDTO cancelQuest(String userId, String questId) {
+        Quest quest = questRepository.findById(questId).orElseThrow();
+        CGUserGameData gameData = gameDataRepository.findByUserId(userId).orElseThrow();
+        Optional<QuestItem> questItem = gameData.getQuestItems().stream()
+                .filter(qi-> qi.getQuestId().equals(questId) && qi.getQuestStatus().equals(QuestStatus.STARTED))
+                .findFirst();
+        if(questItem.isPresent()){
+            questObservers.forEach(questObserver -> questObserver.onQuestCanceled(userId, quest));
+            return new QuestEventDTO("Quest " + quest.getName() + " abgebrochen.", quest);
+        }
+        throw new IllegalStateException("Quest nicht gestartet oder schon abgelaufen.");
+    }
+
 
     private boolean checkIfQuestComplete(List<Visit> visits, String questId){
         List<String> distinctVisits = visits.stream().map(Visit::getGooglePlacesId).distinct().toList();
@@ -51,9 +76,8 @@ public class QuestService implements VisitObserver {
 
     @Override
     public void onVisitCreated(Visit visit, CGUserGameData gameData) {
-        CGUserGameData userGameData = gameDataRepository.getByUserId(visit.getUserId()).orElseThrow();
         if(visit.getQuestId()!=null){
-            Optional<QuestItem> questItem = userGameData.getQuestItems().stream()
+            Optional<QuestItem> questItem = gameData.getQuestItems().stream()
                     .filter(qi -> qi.getQuestId().equals(visit.getQuestId()) && qi.getQuestStatus().equals(QuestStatus.STARTED))
                     .findFirst();
             if(questItem.isPresent()){

@@ -30,8 +30,12 @@ public class VisitService {
     public String createVisit(VisitCreationData visitCreationData, String userId) {
         CGUserGameData gameData = cgUserGameDataService.refreshQuestItemsStatus(userId);
 
-        validateUsersLocation(visitCreationData);
-        checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
+        try{
+            validateUsersLocation(visitCreationData);
+            checkIfUserDidNotVisitKioskWithin24Hours(userId, visitCreationData);
+        } catch (IllegalStateException e){
+            throw e;
+        }
 
         Visit newVisit = new Visit(null, userId, visitCreationData.getGooglePlacesId(), Date.from(Instant.now()), null);
         setQuestIdIfVisitIsPartOfActiveQuest(userId, visitCreationData, newVisit);
@@ -64,10 +68,10 @@ public class VisitService {
         double kioskLat = kiosk.getKioskLocation().getLocation().getLat();
         double kioskLng = kiosk.getKioskLocation().getLocation().getLng();
 
-        if(!(kioskLat - 0.0001 < userLat
-                && kioskLat + 0.0001 > userLat
-                && kioskLng - 0.0001 < userLng
-                && kioskLng + 0.0001 > userLng)){
+        if(!(kioskLat - 0.001 < userLat
+                && kioskLat + 0.001 > userLat
+                && kioskLng - 0.001 < userLng
+                && kioskLng + 0.001 > userLng)){
             throw new IllegalStateException("Users location is not adequate");
         }
     }

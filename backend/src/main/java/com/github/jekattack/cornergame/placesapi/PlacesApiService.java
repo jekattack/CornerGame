@@ -21,11 +21,13 @@ public class PlacesApiService {
     private final KioskService kioskService;
     private final RestTemplate restTemplate;
     private final String googleMapsApiKey;
+    private final Coordinates coordinates;
 
-    public PlacesApiService(KioskService kioskService, RestTemplate restTemplate, @Value("${app.googleMaps.key}") String googleMapsApiKey){
+    public PlacesApiService(KioskService kioskService, RestTemplate restTemplate, @Value("${app.googleMaps.key}") String googleMapsApiKey, Coordinates coordinates){
         this.kioskService = kioskService;
         this.restTemplate = restTemplate;
         this.googleMapsApiKey = googleMapsApiKey;
+        this.coordinates = coordinates;
     }
 
 
@@ -34,20 +36,7 @@ public class PlacesApiService {
         List<KioskResponseData> responseData = new ArrayList<>();
 
         //Randomly chosen points in the center of Hamburg
-        String[][] coordinates = {
-                {"53.56733","9.8712"},
-                {"53.63049","9.88562"},
-                {"53.61502","9.97557"},
-                {"53.60402","10.04561"},
-                {"53.58283","10.08956"},
-                {"53.58731","9.94673"},
-                {"53.55918","9.97489"},
-                {"53.55632","10.06072"},
-                {"53.5347","10.10672"},
-                {"53.53743","9.98038"},
-                {"53.50408","10.01952"},
-                {"53.53511","9.91584"}
-        };
+        String[][] coordinates = this.coordinates.getCoordinates();
 
         for(String[] coordinate : coordinates){
             String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ coordinate[0] +"," + coordinate[1] +"&radius=3000&keyword=kiosk&key=" + googleMapsApiKey;

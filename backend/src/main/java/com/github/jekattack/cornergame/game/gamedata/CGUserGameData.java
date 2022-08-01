@@ -23,8 +23,8 @@ public class CGUserGameData {
     private String userId;
     @Builder.Default
     private int score = 0;
-    private List<String> achievementIds = List.of();
-    private ArrayList<QuestItem> questItems = new ArrayList<>();
+    private List<String> achievementIds = new ArrayList<>();
+    private List<QuestItem> questItems = new ArrayList<>();
 
     public CGUserGameData(String userId){
         this.userId = userId;

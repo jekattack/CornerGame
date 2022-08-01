@@ -1,5 +1,6 @@
 package com.github.jekattack.cornergame.userdata;
 
+import com.github.jekattack.cornergame.model.CGErrorDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,27 +19,28 @@ public class CGUserController {
     private final CGUserService cgUserService;
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createUser(@RequestBody UserCreationData userCreationData){
+    public ResponseEntity<Object> createUser(@RequestBody UserCreationData userCreationData){
         try {
-            cgUserService.createUser(userCreationData);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalArgumentException e1) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e2) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(cgUserService.createUser(userCreationData));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("User not created", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Optional<CGUser> getUser(Principal principal) {
-        //principal.getName() contains userId
-        try{
-            return cgUserService.getUser(principal.getName());
-        } catch (NoSuchElementException e){
-            throw new NoSuchElementException("User not found");
+    public ResponseEntity<Object> getUser(Principal principal) {
+        try {
+            //principal.getName() contains userId
+            return ResponseEntity.ok().body(cgUserService.getUser(principal.getName()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("User not found", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
+
     }
 
 

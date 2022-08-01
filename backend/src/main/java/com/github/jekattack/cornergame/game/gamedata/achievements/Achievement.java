@@ -1,4 +1,4 @@
-package com.github.jekattack.cornergame.game.achievements;
+package com.github.jekattack.cornergame.game.gamedata.achievements;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,15 +13,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Achievement {
+public class  Achievement {
     @Id
     private String id;
     @Indexed(unique = true)
     private String name;
     private String description;
-    private int visitsCreated;
-    private int questsStarted;
-    private int questsFinished;
-    private int kiosksVisited;
+    @Indexed(unique = true)
+    private AchievementRequirements requirements;
 
 }

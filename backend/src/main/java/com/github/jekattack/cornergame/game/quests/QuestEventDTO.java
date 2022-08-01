@@ -1,13 +1,13 @@
-package com.github.jekattack.cornergame.userdata;
+package com.github.jekattack.cornergame.game.quests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CGUserDTO {
+@NoArgsConstructor
+public class QuestEventDTO {
     private String message;
-    private String username;
+    private Quest quest;
 }

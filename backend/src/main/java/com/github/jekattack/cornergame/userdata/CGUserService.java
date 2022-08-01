@@ -17,7 +17,7 @@ public class CGUserService {
     private final CGUserGameDataService cgUserGameDataService;
     private final PasswordEncoder passwordEncoder;
 
-    public void createUser(UserCreationData userCreationData) {
+    public CGUserDTO createUser(UserCreationData userCreationData) {
         if(userCreationData.getUsername()==null || userCreationData.getUsername().isBlank()) throw new IllegalArgumentException("Registration failed: No username set");
         if(userCreationData.getEmail()==null || userCreationData.getEmail().isBlank()) throw new IllegalArgumentException("Registration failed: No email set");
         if(userCreationData.getPassword()==null || userCreationData.getPassword().isBlank()) throw new IllegalArgumentException("Registration failed: No password set");
@@ -28,6 +28,7 @@ public class CGUserService {
         cgUser.setRole("user");
         CGUser newUser = cgUserRepository.save(cgUser);
         cgUserGameDataService.createGameData(newUser.getId());
+        return new CGUserDTO("User " + newUser.getUsername() + " created!", newUser.getUsername());
     }
 
 
