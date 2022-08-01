@@ -1,5 +1,15 @@
-import axios, {AxiosResponse} from "axios";
-import {Achievement, CGUserGameDataDTO, Kiosk, LoginResponse, Quest, Visit} from "./models";
+import axios, {Axios, AxiosResponse} from "axios";
+import {
+    Achievement,
+    CGUser,
+    CGUserGameDataDTO,
+    CGUserPasswordDTO,
+    CGUserUpdateDTO,
+    Kiosk,
+    LoginResponse,
+    Quest,
+    Visit
+} from "./models";
 
 export function fetchAllKiosks() {
     return (
@@ -48,6 +58,28 @@ export function fetchHighscore(){
     return axios.get("/api/gamedata/highscore", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<CGUserGameDataDTO[]>) => response.data)
 }
+
+export function fetchScore(){
+    return axios.get("/api/gamedata/score", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<CGUserGameDataDTO>) => response.data)
+}
+
+
+export function fetchUser(){
+    return axios.get("/api/user", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<CGUser>) => response.data)
+}
+
+export function updateUser(userUpdate: CGUserUpdateDTO){
+    return axios.post("/api/user/update", userUpdate, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<CGUser>) => response.data)
+}
+
+export function updatePassword(passwordUpdate: CGUserPasswordDTO){
+    return axios.post("/api/user/update/password", passwordUpdate, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<String>) => response.data);
+}
+
 
 
 // LocalDateTime from java has been converted to String for the request, this creates a js Date from it

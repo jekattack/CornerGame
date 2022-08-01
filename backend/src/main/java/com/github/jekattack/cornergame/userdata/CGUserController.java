@@ -30,7 +30,6 @@ public class CGUserController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getUser(Principal principal) {
         try {
             //principal.getName() contains userId
@@ -41,6 +40,27 @@ public class CGUserController {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
 
+    }
+
+    @PostMapping
+    @RequestMapping("/update")
+    public ResponseEntity<Object> updateUser(@RequestBody CGUserUpdateDTO updateDTO, Principal principal) {
+        try {
+            //principal.getName() contains userId
+            return ResponseEntity.ok().body(cgUserService.updateUser(principal.getName(), updateDTO));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
+        }
+    }
+
+    @PostMapping
+    @RequestMapping("/update/password")
+    public ResponseEntity<Object> updatePassword(@RequestBody CGUserPasswordDTO updateDTO, Principal principal){
+        try {
+            return ResponseEntity.ok().body(cgUserService.updatePassword(principal.getName(), updateDTO));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Password not changed", e.getMessage()));
+        }
     }
 
 

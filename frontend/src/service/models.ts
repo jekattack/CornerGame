@@ -102,3 +102,28 @@ export interface CGUserGameDataDTO {
     username: string;
     score: number;
 }
+
+export interface CGUser {
+    id: string;
+    role: string;
+    username: string;
+    email: string;
+    password: string;
+    validated: boolean;
+    lastname: string;
+    firstname: string;
+    phone: string;
+    stammkioskId: string;
+}
+
+export interface CGUserUpdateDTO {
+    firstname?: string;
+    lastname?: string;
+    phone?: string;
+    stammkioskId?: string;
+}
+
+export interface CGUserPasswordDTO {
+    password: string;
+    passwordAgain: string;
+}

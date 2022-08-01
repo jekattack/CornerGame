@@ -30,13 +30,15 @@ public class LoginController {
             loginData.setUsername(loginData.getUsername().toLowerCase());
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
-            CGUser user = userService.findByUsername(loginData.getUsername()).orElseThrow();
+            CGUser user = userService.findByUsername(loginData.getUsername());
 
             Map<String, Object> claims = new HashMap<>();
             claims.put("role", user.getRole());
             String jwt = jwtService.createToken(claims, user.getId());
 
             return ResponseEntity.ok(new LoginResponse(jwt));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login failed", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login failed"));
         }
@@ -48,7 +50,7 @@ public class LoginController {
 
         try{
             //principal.getName() contains userId
-            CGUser user = userService.getUser(principal.getName()).orElseThrow();
+            CGUser user = userService.getUser(principal.getName());
             Map<String, Object> claims = new HashMap<>();
             claims.put("role", user.getRole());
 

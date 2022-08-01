@@ -116,7 +116,7 @@ class CGUserServiceTest {
 
         //Then
         Mockito.verify(testCGUserRepository).findById("testUserId");
-        Assertions.assertThat(testCGUserService.getUser("testUserId").orElseThrow()).isEqualTo(expectedUser);
+        Assertions.assertThat(testCGUserService.getUser("testUserId")).isEqualTo(expectedUser);
     }
 
 }

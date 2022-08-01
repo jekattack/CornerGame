@@ -31,7 +31,6 @@ public class CGUserGameDataController {
     }
 
     @GetMapping("/quests/active")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getActiveQuests(Principal principal){
         try {
             //principal.getName() contains userId
@@ -44,7 +43,6 @@ public class CGUserGameDataController {
     }
 
     @GetMapping("/score")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getScore(Principal principal){
         try {
             //principal.getName() contains userId
@@ -57,7 +55,6 @@ public class CGUserGameDataController {
     }
 
     @GetMapping("/achievements")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getAchievementsForUserByUserId(Principal principal){
         try {
             //principal.getName() contains userId
