@@ -5,10 +5,10 @@ import WelcomePage from "./routes/WelcomePage";
 import RegisterPage from "./routes/RegisterPage";
 import LoginPage from "./routes/LoginPage";
 import HomePage from "./routes/HomePage";
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App(){
-
-
 
     return(
         <BrowserRouter>
@@ -18,6 +18,7 @@ export default function App(){
                 <Route path={"/register"} element={<RegisterPage />} />
                 <Route path={"/map"} element={<HomePage />} />
             </Routes>
+            <ToastContainer/>
         </BrowserRouter>
     )
 }

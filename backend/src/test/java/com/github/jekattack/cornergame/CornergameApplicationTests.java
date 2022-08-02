@@ -402,8 +402,8 @@ class CornergameApplicationTests {
         );
 
         Assertions.assertThat(failedVisitResponse1.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        Assertions.assertThat(failedVisitResponse1.getBody()).hasFieldOrPropertyWithValue("message", "Visit not created");
-        Assertions.assertThat(failedVisitResponse1.getBody()).hasFieldOrPropertyWithValue("subMessages", List.of("Users location is not adequate"));
+        Assertions.assertThat(failedVisitResponse1.getBody()).hasFieldOrPropertyWithValue("message", "Besuch fehlgeschlagen");
+        Assertions.assertThat(failedVisitResponse1.getBody()).hasFieldOrPropertyWithValue("subMessages", List.of("Nicht nah genug am Kiosk. \uD83D\uDDFA"));
 
 
         //Visit failed, weil schon innerhalb der letzten 24h besucht
@@ -416,8 +416,8 @@ class CornergameApplicationTests {
         );
 
         Assertions.assertThat(failedVisitResponse2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        Assertions.assertThat(failedVisitResponse2.getBody()).hasFieldOrPropertyWithValue("message", "Visit not created");
-        Assertions.assertThat(failedVisitResponse2.getBody()).hasFieldOrPropertyWithValue("subMessages", List.of("Kiosk already visited within last 24h"));
+        Assertions.assertThat(failedVisitResponse2.getBody()).hasFieldOrPropertyWithValue("message", "Besuch fehlgeschlagen");
+        Assertions.assertThat(failedVisitResponse2.getBody()).hasFieldOrPropertyWithValue("subMessages", List.of("Kiosk bereits in den letzten 24h besucht. ☝️"));
 
 
         //Score abrufen

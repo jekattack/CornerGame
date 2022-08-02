@@ -8,10 +8,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @SpringBootApplication
 public class CornergameApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CornergameApplication.class, args);
+	}
+	@PostConstruct
+	public void init(){
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -21,7 +28,6 @@ public class CornergameApplication {
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-
 	@Bean
 	public Coordinates coordinates() {
 		return new Coordinates(new String[][]{

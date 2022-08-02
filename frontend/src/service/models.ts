@@ -76,3 +76,59 @@ export interface Visit {
     issuedAt: Date,
     visitType: string
 }
+
+export interface Quest {
+    id: string;
+    name: string;
+    description: string;
+    kioskGooglePlacesIds: string[];
+    durationInMinutes: number;
+    scoreMultiplier: number;
+}
+
+export interface Achievement {
+    id: string;
+    name: string;
+    description: string;
+    requirements: {
+        visitsCreated: number;
+        questsStarted: number;
+        questsFinished: number;
+        kiosksVisited: number;
+    };
+}
+
+export interface CGUserGameDataDTO {
+    username: string;
+    score: number;
+}
+
+export interface CGUser {
+    id: string;
+    role: string;
+    username: string;
+    email: string;
+    password: string;
+    validated: boolean;
+    lastname: string;
+    firstname: string;
+    phone: string;
+    stammkioskId: string;
+}
+
+export interface CGUserUpdateDTO {
+    firstname?: string;
+    lastname?: string;
+    phone?: string;
+    stammkioskId?: string;
+}
+
+export interface CGUserPasswordDTO {
+    password: string;
+    passwordAgain: string;
+}
+
+export interface CGError {
+    message: string;
+    subMessages: string[];
+}

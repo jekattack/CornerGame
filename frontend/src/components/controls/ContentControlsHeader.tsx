@@ -45,7 +45,7 @@ export default function ContentControlsHeader(props: any){
                     xmlns="http://www.w3.org/2000/svg"
                     onClick={returnToMenu}
                 >
-                    <path d="M15 18L9 12L15 6" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 18L9 12L15 6" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
             }
         </div>

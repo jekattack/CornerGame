@@ -23,24 +23,44 @@ public class CGUserController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(cgUserService.createUser(userCreationData));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("User not created", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Account nicht erstellt", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getUser(Principal principal) {
         try {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(cgUserService.getUser(principal.getName()));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("User not found", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Nutzer nicht gefunden", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
 
+    }
+
+    @PostMapping
+    @RequestMapping("/update")
+    public ResponseEntity<Object> updateUser(@RequestBody CGUserUpdateDTO updateDTO, Principal principal) {
+        try {
+            //principal.getName() contains userId
+            return ResponseEntity.ok().body(cgUserService.updateUser(principal.getName(), updateDTO));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
+        }
+    }
+
+    @PostMapping
+    @RequestMapping("/update/password")
+    public ResponseEntity<Object> updatePassword(@RequestBody CGUserPasswordDTO updateDTO, Principal principal){
+        try {
+            return ResponseEntity.ok().body(cgUserService.updatePassword(principal.getName(), updateDTO));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Password not changed", e.getMessage()));
+        }
     }
 
 

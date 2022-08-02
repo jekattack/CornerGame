@@ -4,6 +4,7 @@ import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../service/apiService";
 import "../App.css";
+import {toast} from "react-toastify";
 
 export default function LoginPage(){
 
@@ -23,6 +24,11 @@ export default function LoginPage(){
         login(username, password)
             .then(response => localStorage.setItem('jwt', response.token))
             .then(() => nav('/map'))
+            .catch((error) => {
+                if(error.response) {
+                    toast.error(error.response.data.message + ": " + error.response.data.subMessages[0])
+                }
+            })
     }
 
     return (

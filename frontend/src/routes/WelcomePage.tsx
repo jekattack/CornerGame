@@ -14,6 +14,7 @@ export default function WelcomePage(){
         }
     }, [nav])
 
+
     return (
         <div id={"app-container"}>
             <Map />

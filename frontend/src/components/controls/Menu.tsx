@@ -35,7 +35,7 @@ export default function Menu(props: any){
     }
 
     return(
-        <>
+        <div>
             <ContentControlsHeader statusContent={props.visibility} menuMode={menuMode} setMenuMode={setMenuMode} togglePage={togglePage}/>
             {menuMode &&
                 <>
@@ -66,7 +66,7 @@ export default function Menu(props: any){
                     <ScoreboardPage/>
                 </>
             }
-        </>
+        </div>
 
     )
 }

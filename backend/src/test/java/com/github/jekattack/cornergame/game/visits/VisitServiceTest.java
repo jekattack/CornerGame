@@ -146,7 +146,7 @@ class VisitServiceTest {
         String actual = testVisitService.createVisit(testVisitCreationData, testUser.getId());
 
         //Then
-        Assertions.assertThat(actual).isEqualTo("Kiosk besucht!");
+        Assertions.assertThat(actual).isEqualTo("Kiosk besucht! \uD83C\uDF7B");
 
         Mockito.verify(visitObserver).onVisitCreated(newTestVisit, testUserGameData);
     }

@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/test.html").permitAll()
                 .antMatchers(HttpMethod.GET, "/*", "/index*", "/static/**", "/*.js", "/*.json", "/*.ico","/*.png", "/*.svg","/images/*.png", "/images/*.svg").permitAll()
                 .antMatchers("/api/placesapi/*", "/api/achievements/add", "/api/achievements/delete/*", "/api/quests/add").hasRole("admin")
-                .antMatchers("/**").authenticated()
+                .antMatchers("/**", "/api/quests").authenticated()
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
