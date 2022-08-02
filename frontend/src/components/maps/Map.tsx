@@ -47,7 +47,7 @@ export default function Map(props: MapProps){
 
         function enableDirections(map: google.maps.Map){
             const directionsServices = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer();
+            const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
             directionsRenderer.setMap(map);
 
             directionsServiceRef.current = directionsServices;
