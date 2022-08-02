@@ -17,9 +17,6 @@ export default function Map(props: MapProps){
 
     const nav = useNavigate();
 
-    const [kioskRetainer, setKioskRetainer] = useState<Kiosk[]>();
-
-
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY!
@@ -44,10 +41,6 @@ export default function Map(props: MapProps){
             .then(response => response.map(item => visitedIdsSet.add(item)))
 
         fetchAllKiosks()
-            .then((response) => {
-                setKioskRetainer(response)
-                return response
-            })
             .then((response) => setMarkers(map, response, visitedIdsSet))
             .then(() =>  enableDirections(map))
 
