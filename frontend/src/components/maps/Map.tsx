@@ -17,7 +17,6 @@ export default function Map(props: MapProps){
 
     const nav = useNavigate();
 
-
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY!
