@@ -16,7 +16,7 @@ export default function HomePage(){
     const [timeRemains, setTimeRemains] = useState<number>();
 
     useEffect(() => {
-        if(timeRemains!=null || timeRemains!=0){
+        if(timeRemains !== null || timeRemains !== 0){
             setTimeout(() => {setTimeRemains(timeRemains!-1)}, 60000)
         } else {
             toast.error("Zeit für den Quest ist abgelaufen ⌛️")
@@ -27,7 +27,7 @@ export default function HomePage(){
     function getActiveQuests(activeQuestInfo: Quest){
         fetchActiveQuestsInfo()
             .then(response => {
-                const questInfo : ActiveQuestDTO | undefined = response.find(questInfo => questInfo.quest==activeQuestInfo)
+                const questInfo : ActiveQuestDTO | undefined = response.find(questInfo => questInfo.quest===activeQuestInfo)
                 if(questInfo?.minutesLeft){
                     setTimeRemains(questInfo.minutesLeft)
                 }
@@ -35,12 +35,12 @@ export default function HomePage(){
     }
 
     function startQuest(){
-        if(activeQuestInfo?.id != null){
-            startQuestRequest(activeQuestInfo.id)
+        if(activeQuestInfo?.id !== null){
+            startQuestRequest(activeQuestInfo!.id)
                 .then(response => {
                     toast.success(response.message)
                     setQueststartedMode(true)
-                    getActiveQuests(activeQuestInfo)
+                    getActiveQuests(activeQuestInfo!)
                 })
                 .catch((error) => {
                     if(error.response) {
