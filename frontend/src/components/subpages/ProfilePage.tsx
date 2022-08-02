@@ -153,8 +153,10 @@ export default function ProfilePage(){
 
             <label htmlFor="password-display">Neues Password:</label>
             <div className={"subpage-input-fields"}>
+                <div>
                     <input className={"password-input"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)} />
                     <input className={"password-input"} type={"password"} value={passwordAgain} onChange={(ev) => setPasswordAgain(ev.target.value)} />
+                </div>
                     <div className={"subpage-input-button"} onClick={() => sendNewPassword(password, passwordAgain)}>Neues Passwort speichern</div>
             </div>
         </div>

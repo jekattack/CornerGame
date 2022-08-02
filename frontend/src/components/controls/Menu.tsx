@@ -6,8 +6,14 @@ import AchievementPage from "../subpages/AchievementPage";
 import ProfilePage from "../subpages/ProfilePage";
 import QuestPage from "../subpages/QuestPage";
 import ScoreboardPage from "../subpages/ScoreboardPage";
+import {ActiveQuest} from "../../service/models";
 
-export default function Menu(props: any){
+interface MenuProps{
+    activeQuestSetter: ((quest: ActiveQuest) => void),
+    visibility: ((visibility: boolean) => void)
+}
+
+export default function Menu(props: MenuProps){
 
     const nav = useNavigate();
 
@@ -58,7 +64,7 @@ export default function Menu(props: any){
             }
             {questPage &&
                 <>
-                    <QuestPage/>
+                    <QuestPage activeQuestSetter={props.activeQuestSetter}/>
                 </>
             }
             {scoreboardPage &&

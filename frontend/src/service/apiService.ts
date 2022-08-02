@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {
-    Achievement,
+    Achievement, ActiveQuest,
     CGUser,
     CGUserGameDataDTO,
     CGUserPasswordDTO,
@@ -78,6 +78,11 @@ export function updateUser(userUpdate: CGUserUpdateDTO){
 export function updatePassword(passwordUpdate: CGUserPasswordDTO){
     return axios.post("/api/user/update/password", passwordUpdate, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<String>) => response.data);
+}
+
+export function getLocationsForQuest(questPlacesIds: string[]){
+    return axios.post("/api/kiosk/locations", questPlacesIds, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<ActiveQuest>) => response.data);
 }
 
 // LocalDateTime from java has been converted to String for the request, this creates a js Date from it

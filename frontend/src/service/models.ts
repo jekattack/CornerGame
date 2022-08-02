@@ -132,3 +132,9 @@ export interface CGError {
     message: string;
     subMessages: string[];
 }
+
+export interface ActiveQuest {
+    start: google.maps.LatLng,
+    waypoints: google.maps.DirectionsWaypoint[],
+    finish: google.maps.LatLng
+}

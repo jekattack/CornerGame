@@ -1,6 +1,19 @@
 import React, {useState} from "react";
+import {ActiveQuest, Quest} from "../../service/models";
+import {getLocationsForQuest} from "../../service/apiService";
+import {toast} from "react-toastify";
 
-export default function QuestPageItem(props: any){
+interface QuestPageItemProps{
+    key: string;
+    activeQuestSetter: ((quest: ActiveQuest) => void),
+    quest: Quest,
+    questname: string,
+    questdescription: string,
+    kioskcount: number,
+    durationMinutes: number
+}
+
+export default function QuestPageItem(props: QuestPageItemProps){
 
     const questname: string = props.questname;
     const questdescription: string = props.questdescription;
@@ -8,6 +21,17 @@ export default function QuestPageItem(props: any){
     const durationMinutes: number = props.durationMinutes;
 
     const [expanded, setExpanded] = useState<boolean>(false);
+
+
+    function getLocationsForQuestAndTriggerDirections(quest: Quest){
+        getLocationsForQuest(quest.kioskGooglePlacesIds)
+            .then((response: ActiveQuest) => createDirection(response))
+            .then(() => {toast.success("Route wird auf Karte angezeigt. 🏎")})
+    }
+
+    function createDirection(activeQuest: ActiveQuest){
+        props.activeQuestSetter(activeQuest)
+    }
 
     return(
         <div className={"subpage-content"}>
@@ -44,7 +68,7 @@ export default function QuestPageItem(props: any){
                     <div className={"subpage-input-fields"}>
                     <textarea className={"duration-minutes-display"} readOnly={true} rows={1} cols={50} value={durationMinutes ?? "defaultDur"}/>
                     </div>
-                    <div className={"subpage-input-button-bold"}>Zeig mir mehr!</div>
+                    <div className={"subpage-input-button-bold"} onClick={() => getLocationsForQuestAndTriggerDirections(props.quest)}>Quest auf Karte anzeigen!</div>
                 </>
             }
         </div>
