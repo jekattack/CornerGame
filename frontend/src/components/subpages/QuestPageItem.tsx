@@ -68,7 +68,7 @@ export default function QuestPageItem(props: QuestPageItemProps){
                     <div className={"subpage-input-fields"}>
                     <textarea className={"duration-minutes-display"} readOnly={true} rows={1} cols={50} value={durationMinutes ?? "defaultDur"}/>
                     </div>
-                    <div className={"subpage-input-button-bold"} onClick={() => getLocationsForQuestAndTriggerDirections}>Quest auf Karte anzeigen!</div>
+                    <div className={"subpage-input-button-bold"} onClick={() => getLocationsForQuestAndTriggerDirections(props.quest)}>Quest auf Karte anzeigen!</div>
                 </>
             }
         </div>

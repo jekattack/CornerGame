@@ -52,8 +52,8 @@ export default function Map(props: MapProps){
             .then(() =>  enableDirections(map))
 
         function enableDirections(map: google.maps.Map){
-            var directionsServices = new google.maps.DirectionsService();
-            var directionsRenderer = new google.maps.DirectionsRenderer();
+            const directionsServices = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer();
             directionsRenderer.setMap(map);
 
             directionsServiceRef.current = directionsServices;
@@ -87,11 +87,13 @@ export default function Map(props: MapProps){
     }, [location])
 
     useEffect(() => {
-        calcRoute(directionsServiceRef.current!,
-            directionsRendererRef.current!,
-            props.activeQuest?.start!,
-            props.activeQuest?.waypoints!,
-            props.activeQuest?.finish!)
+        if(directionsServiceRef.current!=null){
+            calcRoute(directionsServiceRef.current!,
+                directionsRendererRef.current!,
+                props.activeQuest?.start!,
+                props.activeQuest?.waypoints!,
+                props.activeQuest?.finish!)
+        }
     }, [props.activeQuest])
 
     //Setting Markers for Kiosks
