@@ -25,7 +25,7 @@ public class VisitController {
             //principal.getName() contains userId
             return ResponseEntity.status(HttpStatus.CREATED).body(visitService.createVisit(visitCreationData, principal.getName()));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Visit not created", e));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Besuch fehlgeschlagen", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
@@ -37,7 +37,7 @@ public class VisitController {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(visitService.getUsersVisits(principal.getName()));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("No Visits found", e));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Noch keinen Kiosk besucht 🗿", e));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }

@@ -10,6 +10,7 @@ import {
     updateUser
 } from "../../service/apiService";
 import {CGUser, CGUserGameDataDTO, CGUserUpdateDTO, Kiosk, Visit} from "../../service/models";
+import {toast} from "react-toastify";
 
 export default function ProfilePage(){
 
@@ -22,12 +23,13 @@ export default function ProfilePage(){
     const [firstname, setFirstname] = useState<string>();
     const [lastname, setLastname] = useState<string>();
     const [phone, setPhone] = useState<string>();
-    const [password, setPassword] = useState<string>("");
-    const [passwordAgain, setPasswordAgain] = useState<string>("");
+    const [password, setPassword] = useState('');
+    const [passwordAgain, setPasswordAgain] = useState('');
 
-    const [selectOptions, setSelectOptions] = useState([<option>…loading…</option>]);
+    const [selectOptions, setSelectOptions] = useState([<option key={"loading"}>…loading…</option>]);
 
     const [editState, setEditState] = useState<boolean>(true);
+
 
     useEffect(() => {
         fetchUser().then(response => {
@@ -53,7 +55,7 @@ export default function ProfilePage(){
     }
 
     function setOptionItems(kiosks:Kiosk[]) {
-        setSelectOptions(kiosks.map((kiosk:Kiosk) => <option key={Math.random()*100} value={kiosk.place_id}>{kiosk.name}</option>));
+        setSelectOptions(kiosks.map((kiosk:Kiosk) => <option key={kiosk.place_id} value={kiosk.place_id}>{kiosk.name}</option>));
     }
 
     function editFunction(){
@@ -77,11 +79,18 @@ export default function ProfilePage(){
                     const passwordInputs = Array.from(document.getElementsByClassName("password-input") as HTMLCollectionOf<HTMLElement>);
                     passwordInputs.forEach((element) => element.style.borderColor = "green");
                 })
+                .catch((error) => {
+                    if(error.response) {
+                        toast.error(error.response.data.message + ": " + error.response.data.subMessages[0])
+                    }
+                })
+        } else {
+            toast.error("Passwort nicht aktualisiert: Eingaben nicht gleich. 🤼")
         }
     }
 
     return(
-    <>
+    <div>
         <h1>Dein Profil</h1>
         <p>Wirf einen Blick auf deinen Punktestand und bearbeite deine persönlichen Daten.</p>
         
@@ -142,22 +151,14 @@ export default function ProfilePage(){
                 <div className={"subpage-input-button"} onClick={editFunction}>{editState ? "ändern" : "speichern"}</div>
             </div>
 
-            <label htmlFor="password-display">Dein Password:</label>
+            <label htmlFor="password-display">Neues Password:</label>
             <div className={"subpage-input-fields"}>
-                <div>
-                    <input className={"password-input"}
-                           type={"password"}
-                           defaultValue={"********"}
-                           onChange={ev => setPassword(ev.target.value)}/>
-                    <input className={"password-input"}
-                           type={"password"}
-                           defaultValue={"********"}
-                           onChange={ev => setPasswordAgain(ev.target.value)}/>
-                </div>
+                    <input className={"password-input"} type={"password"} value={password} onChange={(ev) => setPassword(ev.target.value)} />
+                    <input className={"password-input"} type={"password"} value={passwordAgain} onChange={(ev) => setPasswordAgain(ev.target.value)} />
                     <div className={"subpage-input-button"} onClick={() => sendNewPassword(password, passwordAgain)}>Neues Passwort speichern</div>
             </div>
         </div>
-    </>
+    </div>
 )
 }
 

@@ -127,3 +127,8 @@ export interface CGUserPasswordDTO {
     password: string;
     passwordAgain: string;
 }
+
+export interface CGError {
+    message: string;
+    subMessages: string[];
+}

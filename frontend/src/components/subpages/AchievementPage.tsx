@@ -15,7 +15,7 @@ export default function AchievementPage(){
     }, [nav])
 
     function drawAchievementItems(){
-        return loadedAchievements?.map(achievement => <AchievementPageItem key={Math.random()*100} achievementname={achievement.name} achievementdescription={achievement.description} requirements={achievement.requirements}/>)
+        return loadedAchievements?.map(achievement => <AchievementPageItem key={achievement.id} achievementname={achievement.name} achievementdescription={achievement.description} requirements={achievement.requirements}/>)
     }
 
     return(

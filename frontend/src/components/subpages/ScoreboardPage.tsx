@@ -14,7 +14,7 @@ export default function ScoreboardPage(){
     }, [nav])
 
     function drawScoreboardItems(){
-        return loadedHighscore?.map(score => <ScoreboardPageItem key={Math.random()*100} rank={loadedHighscore?.indexOf(score)} username={score.username} score={score.score}/>)
+        return loadedHighscore?.map(score => <ScoreboardPageItem key={score.username} rank={loadedHighscore?.indexOf(score)} username={score.username} score={score.score}/>)
     }
 
     return(

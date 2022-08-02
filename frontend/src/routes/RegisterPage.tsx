@@ -4,6 +4,7 @@ import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {register} from "../service/apiService";
 import "../App.css";
+import {toast} from "react-toastify";
 
 export default function RegisterPage(){
 
@@ -24,6 +25,12 @@ export default function RegisterPage(){
         ev.preventDefault();
         register(username, email, password, passwordAgain)
             .then(() => nav('/login'))
+            .catch((error) => {
+                if(error.response) {
+                    toast.error(error.response.data.message + ": " + error.response.data.subMessages[0])
+                    console.log(error)
+                }
+            })
         // -> Later directed to double-opt-in
     }
 

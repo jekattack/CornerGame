@@ -16,7 +16,7 @@ export default function QuestPage(){
     }, [nav])
 
     function drawQuestItems(){
-        return loadedQuests?.map(quest => <QuestPageItem key={Math.random()*100} quest={quest} questname={quest.name} questdescription={quest.description} kioskcount={quest.kioskGooglePlacesIds.length} durationMinutes={quest.durationInMinutes}/>)
+        return loadedQuests?.map(quest => <QuestPageItem key={quest.id} quest={quest} questname={quest.name} questdescription={quest.description} kioskcount={quest.kioskGooglePlacesIds.length} durationMinutes={quest.durationInMinutes}/>)
     }
 
     return(

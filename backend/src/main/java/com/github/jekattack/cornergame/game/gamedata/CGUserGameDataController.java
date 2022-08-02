@@ -36,7 +36,7 @@ public class CGUserGameDataController {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(cgUserGameDataService.getActiveQuestInfo(principal.getName()));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quests not loaded", "No Active Quests found"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quests nicht geladen", "Es sind keine Quests aktiv 🦥"));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
@@ -48,7 +48,7 @@ public class CGUserGameDataController {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(cgUserGameDataService.getScore(principal.getName()));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Score not found", "No score found for User-Id:" + principal.getName()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Score nicht gefunden", "Nichts gefunden für: " + principal.getName()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
@@ -60,7 +60,7 @@ public class CGUserGameDataController {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(cgUserGameDataService.getAchievementsForUserByUserId(principal.getName()));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("No Achievements found", "No Achievements for User-Id:" + principal.getName()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Keine Achievements gefunden", "Nichts gefunden für: " + principal.getName()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }

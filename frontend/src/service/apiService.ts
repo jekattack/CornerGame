@@ -10,6 +10,7 @@ import {
     Quest,
     Visit
 } from "./models";
+import {toast} from "react-toastify";
 
 export function fetchAllKiosks() {
     return (
@@ -47,11 +48,6 @@ export function visit(googlePlacesId: string, lat: number, lng: number){
 export function fetchAllQuests(){
     return axios.get("/api/quests", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<Quest[]>) => response.data)
-}
-
-export function fetchAllAchievements(){
-    return axios.get("/api/achievements", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
-        .then((response: AxiosResponse<Achievement[]>) => response.data)
 }
 
 export function fetchUsersAchievements(){

@@ -43,7 +43,7 @@ public class VisitService {
         Visit visitCreated = visitRepository.save(newVisit);
         visitObservers.forEach(visitObserver -> visitObserver.onVisitCreated(visitCreated, gameData));
 
-        return "Kiosk besucht!";
+        return "Kiosk besucht! 🍻";
     }
 
     private void setQuestIdIfVisitIsPartOfActiveQuest(String userId, VisitCreationData visitCreationData, Visit newVisit) {
@@ -56,7 +56,7 @@ public class VisitService {
                 userId,
                 visitCreationData.getGooglePlacesId(),
                 Date.from(Instant.now().minus(Duration.ofHours(24))))){
-            throw new IllegalStateException("Kiosk already visited within last 24h");
+            throw new IllegalStateException("Kiosk bereits in den letzten 24h besucht. ☝️");
         }
     }
     private void validateUsersLocation(VisitCreationData visitCreationData){
@@ -72,7 +72,7 @@ public class VisitService {
                 && kioskLat + 0.001 > userLat
                 && kioskLng - 0.001 < userLng
                 && kioskLng + 0.001 > userLng)){
-            throw new IllegalStateException("Users location is not adequate");
+            throw new IllegalStateException("Nicht nah genug am Kiosk. 🗺");
         }
     }
 }

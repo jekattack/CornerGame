@@ -6,8 +6,12 @@ import { Kiosk } from "../../service/models";
 import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 const Map: React.FC = () => {
+
+    const nav = useNavigate();
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -111,8 +115,6 @@ const Map: React.FC = () => {
                 "</div>" +
                 "</div>";
 
-
-
             marker.addListener("click", () => {
                 if (infoWindow) {
                     infoWindow.close();
@@ -143,7 +145,16 @@ const Map: React.FC = () => {
         const visitGooglePlacesId = document.getElementById('kiosk-identifier')!.innerHTML;
         const locationLat: number = +document.getElementById('location-element-lat')!.innerHTML;
         const locationLng: number = +document.getElementById('location-element-lng')!.innerHTML;
-        visit(visitGooglePlacesId, locationLat, locationLng).then(() => console.log("success!"));
+        visit(visitGooglePlacesId, locationLat, locationLng)
+            .then(() => {
+                toast.success("Kiosk besucht! +100 Punkte 🍻")
+                nav("/map")
+            })
+            .catch((error) => {
+            if(error.response) {
+                toast.error(error.response.data.message + ": " + error.response.data.subMessages[0])
+            }
+        });
     }
 
     //When map didnt already load

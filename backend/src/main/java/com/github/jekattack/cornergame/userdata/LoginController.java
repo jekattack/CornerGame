@@ -38,9 +38,9 @@ public class LoginController {
 
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login failed", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login fehlgeschlagen", "😬"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login failed"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Login fehlgeschlagen", "😬"));
         }
     }
 

@@ -23,7 +23,7 @@ public class CGUserController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(cgUserService.createUser(userCreationData));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("User not created", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Account nicht erstellt", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
@@ -35,7 +35,7 @@ public class CGUserController {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(cgUserService.getUser(principal.getName()));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("User not found", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Nutzer nicht gefunden", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
