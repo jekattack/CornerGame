@@ -10,7 +10,6 @@ import {
     Quest,
     Visit
 } from "./models";
-import {toast} from "react-toastify";
 
 export function fetchAllKiosks() {
     return (
@@ -80,8 +79,6 @@ export function updatePassword(passwordUpdate: CGUserPasswordDTO){
     return axios.post("/api/user/update/password", passwordUpdate, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<String>) => response.data);
 }
-
-
 
 // LocalDateTime from java has been converted to String for the request, this creates a js Date from it
 export function parseISOString(s: string) {
