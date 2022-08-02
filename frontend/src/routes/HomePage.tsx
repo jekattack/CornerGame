@@ -2,16 +2,18 @@ import Map from "../components/maps/Map";
 import React, {useState} from "react";
 import Menu from "../components/controls/Menu";
 import "../App.css";
+import {ActiveQuest} from "../service/models";
 
 export default function HomePage(){
 
     const [isVisible, setIsVisible] = useState(false);
+    const [activeQuest, setActiveQuest] = useState<ActiveQuest>();
 
     return (
         <div id={"app-container"}>
-            <Map />
+            <Map activeQuest={activeQuest}/>
             {isVisible && <div id={"content-wrapper"}>
-                <Menu visibility={setIsVisible}/>
+                <Menu activeQuestSetter={setActiveQuest} visibility={setIsVisible}/>
             </div>}
             {!isVisible && <div id={"content-wrapper"} onClick={() => {setIsVisible(true)}}>
                 <div className={"content-controls-header"}>

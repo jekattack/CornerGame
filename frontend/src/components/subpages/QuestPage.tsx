@@ -2,10 +2,15 @@ import React, {useEffect, useState} from "react";
 import "./Subpage.css";
 import QuestPageItem from "./QuestPageItem";
 import {fetchAllQuests} from "../../service/apiService";
-import {Quest} from "../../service/models";
+import {ActiveQuest, Quest} from "../../service/models";
 import {useNavigate} from "react-router-dom";
 
-export default function QuestPage(){
+interface QuestProps{
+    activeQuestSetter: ((quest: ActiveQuest) => void);
+}
+
+export default function QuestPage(props: QuestProps){
+
 
     const [loadedQuests, setLoadedQuests] = useState<Quest[]>();
 
@@ -16,7 +21,15 @@ export default function QuestPage(){
     }, [nav])
 
     function drawQuestItems(){
-        return loadedQuests?.map(quest => <QuestPageItem key={quest.id} quest={quest} questname={quest.name} questdescription={quest.description} kioskcount={quest.kioskGooglePlacesIds.length} durationMinutes={quest.durationInMinutes}/>)
+        return loadedQuests?.map(quest =>
+            <QuestPageItem
+                key={quest.id}
+                activeQuestSetter={props.activeQuestSetter}
+                quest={quest}
+                questname={quest.name}
+                questdescription={quest.description}
+                kioskcount={quest.kioskGooglePlacesIds.length}
+                durationMinutes={quest.durationInMinutes}/>)
     }
 
     return(
