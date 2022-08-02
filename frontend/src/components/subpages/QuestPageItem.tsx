@@ -15,16 +15,16 @@ export default function QuestPageItem(props: any){
                 <h2>{questname}</h2>
                 { expanded ?
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => setExpanded(false)}>
-                        <path d="M15 3H21V9" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M9 21H3V15" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M21 3L14 10" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M4 14H10V20" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M20 10H14V4" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M14 10L21 3" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M3 21L10 14" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     :
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => setExpanded(true)}>
-                        <path d="M4 14H10V20" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M20 10H14V4" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M14 10L21 3" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M15 3H21V9" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9 21H3V15" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M21 3L14 10" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M3 21L10 14" stroke="#111111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                 }

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Achievement} from "../../service/models";
 import {useNavigate} from "react-router-dom";
-import {fetchAllAchievements, fetchUsersAchievements} from "../../service/apiService";
+import { fetchUsersAchievements } from "../../service/apiService";
 import AchievementPageItem from "./AchievementPageItem";
 
 export default function AchievementPage(){

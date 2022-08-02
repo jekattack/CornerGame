@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {GoogleMap, MarkerF, useJsApiLoader} from "@react-google-maps/api";
+import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
 import { Kiosk } from "../../service/models";
@@ -111,7 +111,7 @@ const Map: React.FC = () => {
                 "</div>" +
                 "</div>";
 
-            google.maps.event.addListener(infoWindow, "domready", buttonFunctionality);
+
 
             marker.addListener("click", () => {
                 if (infoWindow) {
@@ -125,6 +125,7 @@ const Map: React.FC = () => {
                     map,
                     shouldFocus: false
                 });
+                google.maps.event.addListener(infoWindow, "domready", buttonFunctionality);
             })
 
             //Adding marker to MarkerArray
@@ -134,7 +135,7 @@ const Map: React.FC = () => {
 
     //Adding Functionality to button
     function buttonFunctionality (){
-        document.getElementById("visit-button")!.onclick=addVisit;
+        return document.getElementById("visit-button")!.onclick=addVisit;
     }
 
     //Action for Button in InfoWindow
