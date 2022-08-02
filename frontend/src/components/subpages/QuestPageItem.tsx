@@ -5,7 +5,11 @@ import {toast} from "react-toastify";
 
 interface QuestPageItemProps{
     key: string;
+    questModeSetter: ((questMode: boolean) => void);
+    menuModeSetter: ((menuMode: boolean) => void);
+    questPageSetter: ((questPage: boolean) => void);
     activeQuestSetter: ((quest: ActiveQuest) => void),
+    activeQuestInfoSetter: ((quest: Quest) => void),
     quest: Quest,
     questname: string,
     questdescription: string,
@@ -27,6 +31,12 @@ export default function QuestPageItem(props: QuestPageItemProps){
         getLocationsForQuest(quest.kioskGooglePlacesIds)
             .then((response: ActiveQuest) => createDirection(response))
             .then(() => {toast.success("Route wird auf Karte angezeigt. 🏎")})
+            .then(() => {
+                props.activeQuestInfoSetter(props.quest);
+                props.menuModeSetter(false);
+                props.questPageSetter(false);
+                props.questModeSetter(true);
+            })
     }
 
     function createDirection(activeQuest: ActiveQuest){

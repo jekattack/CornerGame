@@ -6,10 +6,12 @@ import AchievementPage from "../subpages/AchievementPage";
 import ProfilePage from "../subpages/ProfilePage";
 import QuestPage from "../subpages/QuestPage";
 import ScoreboardPage from "../subpages/ScoreboardPage";
-import {ActiveQuest} from "../../service/models";
+import {ActiveQuest, Quest} from "../../service/models";
 
 interface MenuProps{
+    questModeSetter: ((questMode: boolean) => void),
     activeQuestSetter: ((quest: ActiveQuest) => void),
+    activeQuestInfoSetter: ((quest: Quest) => void)
     visibility: ((visibility: boolean) => void)
 }
 
@@ -64,7 +66,12 @@ export default function Menu(props: MenuProps){
             }
             {questPage &&
                 <>
-                    <QuestPage activeQuestSetter={props.activeQuestSetter}/>
+                    <QuestPage
+                        questModeSetter={props.questModeSetter}
+                        activeQuestSetter={props.activeQuestSetter}
+                        activeQuestInfoSetter={props.activeQuestInfoSetter}
+                        menuModeSetter={setMenuMode}
+                        questPageSetter={setQuestPage}/>
                 </>
             }
             {scoreboardPage &&

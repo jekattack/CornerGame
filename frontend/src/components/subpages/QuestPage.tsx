@@ -6,7 +6,11 @@ import {ActiveQuest, Quest} from "../../service/models";
 import {useNavigate} from "react-router-dom";
 
 interface QuestProps{
+    questModeSetter: ((questMode: boolean) => void);
     activeQuestSetter: ((quest: ActiveQuest) => void);
+    activeQuestInfoSetter: ((quest: Quest) => void);
+    menuModeSetter: ((menuMode: boolean) => void);
+    questPageSetter: ((questPage: boolean) => void);
 }
 
 export default function QuestPage(props: QuestProps){
@@ -24,7 +28,11 @@ export default function QuestPage(props: QuestProps){
         return loadedQuests?.map(quest =>
             <QuestPageItem
                 key={quest.id}
+                questModeSetter={props.questModeSetter}
+                menuModeSetter={props.menuModeSetter}
+                questPageSetter={props.questPageSetter}
                 activeQuestSetter={props.activeQuestSetter}
+                activeQuestInfoSetter={props.activeQuestInfoSetter}
                 quest={quest}
                 questname={quest.name}
                 questdescription={quest.description}
