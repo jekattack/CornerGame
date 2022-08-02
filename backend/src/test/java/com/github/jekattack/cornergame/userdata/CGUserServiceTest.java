@@ -63,7 +63,7 @@ class CGUserServiceTest {
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> userService.createUser(userCreationData))
-                .withMessage("Registration failed: No username set");
+                .withMessage("Du brauchst einen Usernamen. \uD83D\uDC40");
     }
 
     @Test
@@ -75,7 +75,7 @@ class CGUserServiceTest {
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> userService.createUser(userCreationData))
-                .withMessage("Registration failed: No email set");
+                .withMessage("Bitte gib deine Mail-Adresse ein.");
     }
 
     @Test
@@ -87,7 +87,7 @@ class CGUserServiceTest {
         // when
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> userService.createUser(userCreationData))
-                .withMessage("Password validation failed: Entered passwords don't match");
+                .withMessage("Passwörter unterschiedlich. \uD83D\uDE35\u200D\uD83D\uDCAB");
     }
 
     @Test

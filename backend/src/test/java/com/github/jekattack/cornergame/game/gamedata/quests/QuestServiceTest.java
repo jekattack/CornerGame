@@ -1,10 +1,14 @@
-package com.github.jekattack.cornergame.game.quests;
+package com.github.jekattack.cornergame.game.gamedata.quests;
 
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameData;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataRepository;
 import com.github.jekattack.cornergame.game.gamedata.CGUserGameDataService;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestItem;
 import com.github.jekattack.cornergame.game.gamedata.questItem.QuestStatus;
+import com.github.jekattack.cornergame.game.quests.Quest;
+import com.github.jekattack.cornergame.game.quests.QuestObserver;
+import com.github.jekattack.cornergame.game.quests.QuestRepository;
+import com.github.jekattack.cornergame.game.quests.QuestService;
 import com.github.jekattack.cornergame.game.visits.VisitRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
