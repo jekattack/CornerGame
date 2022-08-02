@@ -36,11 +36,11 @@ export default function HomePage(){
 
     function startQuest(){
         if(activeQuestInfo?.id !== null){
-            startQuestRequest(activeQuestInfo.id)
+            startQuestRequest(activeQuestInfo!.id)
                 .then(response => {
                     toast.success(response.message)
                     setQueststartedMode(true)
-                    getActiveQuests(activeQuestInfo)
+                    getActiveQuests(activeQuestInfo!)
                 })
                 .catch((error) => {
                     if(error.response) {
