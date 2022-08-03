@@ -86,13 +86,18 @@ export function getLocationsForQuest(questPlacesIds: string[]){
 }
 
 export function startQuestRequest(questId: string){
-    return axios.post("/api/quests/start", questId, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+    return axios.post("/api/quests/start", questId, {headers: {"Content-Type": "text/plain", Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<QuestEventDTO>) => response.data)
 }
 
 export function fetchActiveQuestsInfo(){
     return axios.get("/api/gamedata/quests/active", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<ActiveQuestDTO[]>) => response.data)
+}
+
+export function cancelActiveQuest(questId: string){
+    return axios.post("/api/quests/cancel", questId, {headers: {"Content-Type": "text/plain", Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<QuestEventDTO>) => response.data)
 }
 
 // LocalDateTime from java has been converted to String for the request, this creates a js Date from it

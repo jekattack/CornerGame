@@ -47,4 +47,11 @@
     right:1px;
 }
 
+.active-quest-info-header{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    text-align: right;
+}
+
 
