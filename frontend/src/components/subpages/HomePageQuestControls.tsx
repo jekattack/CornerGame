@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {ActiveQuest, Quest} from "../../service/models";
 
 interface HomePageQuestControlsProps{
     dirRenderer: React.MutableRefObject<google.maps.DirectionsRenderer>|undefined;

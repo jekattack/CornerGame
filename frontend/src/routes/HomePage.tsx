@@ -2,7 +2,7 @@ import Map from "../components/maps/Map";
 import React, {useEffect, useState} from "react";
 import Menu from "../components/controls/Menu";
 import "../App.css";
-import {ActiveQuest, ActiveQuestDTO, Quest} from "../service/models";
+import {ActiveQuest, Quest} from "../service/models";
 import {cancelActiveQuest, fetchActiveQuestsInfo, startQuestRequest} from "../service/apiService";
 import {toast} from "react-toastify";
 import HomePageQuestControls from "../components/subpages/HomePageQuestControls";
