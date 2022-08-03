@@ -460,19 +460,19 @@ class CornergameApplicationTests {
         //QuestController
         ResponseEntity<QuestEventDTO> cancelQuest2Response = testRestTemplate.exchange(
                 "/api/quests/cancel",
-                HttpMethod.DELETE,
+                HttpMethod.POST,
                 new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
                 QuestEventDTO.class
         );
 
-        Assertions.assertThat(cancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.GONE);
+        Assertions.assertThat(cancelQuest2Response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cancelQuest2Response.getBody().getMessage()).isEqualTo("Quest " + quest2.getName() + " abgebrochen.");
 
         //Quest abbrechen abgelehnt
         //QuestController
         ResponseEntity<QuestEventDTO> failedCancelQuest2Response = testRestTemplate.exchange(
                 "/api/quests/cancel",
-                HttpMethod.DELETE,
+                HttpMethod.POST,
                 new HttpEntity<>(quest2.getId(), createHeaders(tokenUser)),
                 QuestEventDTO.class
         );
@@ -502,7 +502,7 @@ class CornergameApplicationTests {
         );
 
         Assertions.assertThat(failedStartQuest1Response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        Assertions.assertThat(failedStartQuest1Response.getBody().getMessage()).isEqualTo("Quest not started");
+        Assertions.assertThat(failedStartQuest1Response.getBody().getMessage()).isEqualTo("Quest nicht gestartet");
 
         //Aktive Quests abrufen
         //GameDataController
