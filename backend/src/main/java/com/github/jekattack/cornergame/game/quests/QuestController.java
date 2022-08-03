@@ -48,17 +48,17 @@ public class QuestController {
             //principal.getName() contains userId
             return ResponseEntity.ok().body(questService.startQuest(principal.getName(), questId));
         } catch (NoSuchElementException | IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quest not started", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quest nicht gestartet", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new CGErrorDTO(e));
         }
     }
 
-    @DeleteMapping("/cancel")
+    @PostMapping("/cancel")
     public ResponseEntity<Object> cancelQuest(@RequestBody String questId, Principal principal){
         try {
             //principal.getName() contains userId
-            return ResponseEntity.status(HttpStatus.GONE).body(questService.cancelQuest(principal.getName(), questId));
+            return ResponseEntity.ok().body(questService.cancelQuest(principal.getName(), questId));
         } catch (NoSuchElementException | IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CGErrorDTO("Quest not canceled", e.getMessage(), "Quest not found or already expired"));
         } catch (Exception e) {

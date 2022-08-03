@@ -3,8 +3,9 @@ import React, {useEffect, useState} from "react";
 import Menu from "../components/controls/Menu";
 import "../App.css";
 import {ActiveQuest, ActiveQuestDTO, Quest} from "../service/models";
-import {fetchActiveQuestsInfo, startQuestRequest} from "../service/apiService";
+import {cancelActiveQuest, fetchActiveQuestsInfo, startQuestRequest} from "../service/apiService";
 import {toast} from "react-toastify";
+import HomePageQuestControls from "../components/subpages/HomePageQuestControls";
 
 export default function HomePage(){
 
@@ -13,29 +14,33 @@ export default function HomePage(){
     const [questMode, setQuestMode] = useState(false);
     const [queststartedMode, setQueststartedMode] = useState(false);
     const [activeQuestInfo, setActiveQuestInfo] = useState<Quest>();
-    const [timeRemains, setTimeRemains] = useState<number>();
+    const [timeRemains, setTimeRemains] = useState<number>(0);
+    const [dirRenderer, setDirRenderer] = useState<React.MutableRefObject<google.maps.DirectionsRenderer>|undefined>();
 
     useEffect(() => {
-        if(timeRemains !== null || timeRemains !== 0){
-            setTimeout(() => {setTimeRemains(timeRemains!-1)}, 60000)
+        if(timeRemains !== undefined && timeRemains > 0){
+            let timeRemainsRetainer = timeRemains;
+            timeRemainsRetainer--;
+            setTimeout(() => {setTimeRemains(timeRemainsRetainer)}, 60000)
         } else {
-            toast.error("Zeit für den Quest ist abgelaufen ⌛️")
             setQueststartedMode(false)
         }
     }, [timeRemains])
 
     function getActiveQuests(activeQuestInfo: Quest){
         fetchActiveQuestsInfo()
+            .then(response => response.find(questInfo => questInfo.quest.id===activeQuestInfo.id))
             .then(response => {
-                const questInfo : ActiveQuestDTO | undefined = response.find(questInfo => questInfo.quest===activeQuestInfo)
-                if(questInfo?.minutesLeft){
-                    setTimeRemains(questInfo.minutesLeft)
+                if(response !== undefined && response.minutesLeft >= 0){
+                    setTimeRemains(response.minutesLeft)
+                } else {
+                    setQueststartedMode(false);
                 }
             })
     }
 
     function startQuest(){
-        if(activeQuestInfo?.id !== null){
+        if(activeQuestInfo?.id !== undefined){
             startQuestRequest(activeQuestInfo!.id)
                 .then(response => {
                     toast.success(response.message)
@@ -50,9 +55,32 @@ export default function HomePage(){
         }
     }
 
+    function cancelQuest(){
+        if(activeQuestInfo!==undefined){
+            cancelActiveQuest(activeQuestInfo.id)
+                .then((response) => {
+                    setQuestMode(false);
+                    setQueststartedMode(false);
+                    setActiveQuest(undefined)
+                    setActiveQuestInfo(undefined)
+                    toast.success(response.message)
+                })
+                .catch((error) => {
+                    if(error.response) {
+                        toast.error(error.response.data.message + ": " + error.response.data.subMessages[0])
+                    }
+                })
+        }
+        setQuestMode(false);
+        setQueststartedMode(false);
+    }
+
     return (
         <div id={"app-container"}>
-            <Map activeQuest={activeQuest}/>
+            <Map
+                activeQuest={activeQuest}
+                dirRenderer={setDirRenderer}
+            />
             {isVisible && <div id={"content-wrapper"}>
                 <Menu
                     questModeSetter={setQuestMode}
@@ -72,22 +100,21 @@ export default function HomePage(){
                             </svg>
                         </div>
                     </div>
-                    {questMode ??
-                        <>
-                            {queststartedMode ??
-                                <div id={"active-quest-info-wrapper"}>
-                                    So lange hast du noch Zeit: {timeRemains} Minuten
-                                </div>
-                            }
-                            {!queststartedMode ??
-                                <div id={"active-quest-info-wrapper"} onClick={() => startQuest()}>
-                                    Quest starten!
-                                </div>
-                            }
-                        </>
-                    }
                 </>
             }
+            {questMode &&
+                <>
+                    <HomePageQuestControls
+                        dirRenderer={dirRenderer}
+                        cancelQuest={cancelQuest}
+                        queststartedMode={queststartedMode}
+                        timeRemains={timeRemains}
+                        startQuest={startQuest}
+                        questName={activeQuestInfo?.name ? activeQuestInfo.name : "🛸"}
+                    />
+                </>
+            }
+
         </div>
     )
 }
