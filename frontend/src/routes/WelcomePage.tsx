@@ -1,8 +1,9 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import "../App.css";
+import {AxiosError} from "axios";
 
 export default function WelcomePage(){
 
@@ -15,11 +16,16 @@ export default function WelcomePage(){
         }
     }, [nav])
 
+    const apiResponseChecks = useCallback((err: Error | AxiosError) => {
+        console.log("bonjour!")
+    }, [nav])
 
     return (
         <div id={"app-container"}>
             <Map
                 mapRef={mapRef}
+                inGame={false}
+                apiAuthCheck={apiResponseChecks}
             />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>

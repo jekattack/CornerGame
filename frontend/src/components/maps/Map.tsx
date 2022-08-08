@@ -9,11 +9,14 @@ import useGeolocation from "../../service/locationService";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import info = toast.info;
+import {AxiosError} from "axios";
 
 interface MapProps{
     activeQuest?: ActiveQuest;
     dirRenderer?: ((renderer: React.MutableRefObject<google.maps.DirectionsRenderer> | undefined) => void);
     mapRef: React.MutableRefObject<google.maps.Map|null>;
+    inGame: boolean;
+    apiAuthCheck: (err: (Error | AxiosError)) => void;
 }
 
 export default function Map(props: MapProps){
@@ -28,6 +31,7 @@ export default function Map(props: MapProps){
     const mapRef = props.mapRef;
     const directionsServiceRef = React.useRef<google.maps.DirectionsService|null>(null);
     const directionsRendererRef = React.useRef<google.maps.DirectionsRenderer|null>(null);
+    const markersRef = React.useRef<google.maps.Marker[]|null>(null);
 
     const onUnmount = (): void => {
         mapRef.current = null;
@@ -39,13 +43,17 @@ export default function Map(props: MapProps){
         mapRef.current = map;
 
         const visitedIdsSet: Set<String> = new Set();
-        fetchProgress()
-            .then(response => response.map(response => response.googlePlacesId))
-            .then(response => response.map(item => visitedIdsSet.add(item)))
+        if(props.inGame){
+            fetchProgress()
+                .then(response => response.map(response => response.googlePlacesId))
+                .then(response => response.map(item => visitedIdsSet.add(item)))
+                .catch(err => props.apiAuthCheck(err))
 
-        fetchAllKiosks()
-            .then((response) => setMarkers(map, response, visitedIdsSet))
-            .then(() =>  enableDirections(map))
+            fetchAllKiosks()
+                .then((response) => setMarkers(map, response, visitedIdsSet))
+                .then(() =>  enableDirections(map))
+                .catch(err => props.apiAuthCheck(err))
+        }
 
         function enableDirections(map: google.maps.Map){
             const directionsServices = new google.maps.DirectionsService();
@@ -122,16 +130,18 @@ export default function Map(props: MapProps){
                     map,
                     icon: imageDone,
                     shape: shape,
-                    title: kiosk.name,
+                    title: kiosk.name
                 })
+                marker.set("place_id", kiosk.place_id)
             } else {
                 marker = new google.maps.Marker({
                     position: { lat: kiosk.geometry.location.lat, lng: kiosk.geometry.location.lng },
                     map,
                     icon: image,
                     shape: shape,
-                    title: kiosk.name
+                    title: kiosk.name,
                 })
+                marker.set("place_id", kiosk.place_id)
             }
 
             //Content for InfoWindow
@@ -167,6 +177,7 @@ export default function Map(props: MapProps){
 
             //Adding marker to MarkerArray
             kioskMarkers.push(marker);
+            markersRef.current = kioskMarkers;
         })
     }
 
@@ -187,7 +198,13 @@ export default function Map(props: MapProps){
                 while(infoWindowElements.length>0 && infoWindowElements[0].parentNode){
                     infoWindowElements[0].parentNode.removeChild(infoWindowElements[0]);
                 }
-                nav("/map")
+                for(let i = 0; i<markersRef.current!.length; i++){
+                    if(markersRef.current && markersRef.current![i].get("place_id")===visitGooglePlacesId){
+                        markersRef.current![i].setIcon({
+                            url: "/images/CGIconVisited.png",
+                        })
+                    }
+                }
             })
             .catch((error) => {
             if(error.response) {

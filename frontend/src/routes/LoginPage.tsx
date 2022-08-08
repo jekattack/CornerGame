@@ -1,10 +1,11 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {FormEvent, useEffect, useState} from "react";
+import React, {FormEvent, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../service/apiService";
 import "../App.css";
 import {toast} from "react-toastify";
+import axios, {AxiosError} from "axios";
 
 export default function LoginPage(){
 
@@ -15,6 +16,10 @@ export default function LoginPage(){
         if(localStorage.getItem("jwt")){
             nav("/map")
         }
+    }, [nav])
+
+    const apiResponseChecks = useCallback((err: Error | AxiosError) => {
+        console.log("bonjour!")
     }, [nav])
 
     const [username, setUsername] = useState('');
@@ -36,6 +41,8 @@ export default function LoginPage(){
         <div id={"app-container"}>
             <Map
                 mapRef={mapRef}
+                inGame={false}
+                apiAuthCheck={apiResponseChecks}
             />
             <div id={"content-wrapper"}>
                 <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>

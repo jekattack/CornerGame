@@ -1,10 +1,11 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {FormEvent, useEffect, useState} from "react";
+import React, {FormEvent, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {register} from "../service/apiService";
 import "../App.css";
 import {toast} from "react-toastify";
+import {AxiosError} from "axios";
 
 export default function RegisterPage(){
 
@@ -21,6 +22,10 @@ export default function RegisterPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordAgain, setPasswordAgain] = useState('');
+
+    const apiResponseChecks = useCallback((err: Error | AxiosError) => {
+        console.log("bonjour!")
+    }, [nav])
 
     const createUser = (ev: FormEvent) => {
         ev.preventDefault();
@@ -40,6 +45,8 @@ export default function RegisterPage(){
         <div id={"app-container"}>
             <Map
                 mapRef={mapRef}
+                inGame={false}
+                apiAuthCheck={apiResponseChecks}
             />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>
