@@ -27,7 +27,7 @@ export default function HomePage(){
         if (axios.isAxiosError(err) && err.response?.status === 403) {
             logout();
         }
-    }, [nav])
+    }, [logout])
 
     function logout(){
         localStorage.clear();

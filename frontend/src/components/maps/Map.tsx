@@ -89,7 +89,7 @@ export default function Map(props: MapProps){
         if(mapRef.current && location.loaded) {
             refreshPositionMarker(location.coordinates)
         }
-    }, [location])
+    }, [location, mapRef, refreshPositionMarker])
 
     useEffect(() => {
         if(directionsServiceRef.current!=null){
