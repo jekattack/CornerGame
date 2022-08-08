@@ -1,14 +1,16 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {FormEvent, useEffect, useState} from "react";
+import React, {FormEvent, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {register} from "../service/apiService";
 import "../App.css";
 import {toast} from "react-toastify";
+import {AxiosError} from "axios";
 
 export default function RegisterPage(){
 
     const nav = useNavigate();
+    const mapRef = React.useRef<google.maps.Map|null>(null);
 
     useEffect(() => {
         if(localStorage.getItem("jwt")){
@@ -20,6 +22,10 @@ export default function RegisterPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordAgain, setPasswordAgain] = useState('');
+
+    const apiResponseChecks = useCallback((err: Error | AxiosError) => {
+        console.log("bonjour!")
+    }, [])
 
     const createUser = (ev: FormEvent) => {
         ev.preventDefault();
@@ -37,7 +43,11 @@ export default function RegisterPage(){
 
     return (
         <div id={"app-container"}>
-            <Map />
+            <Map
+                mapRef={mapRef}
+                inGame={false}
+                apiAuthCheck={apiResponseChecks}
+            />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>
                     <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>

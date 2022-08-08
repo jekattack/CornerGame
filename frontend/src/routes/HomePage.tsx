@@ -1,11 +1,13 @@
 import Map from "../components/maps/Map";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Menu from "../components/controls/Menu";
 import "../App.css";
 import {ActiveQuest, Quest} from "../service/models";
 import {cancelActiveQuest, fetchActiveQuestsInfo, startQuestRequest} from "../service/apiService";
 import {toast} from "react-toastify";
 import HomePageQuestControls from "../components/subpages/HomePageQuestControls";
+import axios, {AxiosError} from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function HomePage(){
 
@@ -16,6 +18,21 @@ export default function HomePage(){
     const [activeQuestInfo, setActiveQuestInfo] = useState<Quest>();
     const [timeRemains, setTimeRemains] = useState<number>(0);
     const [dirRenderer, setDirRenderer] = useState<React.MutableRefObject<google.maps.DirectionsRenderer>|undefined>();
+
+    const mapRef = React.useRef<google.maps.Map|null>(null);
+
+    const nav = useNavigate()
+
+    const logout = useCallback(() => {
+        localStorage.clear();
+        nav("/");
+    }, [nav]);
+
+    const apiAuthCheck = useCallback((err: Error | AxiosError) => {
+        if (axios.isAxiosError(err) && err.response?.status === 403) {
+            logout();
+        }
+    }, [logout])
 
     useEffect(() => {
         if(timeRemains !== undefined && timeRemains > 0){
@@ -80,13 +97,19 @@ export default function HomePage(){
             <Map
                 activeQuest={activeQuest}
                 dirRenderer={setDirRenderer}
+                mapRef={mapRef}
+                inGame={true}
+                apiAuthCheck={apiAuthCheck}
             />
             {isVisible && <div id={"content-wrapper"}>
                 <Menu
                     questModeSetter={setQuestMode}
                     activeQuestSetter={setActiveQuest}
                     activeQuestInfoSetter={setActiveQuestInfo}
-                    visibility={setIsVisible}/>
+                    visibility={setIsVisible}
+                    dirRenderer={dirRenderer}
+                    mapRef={mapRef}
+                />
             </div>}
             {!isVisible &&
                 <>

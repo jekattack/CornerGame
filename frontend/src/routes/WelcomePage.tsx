@@ -1,12 +1,14 @@
 import '../components/Components.css';
 import Map from "../components/maps/Map";
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import "../App.css";
+import {AxiosError} from "axios";
 
 export default function WelcomePage(){
 
     const nav = useNavigate();
+    const mapRef = React.useRef<google.maps.Map|null>(null);
 
     useEffect(() => {
         if(localStorage.getItem("jwt")){
@@ -14,10 +16,17 @@ export default function WelcomePage(){
         }
     }, [nav])
 
+    const apiResponseChecks = useCallback((err: Error | AxiosError) => {
+        console.log("bonjour!")
+    }, [])
 
     return (
         <div id={"app-container"}>
-            <Map />
+            <Map
+                mapRef={mapRef}
+                inGame={false}
+                apiAuthCheck={apiResponseChecks}
+            />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>
                     <img src="/images/CGLogoWort.svg" className={"image-logo"} alt={"Logo"}/>

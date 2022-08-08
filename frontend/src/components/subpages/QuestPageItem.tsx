@@ -14,7 +14,9 @@ interface QuestPageItemProps{
     questname: string,
     questdescription: string,
     kioskcount: number,
-    durationMinutes: number
+    durationMinutes: number,
+    dirRenderer: React.MutableRefObject<google.maps.DirectionsRenderer>|undefined,
+    mapRef: React.MutableRefObject<google.maps.Map|null>;
 }
 
 export default function QuestPageItem(props: QuestPageItemProps){
@@ -29,7 +31,10 @@ export default function QuestPageItem(props: QuestPageItemProps){
 
     function getLocationsForQuestAndTriggerDirections(quest: Quest){
         getLocationsForQuest(quest.kioskGooglePlacesIds)
-            .then((response: ActiveQuest) => createDirection(response))
+            .then((response: ActiveQuest) => {
+                props.dirRenderer?.current?.setMap(props.mapRef.current)
+                createDirection(response)
+            })
             .then(() => {toast.success("Route wird auf Karte angezeigt. 🏎")})
             .then(() => {
                 props.activeQuestInfoSetter(props.quest);
