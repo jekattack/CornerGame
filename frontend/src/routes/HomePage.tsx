@@ -21,13 +21,13 @@ export default function HomePage(){
 
     const mapRef = React.useRef<google.maps.Map|null>(null);
 
+    const nav = useNavigate()
+
     const apiAuthCheck = useCallback((err: Error | AxiosError) => {
         if (axios.isAxiosError(err) && err.response?.status === 403) {
             logout();
         }
-    }, [logout])
-
-    const nav = useNavigate()
+    }, [nav])
 
     function logout(){
         localStorage.clear();

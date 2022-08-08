@@ -25,7 +25,7 @@ export default function RegisterPage(){
 
     const apiResponseChecks = useCallback((err: Error | AxiosError) => {
         console.log("bonjour!")
-    }, [nav])
+    }, [])
 
     const createUser = (ev: FormEvent) => {
         ev.preventDefault();

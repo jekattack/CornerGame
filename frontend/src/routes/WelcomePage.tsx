@@ -18,7 +18,7 @@ export default function WelcomePage(){
 
     const apiResponseChecks = useCallback((err: Error | AxiosError) => {
         console.log("bonjour!")
-    }, [nav])
+    }, [])
 
     return (
         <div id={"app-container"}>

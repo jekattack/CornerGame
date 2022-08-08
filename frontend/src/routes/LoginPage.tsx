@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {login} from "../service/apiService";
 import "../App.css";
 import {toast} from "react-toastify";
-import axios, {AxiosError} from "axios";
+import {AxiosError} from "axios";
 
 export default function LoginPage(){
 
@@ -20,7 +20,7 @@ export default function LoginPage(){
 
     const apiResponseChecks = useCallback((err: Error | AxiosError) => {
         console.log("bonjour!")
-    }, [nav])
+    }, [])
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

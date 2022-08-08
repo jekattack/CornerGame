@@ -7,8 +7,6 @@ import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
-import info = toast.info;
 import {AxiosError} from "axios";
 
 interface MapProps{
@@ -20,8 +18,6 @@ interface MapProps{
 }
 
 export default function Map(props: MapProps){
-
-    const nav = useNavigate();
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -74,12 +70,12 @@ export default function Map(props: MapProps){
     // eslint-disable-next-line
     const [_, setPositionMarker] = useState<google.maps.Marker>()
 
-    function refreshPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
+    function refreshPositionMarker(currentLocationCoords: {lat: number, lng: number}){
         setPositionMarker((positionMarker) => {
             positionMarker?.setVisible(false);
             return (
                 new google.maps.Marker({
-                    map: map,
+                    map: mapRef.current,
                     position: currentLocationCoords,
                     icon: "/images/CGIconStandort.png",
                     title: "Du",
@@ -91,7 +87,7 @@ export default function Map(props: MapProps){
 
     useEffect(() => {
         if(mapRef.current && location.loaded) {
-            refreshPositionMarker(mapRef.current, location.coordinates)
+            refreshPositionMarker(location.coordinates)
         }
     }, [location])
 
