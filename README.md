@@ -4,7 +4,7 @@
 
 The CornerGame is a community-based online game. Players can collect Kiosks in Hamburg by checking in with their geolocation and gain points. Additionally there are quests: by collecting Kiosks along a given route within a time limit Users can get additional points.
 
-<img width="550" alt="Screenshot_IPad_Air" src="https://user-images.githubusercontent.com/93976072/183519974-e99be3be-d040-4123-ba9c-c394a4c4ddef.png">
+![CornerGame_ScreenshotIPadAir](https://user-images.githubusercontent.com/93976072/183520483-532e4822-a730-446c-bf5e-46570de3797f.png)
 
 ## Used technologies
 * Backend: Spring, Java, Maven, MongoDB, Docker
