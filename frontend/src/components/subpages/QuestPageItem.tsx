@@ -32,9 +32,7 @@ export default function QuestPageItem(props: QuestPageItemProps){
     function getLocationsForQuestAndTriggerDirections(quest: Quest){
         getLocationsForQuest(quest.kioskGooglePlacesIds)
             .then((response: ActiveQuest) => {
-                if(props.dirRenderer?.current){
-                    props.dirRenderer.current.setMap(props.mapRef.current)
-                }
+                props.dirRenderer?.current?.setMap(props.mapRef.current)
                 createDirection(response)
             })
             .then(() => {toast.success("Route wird auf Karte angezeigt. 🏎")})
