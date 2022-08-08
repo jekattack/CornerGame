@@ -8,10 +8,12 @@ import './Map.css';
 import useGeolocation from "../../service/locationService";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
+import info = toast.info;
 
 interface MapProps{
     activeQuest?: ActiveQuest;
     dirRenderer?: ((renderer: React.MutableRefObject<google.maps.DirectionsRenderer> | undefined) => void);
+    mapRef: React.MutableRefObject<google.maps.Map|null>;
 }
 
 export default function Map(props: MapProps){
@@ -23,7 +25,7 @@ export default function Map(props: MapProps){
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY!
     })
 
-    const mapRef = React.useRef<google.maps.Map|null>(null);
+    const mapRef = props.mapRef;
     const directionsServiceRef = React.useRef<google.maps.DirectionsService|null>(null);
     const directionsRendererRef = React.useRef<google.maps.DirectionsRenderer|null>(null);
 
@@ -181,6 +183,10 @@ export default function Map(props: MapProps){
         visit(visitGooglePlacesId, locationLat, locationLng)
             .then(() => {
                 toast.success("Kiosk besucht! +100 Punkte 🍻")
+                const infoWindowElements = document.getElementsByClassName("gm-style-iw-a")
+                while(infoWindowElements.length>0 && infoWindowElements[0].parentNode){
+                    infoWindowElements[0].parentNode.removeChild(infoWindowElements[0]);
+                }
                 nav("/map")
             })
             .catch((error) => {

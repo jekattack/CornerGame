@@ -7,6 +7,7 @@ import "../App.css";
 export default function WelcomePage(){
 
     const nav = useNavigate();
+    const mapRef = React.useRef<google.maps.Map|null>(null);
 
     useEffect(() => {
         if(localStorage.getItem("jwt")){
@@ -17,7 +18,9 @@ export default function WelcomePage(){
 
     return (
         <div id={"app-container"}>
-            <Map />
+            <Map
+                mapRef={mapRef}
+            />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>
                     <img src="/images/CGLogoWort.svg" className={"image-logo"} alt={"Logo"}/>

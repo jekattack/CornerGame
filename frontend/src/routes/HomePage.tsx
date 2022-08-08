@@ -17,6 +17,8 @@ export default function HomePage(){
     const [timeRemains, setTimeRemains] = useState<number>(0);
     const [dirRenderer, setDirRenderer] = useState<React.MutableRefObject<google.maps.DirectionsRenderer>|undefined>();
 
+    const mapRef = React.useRef<google.maps.Map|null>(null);
+
     useEffect(() => {
         if(timeRemains !== undefined && timeRemains > 0){
             let timeRemainsRetainer = timeRemains;
@@ -80,13 +82,17 @@ export default function HomePage(){
             <Map
                 activeQuest={activeQuest}
                 dirRenderer={setDirRenderer}
+                mapRef={mapRef}
             />
             {isVisible && <div id={"content-wrapper"}>
                 <Menu
                     questModeSetter={setQuestMode}
                     activeQuestSetter={setActiveQuest}
                     activeQuestInfoSetter={setActiveQuestInfo}
-                    visibility={setIsVisible}/>
+                    visibility={setIsVisible}
+                    dirRenderer={dirRenderer}
+                    mapRef={mapRef}
+                />
             </div>}
             {!isVisible &&
                 <>

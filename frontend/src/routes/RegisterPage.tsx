@@ -9,6 +9,7 @@ import {toast} from "react-toastify";
 export default function RegisterPage(){
 
     const nav = useNavigate();
+    const mapRef = React.useRef<google.maps.Map|null>(null);
 
     useEffect(() => {
         if(localStorage.getItem("jwt")){
@@ -37,7 +38,9 @@ export default function RegisterPage(){
 
     return (
         <div id={"app-container"}>
-            <Map />
+            <Map
+                mapRef={mapRef}
+            />
             <div className={"wrapper"}>
                 <div id={"content-wrapper"}>
                     <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>

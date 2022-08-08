@@ -9,6 +9,7 @@ import {toast} from "react-toastify";
 export default function LoginPage(){
 
     const nav = useNavigate();
+    const mapRef = React.useRef<google.maps.Map|null>(null);
 
     useEffect(() => {
         if(localStorage.getItem("jwt")){
@@ -33,7 +34,9 @@ export default function LoginPage(){
 
     return (
         <div id={"app-container"}>
-            <Map />
+            <Map
+                mapRef={mapRef}
+            />
             <div id={"content-wrapper"}>
                 <img src="/images/CGLogoBild.svg" className={"logo"} alt={"Logo"}/>
                 <h1>Login</h1>
