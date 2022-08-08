@@ -1,13 +1,13 @@
 import axios, {AxiosResponse} from "axios";
 import {
-    Achievement,
+    Achievement, ActiveQuest, ActiveQuestDTO,
     CGUser,
     CGUserGameDataDTO,
     CGUserPasswordDTO,
     CGUserUpdateDTO,
     Kiosk,
     LoginResponse,
-    Quest,
+    Quest, QuestEventDTO,
     Visit
 } from "./models";
 
@@ -78,6 +78,26 @@ export function updateUser(userUpdate: CGUserUpdateDTO){
 export function updatePassword(passwordUpdate: CGUserPasswordDTO){
     return axios.post("/api/user/update/password", passwordUpdate, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
         .then((response: AxiosResponse<String>) => response.data);
+}
+
+export function getLocationsForQuest(questPlacesIds: string[]){
+    return axios.post("/api/kiosk/locations", questPlacesIds, {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<ActiveQuest>) => response.data);
+}
+
+export function startQuestRequest(questId: string){
+    return axios.post("/api/quests/start", questId, {headers: {"Content-Type": "text/plain", Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<QuestEventDTO>) => response.data)
+}
+
+export function fetchActiveQuestsInfo(){
+    return axios.get("/api/gamedata/quests/active", {headers: {Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<ActiveQuestDTO[]>) => response.data)
+}
+
+export function cancelActiveQuest(questId: string){
+    return axios.post("/api/quests/cancel", questId, {headers: {"Content-Type": "text/plain", Authorization: `Bearer ${localStorage.getItem('jwt')}`}})
+        .then((response: AxiosResponse<QuestEventDTO>) => response.data)
 }
 
 // LocalDateTime from java has been converted to String for the request, this creates a js Date from it

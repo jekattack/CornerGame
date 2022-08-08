@@ -2,14 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
-import { Kiosk } from "../../service/models";
+import {ActiveQuest, Kiosk} from "../../service/models";
 import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 
-const Map: React.FC = () => {
+interface MapProps{
+    activeQuest?: ActiveQuest;
+    dirRenderer?: ((renderer: React.MutableRefObject<google.maps.DirectionsRenderer> | undefined) => void);
+}
+
+export default function Map(props: MapProps){
 
     const nav = useNavigate();
 
@@ -19,6 +24,9 @@ const Map: React.FC = () => {
     })
 
     const mapRef = React.useRef<google.maps.Map|null>(null);
+    const directionsServiceRef = React.useRef<google.maps.DirectionsService|null>(null);
+    const directionsRendererRef = React.useRef<google.maps.DirectionsRenderer|null>(null);
+
     const onUnmount = (): void => {
         mapRef.current = null;
     }
@@ -34,12 +42,28 @@ const Map: React.FC = () => {
             .then(response => response.map(item => visitedIdsSet.add(item)))
 
         fetchAllKiosks()
-            .then((response) => setMarkers(map, response, visitedIdsSet));
+            .then((response) => setMarkers(map, response, visitedIdsSet))
+            .then(() =>  enableDirections(map))
+
+        function enableDirections(map: google.maps.Map){
+            const directionsServices = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true
+            });
+            directionsRenderer.setMap(map);
+
+            directionsServiceRef.current = directionsServices;
+            directionsRendererRef.current = directionsRenderer;
+            if(directionsRenderer && props.dirRenderer){
+                props.dirRenderer(directionsRendererRef as React.MutableRefObject<google.maps.DirectionsRenderer>);
+            }
+        }
     }
 
     //Setting Marker for current position
     // eslint-disable-next-line
     const [_, setPositionMarker] = useState<google.maps.Marker>()
+
     function refreshPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
         setPositionMarker((positionMarker) => {
             positionMarker?.setVisible(false);
@@ -61,6 +85,15 @@ const Map: React.FC = () => {
         }
     }, [location])
 
+    useEffect(() => {
+        if(directionsServiceRef.current!=null){
+            calcRoute(directionsServiceRef.current!,
+                directionsRendererRef.current!,
+                props.activeQuest?.start!,
+                props.activeQuest?.waypoints!,
+                props.activeQuest?.finish!)
+        }
+    }, [props.activeQuest])
 
     //Setting Markers for Kiosks
     function setMarkers(map: google.maps.Map, kiosks: Kiosk[], progress: Set<String>) {
@@ -87,7 +120,7 @@ const Map: React.FC = () => {
                     map,
                     icon: imageDone,
                     shape: shape,
-                    title: kiosk.name
+                    title: kiosk.name,
                 })
             } else {
                 marker = new google.maps.Marker({
@@ -157,6 +190,27 @@ const Map: React.FC = () => {
         });
     }
 
+
+
+    function calcRoute(
+        directionsService: google.maps.DirectionsService,
+        directionsRenderer: google.maps.DirectionsRenderer,
+        start: google.maps.LatLng,
+        waypoints: google.maps.DirectionsWaypoint[],
+        finish: google.maps.LatLng
+    ){
+        directionsService.route({
+            origin: start,
+            waypoints: waypoints,
+            destination: finish,
+            provideRouteAlternatives: false,
+            travelMode: google.maps.TravelMode.WALKING,
+        })
+            .then((response) => {
+                directionsRenderer.setDirections(response);
+            })
+    }
+
     //When map didnt already load
     if(!isLoaded) return <div>Map Loading ...</div>
 
@@ -176,4 +230,3 @@ const Map: React.FC = () => {
     );
 };
 
-export default Map;

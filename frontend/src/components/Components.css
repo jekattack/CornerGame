@@ -32,3 +32,26 @@
     left: 0;
 }
 
+#active-quest-info-wrapper{
+    background-color: white;
+    padding: 2em;
+    margin: 2em;
+    text-align: center;
+    border-radius: 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    position: absolute;
+    max-height: calc(100% - 8em) ;
+    width: calc(100% - 8em);
+    bottom:1px;
+    right:1px;
+}
+
+.active-quest-info-header{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    text-align: right;
+}
+
+

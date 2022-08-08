@@ -1,3 +1,5 @@
+import exp from "constants";
+
 export interface Kiosk {
     id?: string;
 
@@ -131,4 +133,20 @@ export interface CGUserPasswordDTO {
 export interface CGError {
     message: string;
     subMessages: string[];
+}
+
+export interface ActiveQuest {
+    start: google.maps.LatLng,
+    waypoints: google.maps.DirectionsWaypoint[],
+    finish: google.maps.LatLng
+}
+
+export interface QuestEventDTO {
+    message: string;
+    quest: Quest;
+}
+
+export interface ActiveQuestDTO {
+    quest: Quest;
+    minutesLeft: number;
 }

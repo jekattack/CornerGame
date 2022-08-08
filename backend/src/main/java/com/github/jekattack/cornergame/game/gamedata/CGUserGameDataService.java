@@ -163,11 +163,13 @@ public class CGUserGameDataService implements VisitObserver, QuestObserver {
 
     public int checkMinutesLeft(QuestItem questItem) {
         Quest quest = questRepository.findById(questItem.getQuestId()).orElseThrow();
-        Instant timeLeft = questItem.getTimestamp().toInstant()
+        Instant timeLeftInstant = questItem.getTimestamp().toInstant()
                 .plus(quest.getDurationInMinutes(), ChronoUnit.MINUTES)
                 .minus(Instant.now().toEpochMilli() / 1000 / 60, ChronoUnit.MINUTES);
+        Long timeLeftMilli = (questItem.getTimestamp().getTime() + quest.getDurationInMinutes()*60000 - Date.from(Instant.now()).getTime()) /60000;
+        int timeLeft = timeLeftMilli.intValue();
 
-        return Math.toIntExact(timeLeft.toEpochMilli() / 1000 / 60);
+        return timeLeft;
     }
 
     @Override
