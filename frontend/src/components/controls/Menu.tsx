@@ -11,8 +11,10 @@ import {ActiveQuest, Quest} from "../../service/models";
 interface MenuProps{
     questModeSetter: ((questMode: boolean) => void),
     activeQuestSetter: ((quest: ActiveQuest) => void),
-    activeQuestInfoSetter: ((quest: Quest) => void)
-    visibility: ((visibility: boolean) => void)
+    activeQuestInfoSetter: ((quest: Quest) => void),
+    visibility: ((visibility: boolean) => void),
+    dirRenderer: React.MutableRefObject<google.maps.DirectionsRenderer>|undefined,
+    mapRef: React.MutableRefObject<google.maps.Map|null>;
 }
 
 export default function Menu(props: MenuProps){
@@ -71,7 +73,10 @@ export default function Menu(props: MenuProps){
                         activeQuestSetter={props.activeQuestSetter}
                         activeQuestInfoSetter={props.activeQuestInfoSetter}
                         menuModeSetter={setMenuMode}
-                        questPageSetter={setQuestPage}/>
+                        questPageSetter={setQuestPage}
+                        dirRenderer={props.dirRenderer}
+                        mapRef={props.mapRef}
+                    />
                 </>
             }
             {scoreboardPage &&

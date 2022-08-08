@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
@@ -7,25 +7,27 @@ import '../Components.css';
 import './Map.css';
 import useGeolocation from "../../service/locationService";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {AxiosError} from "axios";
 
 interface MapProps{
     activeQuest?: ActiveQuest;
     dirRenderer?: ((renderer: React.MutableRefObject<google.maps.DirectionsRenderer> | undefined) => void);
+    mapRef: React.MutableRefObject<google.maps.Map|null>;
+    inGame: boolean;
+    apiAuthCheck: (err: (Error | AxiosError)) => void;
 }
 
 export default function Map(props: MapProps){
-
-    const nav = useNavigate();
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY!
     })
 
-    const mapRef = React.useRef<google.maps.Map|null>(null);
+    const mapRef = props.mapRef;
     const directionsServiceRef = React.useRef<google.maps.DirectionsService|null>(null);
     const directionsRendererRef = React.useRef<google.maps.DirectionsRenderer|null>(null);
+    const markersRef = React.useRef<google.maps.Marker[]|null>(null);
 
     const onUnmount = (): void => {
         mapRef.current = null;
@@ -37,13 +39,17 @@ export default function Map(props: MapProps){
         mapRef.current = map;
 
         const visitedIdsSet: Set<String> = new Set();
-        fetchProgress()
-            .then(response => response.map(response => response.googlePlacesId))
-            .then(response => response.map(item => visitedIdsSet.add(item)))
+        if(props.inGame){
+            fetchProgress()
+                .then(response => response.map(response => response.googlePlacesId))
+                .then(response => response.map(item => visitedIdsSet.add(item)))
+                .catch(err => props.apiAuthCheck(err))
 
-        fetchAllKiosks()
-            .then((response) => setMarkers(map, response, visitedIdsSet))
-            .then(() =>  enableDirections(map))
+            fetchAllKiosks()
+                .then((response) => setMarkers(map, response, visitedIdsSet))
+                .then(() =>  enableDirections(map))
+                .catch(err => props.apiAuthCheck(err))
+        }
 
         function enableDirections(map: google.maps.Map){
             const directionsServices = new google.maps.DirectionsService();
@@ -66,26 +72,25 @@ export default function Map(props: MapProps){
     // eslint-disable-next-line
     const [_, setPositionMarker] = useState<google.maps.Marker>()
 
-    function refreshPositionMarker(map: google.maps.Map, currentLocationCoords: {lat: number, lng: number}){
-        setPositionMarker((positionMarker) => {
-            positionMarker?.setVisible(false);
-            return (
-                new google.maps.Marker({
-                    map: map,
-                    position: currentLocationCoords,
-                    icon: "/images/CGIconStandort.png",
-                    title: "Du",
-                    zIndex: 300,
-                })
-            )
-        })
-    }
+
+    const refreshPositionMarker = useCallback((currentLocationCoords: {lat: number, lng: number}) => {setPositionMarker((positionMarker) => {
+        positionMarker?.setVisible(false);
+        return (
+            new google.maps.Marker({
+                map: mapRef.current,
+                position: currentLocationCoords,
+                icon: "/images/CGIconStandort.png",
+                title: "Du",
+                zIndex: 300,
+            })
+        )
+    })}, [mapRef])
 
     useEffect(() => {
         if(mapRef.current && location.loaded) {
-            refreshPositionMarker(mapRef.current, location.coordinates)
+            refreshPositionMarker(location.coordinates)
         }
-    }, [location])
+    }, [location, mapRef, refreshPositionMarker])
 
     useEffect(() => {
         if(directionsServiceRef.current!=null){
@@ -122,16 +127,18 @@ export default function Map(props: MapProps){
                     map,
                     icon: imageDone,
                     shape: shape,
-                    title: kiosk.name,
+                    title: kiosk.name
                 })
+                marker.set("place_id", kiosk.place_id)
             } else {
                 marker = new google.maps.Marker({
                     position: { lat: kiosk.geometry.location.lat, lng: kiosk.geometry.location.lng },
                     map,
                     icon: image,
                     shape: shape,
-                    title: kiosk.name
+                    title: kiosk.name,
                 })
+                marker.set("place_id", kiosk.place_id)
             }
 
             //Content for InfoWindow
@@ -167,6 +174,7 @@ export default function Map(props: MapProps){
 
             //Adding marker to MarkerArray
             kioskMarkers.push(marker);
+            markersRef.current = kioskMarkers;
         })
     }
 
@@ -183,7 +191,17 @@ export default function Map(props: MapProps){
         visit(visitGooglePlacesId, locationLat, locationLng)
             .then(() => {
                 toast.success("Kiosk besucht! +100 Punkte 🍻")
-                nav("/map")
+                const infoWindowElements = document.getElementsByClassName("gm-style-iw-a")
+                while(infoWindowElements.length>0 && infoWindowElements[0].parentNode){
+                    infoWindowElements[0].parentNode.removeChild(infoWindowElements[0]);
+                }
+                for(let i = 0; i<markersRef.current!.length; i++){
+                    if(markersRef.current && markersRef.current![i].get("place_id")===visitGooglePlacesId){
+                        markersRef.current![i].setIcon({
+                            url: "/images/CGIconVisited.png",
+                        })
+                    }
+                }
             })
             .catch((error) => {
             if(error.response) {

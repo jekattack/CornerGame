@@ -11,6 +11,8 @@ interface QuestProps{
     activeQuestInfoSetter: ((quest: Quest) => void);
     menuModeSetter: ((menuMode: boolean) => void);
     questPageSetter: ((questPage: boolean) => void);
+    dirRenderer: React.MutableRefObject<google.maps.DirectionsRenderer>|undefined;
+    mapRef: React.MutableRefObject<google.maps.Map|null>;
 }
 
 export default function QuestPage(props: QuestProps){
@@ -37,7 +39,10 @@ export default function QuestPage(props: QuestProps){
                 questname={quest.name}
                 questdescription={quest.description}
                 kioskcount={quest.kioskGooglePlacesIds.length}
-                durationMinutes={quest.durationInMinutes}/>)
+                durationMinutes={quest.durationInMinutes}
+                dirRenderer={props.dirRenderer}
+                mapRef={props.mapRef}
+            />)
     }
 
     return(

@@ -40,11 +40,17 @@ public class KioskService {
         KioskLocationCoordinates finish = new KioskLocationCoordinates();
         for(int i=0; i<questPlacesIds.length; i++){
             if(i==0){
-                start = kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream().findFirst().orElseThrow().getKioskLocation().getLocation();
+                start = kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream()
+                        .findFirst().orElseThrow()
+                        .getKioskLocation().getLocation();
             } else if(i==(questPlacesIds.length-1)) {
-                finish = kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream().findFirst().orElseThrow().getKioskLocation().getLocation();
+                finish = kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream()
+                        .findFirst().orElseThrow()
+                        .getKioskLocation().getLocation();
             } else {
-                waypoints.add(new ActiveQuestWaypointDTO(kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream().findFirst().orElseThrow().getKioskLocation().getLocation()));
+                waypoints.add(new ActiveQuestWaypointDTO(kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream()
+                        .findFirst().orElseThrow()
+                        .getKioskLocation().getLocation()));
             }
         }
 
