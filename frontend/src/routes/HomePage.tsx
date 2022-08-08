@@ -23,17 +23,16 @@ export default function HomePage(){
 
     const nav = useNavigate()
 
+    const logout = useCallback(() => {
+        localStorage.clear();
+        nav("/");
+    }, [nav]);
+
     const apiAuthCheck = useCallback((err: Error | AxiosError) => {
         if (axios.isAxiosError(err) && err.response?.status === 403) {
             logout();
         }
-    }, [nav])
-
-    function logout(){
-        localStorage.clear();
-        nav("/");
-    }
-
+    }, [logout])
 
     useEffect(() => {
         if(timeRemains !== undefined && timeRemains > 0){

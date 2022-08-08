@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 import { containerStyle, options, centerOnceOnPositionWhenLoaded } from "./mapSettings";
 import {fetchAllKiosks, fetchProgress, visit} from "../../service/apiService";
@@ -70,26 +70,25 @@ export default function Map(props: MapProps){
     // eslint-disable-next-line
     const [_, setPositionMarker] = useState<google.maps.Marker>()
 
-    function refreshPositionMarker(currentLocationCoords: {lat: number, lng: number}){
-        setPositionMarker((positionMarker) => {
-            positionMarker?.setVisible(false);
-            return (
-                new google.maps.Marker({
-                    map: mapRef.current,
-                    position: currentLocationCoords,
-                    icon: "/images/CGIconStandort.png",
-                    title: "Du",
-                    zIndex: 300,
-                })
-            )
-        })
-    }
+
+    const refreshPositionMarker = useCallback((currentLocationCoords: {lat: number, lng: number}) => {setPositionMarker((positionMarker) => {
+        positionMarker?.setVisible(false);
+        return (
+            new google.maps.Marker({
+                map: mapRef.current,
+                position: currentLocationCoords,
+                icon: "/images/CGIconStandort.png",
+                title: "Du",
+                zIndex: 300,
+            })
+        )
+    })}, [mapRef])
 
     useEffect(() => {
         if(mapRef.current && location.loaded) {
             refreshPositionMarker(location.coordinates)
         }
-    }, [location])
+    }, [location, mapRef, refreshPositionMarker])
 
     useEffect(() => {
         if(directionsServiceRef.current!=null){
