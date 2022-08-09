@@ -36,24 +36,17 @@ public class KioskService {
 
     public ActiveQuestDTO getLocationsForQuest(String[] questPlacesIds) {
         List<ActiveQuestWaypointDTO> waypoints = new ArrayList<>();
-        KioskLocationCoordinates start = new KioskLocationCoordinates();
-        KioskLocationCoordinates finish = new KioskLocationCoordinates();
-        for(int i=0; i<questPlacesIds.length; i++){
-            if(i==0){
-                start = kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream()
-                        .findFirst().orElseThrow()
-                        .getKioskLocation().getLocation();
-            } else if(i==(questPlacesIds.length-1)) {
-                finish = kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream()
-                        .findFirst().orElseThrow()
-                        .getKioskLocation().getLocation();
-            } else {
+        KioskLocationCoordinates start = kioskRepository.findByGooglePlacesId(questPlacesIds[0]).stream()
+                .findFirst().orElseThrow()
+                .getKioskLocation().getLocation();
+        KioskLocationCoordinates finish = kioskRepository.findByGooglePlacesId(questPlacesIds[questPlacesIds.length-1]).stream()
+                .findFirst().orElseThrow()
+                .getKioskLocation().getLocation();
+        for(int i=1; i<questPlacesIds.length-1; i++){
                 waypoints.add(new ActiveQuestWaypointDTO(kioskRepository.findByGooglePlacesId(questPlacesIds[i]).stream()
                         .findFirst().orElseThrow()
                         .getKioskLocation().getLocation()));
-            }
         }
-
         return new ActiveQuestDTO(start, waypoints, finish);
     }
 }

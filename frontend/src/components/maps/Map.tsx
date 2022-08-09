@@ -210,8 +210,6 @@ export default function Map(props: MapProps){
         });
     }
 
-
-
     function calcRoute(
         directionsService: google.maps.DirectionsService,
         directionsRenderer: google.maps.DirectionsRenderer,
